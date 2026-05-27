@@ -1178,6 +1178,94 @@
       width: 100%;
       font-size: 1.65rem;
     }
+
+    .end-buttons .btn:disabled {
+      opacity: 0.65;
+      transform: none;
+    }
+
+    /* Запасное меню, если системный Share недоступен */
+    .share-fallback {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .share-fallback.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .share-fallback-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+    }
+
+    .share-fallback-sheet {
+      position: relative;
+      width: 100%;
+      max-width: 28rem;
+      background: #1e1e1e;
+      color: #fff;
+      border-radius: 1.25rem 1.25rem 0 0;
+      padding: 1rem 1rem calc(1.25rem + var(--safe-bottom));
+      transform: translateY(100%);
+      transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    .share-fallback.open .share-fallback-sheet {
+      transform: translateY(0);
+    }
+
+    .share-fallback-title {
+      font-family: 'Bangers', cursive;
+      font-size: 1.35rem;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.35rem;
+      color: #ffeaa7;
+    }
+
+    .share-fallback-hint {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-bottom: 1rem;
+      line-height: 1.35;
+    }
+
+    .share-fallback-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .share-fallback-actions .btn {
+      width: 100%;
+      font-size: 1.25rem;
+    }
+
+    .btn-share-dl {
+      background: linear-gradient(180deg, #55efc4 0%, #00b894 100%);
+      color: #1a1a1a;
+    }
+
+    .btn-share-copy {
+      background: linear-gradient(180deg, #74b9ff 0%, #0984e3 100%);
+      color: #fff;
+    }
+
+    .btn-share-close {
+      background: #3d3d3d;
+      color: #ddd;
+      font-size: 1.1rem;
+      box-shadow: none;
+    }
   </style>
 </head>
 <body>
@@ -1283,6 +1371,19 @@
         <button type="button" class="btn btn-secondary" id="btn-share">Поделиться</button>
       </div>
     </section>
+
+    <div class="share-fallback" id="share-fallback" aria-hidden="true">
+      <div class="share-fallback-backdrop" id="share-fallback-backdrop"></div>
+      <div class="share-fallback-sheet">
+        <p class="share-fallback-title">Отправить результат</p>
+        <p class="share-fallback-hint">На телефоне обычно открывается системное меню «Поделиться». Если его нет — сохрани картинку и отправь в Telegram, WhatsApp и т.д.</p>
+        <div class="share-fallback-actions">
+          <button type="button" class="btn btn-share-dl" id="btn-share-download">Сохранить картинку</button>
+          <button type="button" class="btn btn-share-copy" id="btn-share-copy">Скопировать текст и ссылку</button>
+          <button type="button" class="btn btn-share-close" id="btn-share-close">Закрыть</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <audio id="audio-menu" src="assets/menu.ogg" preload="auto" loop playsinline></audio>
@@ -1442,6 +1543,7 @@
       lastComboMult: 1,
       comboStickyMult: 1,
       comboStickyUntil: 0,
+      shareBlob: null,
     };
 
     // ====== DOM ======
@@ -1490,6 +1592,12 @@
       bucketTierTag: document.getElementById('bucket-tier-tag'),
       punchlineLayer: document.getElementById('punchline-layer'),
       endCard: document.getElementById('end-card'),
+      btnShare: document.getElementById('btn-share'),
+      shareFallback: document.getElementById('share-fallback'),
+      shareFallbackBackdrop: document.getElementById('share-fallback-backdrop'),
+      btnShareDownload: document.getElementById('btn-share-download'),
+      btnShareCopy: document.getElementById('btn-share-copy'),
+      btnShareClose: document.getElementById('btn-share-close'),
     };
 
     const cowVoice = {
@@ -2724,7 +2832,9 @@
       game.lastComboMult = 1;
       game.comboStickyMult = 1;
       game.comboStickyUntil = 0;
+      game.shareBlob = null;
       game.tapTimes = [];
+      closeShareFallback();
       els.comboBadge?.classList.remove('active', 'level-low', 'level-mid', 'level-high', 'level-mega', 'combo-burst');
       els.comboFlash?.classList.remove('on');
       game.bucketOverflowing = false;
@@ -2803,6 +2913,14 @@
       screens.end.classList.toggle('end-new-record', isNewRecord);
 
       setState('gameover');
+      prepareShareCard();
+    }
+
+    function prepareShareCard() {
+      game.shareBlob = null;
+      renderShareCardBlob().then((blob) => {
+        if (game.state === 'gameover' && blob) game.shareBlob = blob;
+      });
     }
 
     function getGameShareUrl() {
@@ -2972,40 +3090,111 @@
       return lines.length ? lines : [text];
     }
 
-    async function shareResults() {
+    function buildShareText() {
       const score = game.liters.toFixed(1);
-      const message = els.endMessage.textContent;
-      const compare = els.endCompare.textContent;
+      const message = els.endMessage?.textContent || '';
+      const compare = els.endCompare?.textContent || '';
       const gameUrl = getGameShareUrl();
       const urlBlock = gameUrl && !gameUrl.startsWith('file:')
         ? `\n\n🎮 Играть:\n${gameUrl}`
         : '';
-      const text = `🐄 УВЕЛИЧЬ НАДОЙ\n\n⏱ Время вышло!\n🥛 Я надоил ${score} л\n${message}\n${compare}\n\n🏆 Рекорд: ${game.highScore.toFixed(1)} л${urlBlock}`;
+      return `🐄 УВЕЛИЧЬ НАДОЙ\n\n⏱ Время вышло!\n🥛 Я надоил ${score} л\n${message}\n${compare}\n\n🏆 Рекорд: ${game.highScore.toFixed(1)} л${urlBlock}`;
+    }
 
-      let sharePayload = { title: 'УВЕЛИЧЬ НАДОЙ 🐄', text };
-      if (gameUrl && !gameUrl.startsWith('file:')) {
-        sharePayload.url = gameUrl;
+    function canTryShare(payload) {
+      if (!navigator.share) return false;
+      if (navigator.canShare) return navigator.canShare(payload);
+      return true;
+    }
+
+    async function tryNativeShare(file, title, text) {
+      if (!navigator.share || !file) return false;
+
+      const gameUrl = getGameShareUrl();
+      const hasUrl = gameUrl && !gameUrl.startsWith('file:');
+
+      /* Сначала картинка — на Android откроется «1 изображение» с контактами и приложениями */
+      const variants = [
+        { files: [file], title, text },
+        { files: [file], title },
+        { files: [file] },
+      ];
+
+      if (hasUrl) {
+        variants.push({ title, text, url: gameUrl });
+      }
+      variants.push({ title, text });
+
+      for (const payload of variants) {
+        if (!canTryShare(payload)) continue;
+        try {
+          await navigator.share(payload);
+          return true;
+        } catch (err) {
+          if (err.name === 'AbortError') return true;
+        }
+      }
+      return false;
+    }
+
+    function openShareFallback(blob, text) {
+      game.shareBlob = blob || game.shareBlob;
+      game.shareFallbackText = text;
+      const panel = els.shareFallback;
+      if (!panel) return;
+      panel.classList.add('open');
+      panel.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeShareFallback() {
+      const panel = els.shareFallback;
+      if (!panel) return;
+      panel.classList.remove('open');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+
+    function downloadShareBlob(blob) {
+      const b = blob || game.shareBlob;
+      if (!b) return;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b);
+      a.download = 'uvelich-nadoi.png';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }
+
+    async function shareResults() {
+      const btn = els.btnShare;
+      const prevLabel = btn?.textContent;
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Готовим…';
       }
 
       try {
-        const blob = await renderShareCardBlob();
-        if (blob) {
-          const file = new File([blob], 'uvelich-nadoi.png', { type: 'image/png' });
-          if (navigator.canShare?.({ files: [file] })) {
-            sharePayload = { ...sharePayload, files: [file] };
-          }
-        }
-      } catch (_) {}
+        let blob = game.shareBlob;
+        if (!blob) blob = await renderShareCardBlob();
+        if (!blob) return;
 
-      if (navigator.share) {
-        try {
-          await navigator.share(sharePayload);
-          return;
-        } catch (err) {
-          if (err.name === 'AbortError') return;
+        game.shareBlob = blob;
+        const title = 'УВЕЛИЧЬ НАДОЙ 🐄';
+        const text = buildShareText();
+        const file = new File([blob], 'uvelich-nadoi.png', { type: 'image/png' });
+
+        const shared = await tryNativeShare(file, title, text);
+        if (shared) return;
+
+        openShareFallback(blob, text);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = prevLabel || 'Поделиться';
         }
       }
+    }
 
+    async function copyShareText() {
+      const text = game.shareFallbackText || buildShareText();
       try {
         await navigator.clipboard.writeText(text);
       } catch (_) {}
@@ -3025,7 +3214,17 @@
       startMenuMusic();
     });
 
-    document.getElementById('btn-share').addEventListener('click', () => shareResults());
+    els.btnShare?.addEventListener('click', () => shareResults());
+    els.btnShareDownload?.addEventListener('click', () => {
+      downloadShareBlob(game.shareBlob);
+      closeShareFallback();
+    });
+    els.btnShareCopy?.addEventListener('click', async () => {
+      await copyShareText();
+      closeShareFallback();
+    });
+    els.btnShareClose?.addEventListener('click', closeShareFallback);
+    els.shareFallbackBackdrop?.addEventListener('click', closeShareFallback);
 
     // ====== ДОЙКА (этап 3) ======
     els.udder.addEventListener('pointerdown', onMilkTap);
