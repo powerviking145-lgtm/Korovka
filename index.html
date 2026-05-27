@@ -1,0 +1,3078 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>УВЕЛИЧЬ НАДОЙ 🐄</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-top: #f5f0e8;
+      --bg-bottom: #e8dcc8;
+      --udder-pink: #f8b4b4;
+      --udder-shadow: #e89a9a;
+      --bucket-wood: #8b6f47;
+      --bucket-dark: #6b5235;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    }
+
+    #app {
+      width: 100%;
+      height: 100dvh;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ====== ЭКРАНЫ ====== */
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 1;
+    }
+
+    .screen.active {
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 5;
+    }
+
+    /* ====== ЛАНДШАФТ-ЗАГЛУШКА ====== */
+    #landscape-block {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #2d2d2d;
+      color: #fff;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    @media (orientation: landscape) {
+      #landscape-block { display: flex; }
+      #app { display: none; }
+    }
+
+    /* ====== СТАРТОВЫЙ ЭКРАН ====== */
+    #screen-menu {
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      gap: 1.5rem;
+    }
+
+    .logo {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.5rem, 12vw, 4rem);
+      color: #2d1810;
+      text-align: center;
+      line-height: 1.1;
+      transform: rotate(-2deg);
+      text-shadow: 3px 3px 0 #f8b4b4;
+      letter-spacing: 0.05em;
+    }
+
+    .logo-emoji {
+      font-size: clamp(4rem, 20vw, 6rem);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .menu-record {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #5a4a3a;
+    }
+
+    .menu-record span {
+      color: #c45c26;
+      font-size: 1.4rem;
+    }
+
+    .menu-hint {
+      font-size: 0.9rem;
+      color: #8a7a6a;
+      max-width: 16rem;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .menu-hint.hidden {
+      display: none;
+    }
+
+    .btn {
+      font-family: 'Bangers', cursive;
+      font-size: 1.75rem;
+      letter-spacing: 0.08em;
+      padding: 0.85rem 2.5rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+    }
+
+    .btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #ff9f43 0%, #ee5a24 100%);
+      color: #fff;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(180deg, #74b9ff 0%, #0984e3 100%);
+      color: #fff;
+      font-size: 1.25rem;
+      padding: 0.65rem 1.75rem;
+    }
+
+    /* ====== ИГРОВОЙ ЭКРАН ====== */
+    #screen-game {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 0 !important;
+      overflow: hidden;
+      background: #1a1208;
+    }
+
+    #screen-game .top-bar {
+      position: absolute;
+      top: calc(var(--safe-top) + 0.5rem);
+      left: 0;
+      right: 0;
+      z-index: 12;
+      flex: none;
+      min-height: 60px;
+      padding: 0 0.65rem;
+      background: transparent;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      column-gap: 0.35rem;
+    }
+
+    #screen-game .record-badge {
+      grid-column: 1;
+      justify-self: start;
+    }
+
+    #screen-game .timer-wrap {
+      grid-column: 2;
+      justify-self: center;
+    }
+
+    #screen-game .liters-display {
+      grid-column: 3;
+      justify-self: end;
+    }
+
+    #screen-game .record-badge,
+    #screen-game .liters-display {
+      color: #2d1810;
+      background: rgba(255, 255, 255, 0.88);
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+      text-shadow: none;
+      font-size: 1.15rem;
+      gap: 0.4rem;
+    }
+
+    #screen-game .record-badge .value,
+    #screen-game .liters-display .value {
+      font-size: 1.5rem;
+    }
+
+    .timer-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.35));
+    }
+
+    #screen-game .timer {
+      font-family: 'Bangers', cursive;
+      color: #2d1810;
+      background: linear-gradient(180deg, #ffffff 0%, #f0e6d8 100%);
+      padding: 0.08em 0.42em 0.12em;
+      border-radius: 18px;
+      border: 3px solid #2d1810;
+      box-shadow: 0 5px 0 #2d1810;
+      text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.6);
+      font-size: clamp(3.4rem, 16vw, 5.2rem);
+      line-height: 0.95;
+      min-width: 1.35em;
+      text-align: center;
+      letter-spacing: 0.04em;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    }
+
+    #screen-game .record-badge .value { color: #c45c26; }
+    #screen-game .liters-display .value { color: #0984e3; }
+
+    #screen-game .timer-wrap.critical .timer {
+      color: #fff;
+      background: linear-gradient(180deg, #ff7675 0%, #d63031 55%, #b71540 100%);
+      border-color: #6b0000;
+      box-shadow:
+        0 5px 0 #6b0000,
+        0 0 24px rgba(255, 80, 80, 0.65);
+      text-shadow: 3px 3px 0 #6b0000;
+      animation: timer-critical-pulse 0.45s ease infinite alternate;
+    }
+
+    #screen-game .timer.tick-pop {
+      animation: timer-tick-pop 0.32s ease;
+    }
+
+    #screen-game .timer-wrap.critical .timer.tick-pop {
+      animation: timer-tick-pop-critical 0.32s ease;
+    }
+
+    @keyframes timer-critical-pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.06); }
+    }
+
+    @keyframes timer-tick-pop {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes timer-tick-pop-critical {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.22); filter: brightness(1.2); }
+      100% { transform: scale(1.06); }
+    }
+
+    /* Топ-бар — 10% */
+    .top-bar {
+      flex: 0 0 10%;
+      min-height: 48px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+    }
+
+    .record-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #5a4a3a;
+    }
+
+    .record-badge .value {
+      font-size: 1.15rem;
+      color: #c45c26;
+    }
+
+    .liters-display {
+      font-weight: 800;
+      font-size: 1rem;
+      color: #2d1810;
+      text-align: right;
+    }
+
+    .liters-display .value {
+      font-size: 1.25rem;
+      color: #0984e3;
+    }
+
+    /* Корова — картинка на весь экран, вымя в % от кадра */
+    .cow-scene {
+      flex: 1 1 auto;
+      width: 100%;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .cow-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cow-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 34%;
+      pointer-events: none;
+      -webkit-user-drag: none;
+      transform-origin: center 38%;
+      animation: cow-idle 5s ease-in-out infinite;
+    }
+
+    .cow-img.chew {
+      animation: cow-chew 0.5s ease;
+    }
+
+    @keyframes cow-idle {
+      0%, 100% { transform: scale(1) translateY(0); }
+      50% { transform: scale(1.006) translateY(2px); }
+    }
+
+    @keyframes cow-chew {
+      0%, 100% { transform: scale(1) translateY(0); }
+      25% { transform: scale(1.014) translateY(3px); }
+      55% { transform: scale(1.008) translateY(1px); }
+    }
+
+    .udder {
+      position: absolute;
+      left: var(--udder-left, 50%);
+      top: var(--udder-top, 68%);
+      width: var(--udder-width, 42%);
+      height: var(--udder-height, 24%);
+      transform: translate(-50%, 0);
+      transform-origin: center top;
+      cursor: pointer;
+      touch-action: manipulation;
+      z-index: 2;
+    }
+
+    .udder.squish {
+      animation: udder-squish 0.08s ease;
+    }
+
+    @keyframes udder-squish {
+      50% { transform: translate(-50%, 0) scale(0.94); }
+    }
+
+    /* Мешок на картинке — поверх только 4 соска */
+    .udder-bag,
+    .udder-bag::before,
+    .udder-bag::after {
+      display: none;
+    }
+
+    .teats-row {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 65%;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: flex-end;
+      padding: 0 6% 2%;
+      gap: 2%;
+    }
+
+    .teat {
+      position: relative;
+      flex: 1;
+      max-width: 22%;
+      height: 100%;
+      --heat: 0;
+      background: linear-gradient(180deg, #ffc4c4 0%, #f08a8a 55%, #e07070 100%);
+      border: 2px solid #d06068;
+      border-radius: 45% 45% 50% 50%;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .teat::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 120, 60, calc(var(--heat) * 0.7)) 0%,
+        rgba(255, 40, 20, calc(var(--heat) * 0.55)) 100%
+      );
+      pointer-events: none;
+      z-index: 1;
+      opacity: calc(0.15 + var(--heat) * 0.85);
+    }
+
+    .teat.hot {
+      border-color: #e74c3c;
+      box-shadow: 0 0 12px rgba(255, 100, 50, 0.45);
+    }
+
+    .teat.overheated {
+      border-color: #c0392b;
+      box-shadow: 0 0 18px rgba(255, 50, 30, 0.75);
+      animation: teat-overheat-glow 0.35s ease infinite alternate;
+    }
+
+    @keyframes teat-overheat-glow {
+      from { filter: brightness(1.05) saturate(1.2); }
+      to { filter: brightness(1.35) saturate(1.5); }
+    }
+
+    .teat-heat-bar {
+      position: absolute;
+      top: -7px;
+      left: 12%;
+      right: 12%;
+      height: 5px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 99px;
+      overflow: hidden;
+      z-index: 2;
+      pointer-events: none;
+      opacity: calc(0.35 + var(--heat) * 0.65);
+    }
+
+    .teat-heat-bar::after {
+      content: '';
+      display: block;
+      height: 100%;
+      width: calc(var(--heat) * 100%);
+      background: linear-gradient(90deg, #f39c12, #e74c3c);
+      border-radius: inherit;
+      transition: width 0.1s linear;
+    }
+
+    .teat::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 11px;
+      height: 11px;
+      background: #c85858;
+      border-radius: 50%;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      z-index: 3;
+    }
+
+    .teat.squish {
+      animation: teat-squish 0.08s ease;
+    }
+
+    @keyframes teat-squish {
+      50% { transform: scaleY(0.82) scaleX(1.06); }
+    }
+
+    .liters-display.pop,
+    #screen-game .record-badge.pop {
+      animation: hud-pop 0.22s ease;
+    }
+
+    @keyframes hud-pop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.28); }
+      100% { transform: scale(1); }
+    }
+
+    .combo-badge {
+      position: absolute;
+      top: calc(var(--safe-top) + 6.75rem);
+      left: 50%;
+      transform: translateX(-50%) scale(0.2);
+      transform-origin: center center;
+      font-family: 'Bangers', cursive;
+      font-size: clamp(1.75rem, 8vw, 2.35rem);
+      color: #fff;
+      background: linear-gradient(180deg, #ff9f43 0%, #ee5a24 100%);
+      padding: 0.3rem 1rem 0.35rem;
+      border-radius: 999px;
+      border: 3px solid #2d1810;
+      box-shadow: 0 5px 0 #c0392b, 0 0 20px rgba(238, 90, 36, 0.45);
+      text-shadow: 2px 2px 0 #c0392b;
+      letter-spacing: 0.08em;
+      z-index: 14;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      white-space: nowrap;
+      max-width: 92vw;
+    }
+
+    .combo-badge.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) scale(1);
+      transition: opacity 0.2s ease, visibility 0s;
+    }
+
+    .combo-badge.active.combo-burst {
+      animation: combo-burst 0.42s cubic-bezier(0.34, 1.55, 0.64, 1);
+    }
+
+    .combo-badge.level-mid {
+      font-size: clamp(2.1rem, 9.5vw, 2.85rem);
+      background: linear-gradient(180deg, #fdcb6e 0%, #e17055 100%);
+      box-shadow: 0 5px 0 #c0392b, 0 0 28px rgba(253, 203, 110, 0.55);
+    }
+
+    .combo-badge.level-high {
+      font-size: clamp(2.35rem, 10.5vw, 3.1rem);
+      background: linear-gradient(180deg, #ffeaa7 0%, #fdcb6e 50%, #e17055 100%);
+      color: #2d1810;
+      text-shadow: 2px 2px 0 #fff;
+      animation: combo-high-glow 0.35s ease infinite alternate;
+    }
+
+    .combo-badge.level-mega {
+      font-size: clamp(2.6rem, 12vw, 3.5rem);
+      background: linear-gradient(180deg, #fff 0%, #fdcb6e 35%, #e17055 70%, #d63031 100%);
+      color: #2d1810;
+      text-shadow:
+        2px 2px 0 #fff,
+        0 0 18px rgba(255, 220, 80, 0.9);
+      box-shadow:
+        0 6px 0 #c0392b,
+        0 0 40px rgba(255, 200, 50, 0.85),
+        0 0 80px rgba(238, 90, 36, 0.4);
+      animation: combo-mega-pulse 0.28s ease infinite alternate;
+    }
+
+    .combo-flash {
+      position: absolute;
+      inset: 0;
+      z-index: 11;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 35%, rgba(255, 220, 100, 0.45), transparent 55%);
+      opacity: 0;
+    }
+
+    .combo-flash.on {
+      animation: combo-flash 0.45s ease forwards;
+    }
+
+    @keyframes combo-burst {
+      0% { transform: translateX(-50%) scale(0.35); opacity: 0.5; }
+      45% { transform: translateX(-50%) scale(1.2); }
+      100% { transform: translateX(-50%) scale(1); opacity: 1; }
+    }
+
+    @keyframes combo-high-glow {
+      from { filter: brightness(1); }
+      to { filter: brightness(1.2); }
+    }
+
+    @keyframes combo-mega-pulse {
+      from { filter: brightness(1) saturate(1.05); }
+      to { filter: brightness(1.22) saturate(1.35); }
+    }
+
+    @keyframes combo-flash {
+      0% { opacity: 0; }
+      25% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    .float-liter {
+      position: absolute;
+      font-family: 'Bangers', cursive;
+      font-size: 1.35rem;
+      color: #0984e3;
+      text-shadow: 0 1px 0 #fff;
+      pointer-events: none;
+      z-index: 15;
+      animation: float-up 0.55s ease forwards;
+    }
+
+    .float-liter.overheat {
+      color: #e74c3c;
+      font-size: 1.15rem;
+    }
+
+    @keyframes float-up {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-36px) scale(1.15); }
+    }
+
+    /* Реплики: между комбо и выменем, чуть выше */
+    .punchline-layer {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(var(--safe-top) + 8.75rem);
+      bottom: 46%;
+      z-index: 18;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 1rem;
+      pointer-events: none;
+    }
+
+    .punchline {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.2rem, 12vw, 4.2rem);
+      line-height: 0.95;
+      text-align: center;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      text-shadow:
+        4px 4px 0 #ee5a24,
+        -2px -2px 0 #2d1810,
+        0 8px 24px rgba(0,0,0,0.55);
+      animation: punchline-show 1.1s ease forwards;
+      max-width: 92%;
+      transform: rotate(-2deg);
+    }
+
+    .punchline-angry {
+      color: #ffe8e8;
+      transform: rotate(2deg) scale(1.05);
+      text-shadow:
+        4px 4px 0 #c0392b,
+        0 0 20px rgba(255, 50, 50, 0.8),
+        0 8px 28px rgba(0,0,0,0.6);
+      animation: punchline-angry 1.15s ease forwards;
+    }
+
+    @keyframes punchline-show {
+      0% { opacity: 0; transform: scale(0.3) rotate(-8deg); }
+      18% { opacity: 1; transform: scale(1.15) rotate(-2deg); }
+      75% { opacity: 1; transform: scale(1) rotate(-2deg); }
+      100% { opacity: 0; transform: scale(0.85) rotate(0deg); }
+    }
+
+    @keyframes punchline-angry {
+      0% { opacity: 0; transform: scale(0.4) rotate(6deg); }
+      12% { opacity: 1; transform: scale(1.2) rotate(-3deg); }
+      20% { transform: scale(1.15) rotate(3deg); }
+      28% { transform: scale(1.18) rotate(-2deg); }
+      36% { transform: scale(1.12) rotate(2deg); }
+      80% { opacity: 1; transform: scale(1.05) rotate(0deg); }
+      100% { opacity: 0; transform: scale(0.9); }
+    }
+
+    /* Отсчёт 3-2-1-Поехали */
+    .countdown-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.35);
+      pointer-events: all;
+    }
+
+    .countdown-overlay.hidden {
+      display: none;
+    }
+
+    .countdown-text {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(4rem, 22vw, 7rem);
+      color: #fff;
+      text-shadow: 0 4px 0 #ee5a24, 0 8px 24px rgba(0,0,0,0.4);
+      animation: countdown-pop 0.35s ease;
+    }
+
+    @keyframes countdown-pop {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Ведро — поверх картинки снизу */
+    .bucket-zone {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: calc(var(--safe-bottom) + 0.75rem);
+      z-index: 9;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .bucket-zone .bucket {
+      pointer-events: auto;
+    }
+
+    .bucket-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bucket-scaler {
+      transform: scale(var(--bucket-scale, 1));
+      transform-origin: center bottom;
+      transition: transform 0.55s cubic-bezier(0.34, 1.35, 0.64, 1);
+      filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.4));
+    }
+
+    .bucket-wrap.bucket-growing .bucket-scaler {
+      animation: bucket-grow-pop 0.75s cubic-bezier(0.34, 1.5, 0.64, 1);
+    }
+
+    @keyframes bucket-grow-pop {
+      0% { transform: scale(var(--bucket-scale-from, 1)); }
+      45% { transform: scale(calc(var(--bucket-scale-to, 1) * 1.14)); }
+      70% { transform: scale(calc(var(--bucket-scale-to, 1) * 0.96)); }
+      100% { transform: scale(var(--bucket-scale-to, 1)); }
+    }
+
+    .bucket-scaler.wobble {
+      animation: bucket-wobble 0.32s ease;
+    }
+
+    .bucket {
+      position: relative;
+      width: 132px;
+      height: 118px;
+    }
+
+    .bucket-handle {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 36px;
+      border: 6px solid #6b5340;
+      border-bottom: none;
+      border-radius: 58px 58px 0 0;
+      z-index: 4;
+      box-sizing: border-box;
+    }
+
+    .bucket-rim {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 132px;
+      height: 22px;
+      background: linear-gradient(180deg, #d4c4a8 0%, #9a8268 100%);
+      border: 2px solid #5c4835;
+      border-radius: 50%;
+      z-index: 3;
+    }
+
+    .bucket-body {
+      position: absolute;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 118px;
+      height: 84px;
+      background: linear-gradient(90deg, #8b7355 0%, #b89a78 35%, #a08868 65%, #7a6348 100%);
+      clip-path: polygon(6% 0%, 94% 0%, 78% 100%, 22% 100%);
+      overflow: hidden;
+      z-index: 2;
+      box-shadow: inset 0 -10px 18px rgba(0,0,0,0.2);
+    }
+
+    .bucket-body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 3px solid #5c4835;
+      clip-path: polygon(6% 0%, 94% 0%, 78% 100%, 22% 100%);
+      pointer-events: none;
+    }
+
+    .bucket-milk {
+      position: absolute;
+      bottom: 0;
+      left: 8%;
+      right: 8%;
+      height: 0%;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.98) 0%,
+        #fffef6 35%,
+        #f5ecd8 75%,
+        #e8dcc4 100%
+      );
+      transition: height 0.38s cubic-bezier(0.34, 1.25, 0.64, 1);
+      clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%);
+      transform-origin: center bottom;
+      overflow: hidden;
+    }
+
+    .bucket-milk::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -15%;
+      width: 130%;
+      height: 14px;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 45%;
+      animation: milk-surface-wave 1.4s ease-in-out infinite;
+    }
+
+    .bucket-milk::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.45) 48%,
+        transparent 62%
+      );
+      animation: milk-shine 2.2s ease-in-out infinite;
+    }
+
+    @keyframes milk-surface-wave {
+      0%, 100% { transform: translateY(0) scaleX(1); }
+      50% { transform: translateY(-3px) scaleX(1.04); }
+    }
+
+    @keyframes milk-shine {
+      0%, 100% { opacity: 0; transform: translateX(-30%); }
+      40% { opacity: 1; }
+      60% { opacity: 0.6; transform: translateX(30%); }
+    }
+
+    .bucket.full .bucket-rim {
+      box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.65),
+        0 0 16px rgba(255, 255, 255, 0.35);
+    }
+
+    .bucket.full .bucket-milk {
+      box-shadow: inset 0 8px 20px rgba(255, 255, 255, 0.35);
+    }
+
+    .bucket-wrap.overflowing .bucket-milk {
+      animation: bucket-milk-spill 0.55s ease forwards;
+    }
+
+    @keyframes bucket-milk-spill {
+      0% { height: 100%; opacity: 1; transform: scaleY(1); }
+      35% { height: 108%; opacity: 1; transform: scaleY(1.08); }
+      70% { height: 115%; opacity: 0.85; transform: scaleY(1.12) translateY(-4px); }
+      100% { height: 0%; opacity: 0; transform: scaleY(0.6); }
+    }
+
+    .bucket-wrap.overflowing .bucket-scaler {
+      animation: bucket-wobble 0.45s ease;
+    }
+
+    .bucket-meter {
+      margin-top: 0.55rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      pointer-events: none;
+      min-width: 7.5rem;
+    }
+
+    .bucket-meter-track {
+      width: 100%;
+      max-width: 110px;
+      height: 10px;
+      padding: 2px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      border-radius: 99px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .bucket-meter-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #dfe6f0 0%, #ffffff 45%, #f5ecd8 100%);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.55);
+      transition: width 0.38s cubic-bezier(0.34, 1.25, 0.64, 1);
+    }
+
+    .bucket-meter-fill.near-full {
+      background: linear-gradient(90deg, #ffeaa7, #fff, #fdcb6e);
+      box-shadow: 0 0 10px rgba(253, 203, 110, 0.8);
+    }
+
+    .bucket-meter-label {
+      font-family: 'Bangers', cursive;
+      font-size: 1.45rem;
+      letter-spacing: 0.06em;
+      color: #fff;
+      text-shadow:
+        2px 2px 0 #2d1810,
+        0 2px 8px rgba(0, 0, 0, 0.45);
+      line-height: 1;
+    }
+
+    .bucket-meter-label .fill-num {
+      color: #74b9ff;
+      font-size: 1.55em;
+    }
+
+    .bucket-meter-label .cap-num {
+      color: #fdcb6e;
+    }
+
+    .bucket-meter-label .unit {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.85em;
+    }
+
+    .bucket-tier-tag {
+      font-family: 'Bangers', cursive;
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      color: #ffeaa7;
+      text-shadow: 1px 1px 0 #2d1810;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .bucket-tier-tag.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Canvas — капли молока (между коровой и ведром) */
+    #particles-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 7;
+    }
+
+    @keyframes bucket-wobble {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      20% { transform: rotate(-5deg) translateY(2px); }
+      50% { transform: rotate(4deg) translateY(0); }
+      80% { transform: rotate(-2deg) translateY(1px); }
+    }
+
+    /* ====== ФИНАЛЬНЫЙ ЭКРАН (стиль реплик) ====== */
+    #screen-end {
+      background: linear-gradient(165deg, #fff8ef 0%, #f0e4d0 45%, #e8d4bc 100%);
+      gap: 0.75rem;
+      padding: 1.25rem 1rem;
+      justify-content: center;
+    }
+
+    .end-card {
+      flex: 0 1 auto;
+      width: min(100%, 22rem);
+      padding: 1.25rem 1.1rem 1rem;
+      border-radius: 1.25rem;
+      background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,248,238,0.88) 100%);
+      border: 3px solid #2d1810;
+      box-shadow:
+        0 8px 0 #c9b89a,
+        0 16px 40px rgba(45, 24, 16, 0.22);
+      text-align: center;
+      animation: end-card-in 0.45s cubic-bezier(0.34, 1.4, 0.64, 1);
+    }
+
+    #screen-end.end-new-record .end-card {
+      border-color: #ee5a24;
+      box-shadow:
+        0 8px 0 #ee5a24,
+        0 0 28px rgba(255, 159, 67, 0.45),
+        0 16px 40px rgba(45, 24, 16, 0.22);
+    }
+
+    @keyframes end-card-in {
+      from { opacity: 0; transform: scale(0.82) translateY(24px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .end-emoji {
+      font-size: clamp(2.5rem, 12vw, 3.5rem);
+      line-height: 1;
+      margin-bottom: 0.15rem;
+    }
+
+    .end-title {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.4rem, 13vw, 3.6rem);
+      line-height: 0.92;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      transform: rotate(-2deg);
+      text-shadow:
+        4px 4px 0 #ee5a24,
+        -2px -2px 0 #2d1810,
+        0 6px 20px rgba(0,0,0,0.25);
+      margin-bottom: 0.35rem;
+    }
+
+    .end-subtitle {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(1.35rem, 6vw, 1.75rem);
+      color: #5a4a3a;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.15rem;
+    }
+
+    .end-score-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0.15rem 0 0.65rem;
+    }
+
+    .end-score-num {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(4rem, 22vw, 5.5rem);
+      line-height: 0.9;
+      color: #fff;
+      text-shadow:
+        5px 5px 0 #0984e3,
+        -2px -2px 0 #2d1810,
+        0 8px 24px rgba(9, 132, 227, 0.35);
+      letter-spacing: 0.02em;
+    }
+
+    .end-score-unit {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(1.5rem, 7vw, 2rem);
+      color: #2d1810;
+      letter-spacing: 0.15em;
+      margin-top: -0.15rem;
+      text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
+    }
+
+    .end-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      width: 100%;
+      margin-bottom: 0.65rem;
+    }
+
+    .end-compare,
+    .end-message {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(1.15rem, 5vw, 1.4rem);
+      line-height: 1.2;
+      margin: 0;
+      padding: 0.5rem 0.7rem;
+      border-radius: 0.65rem;
+      border: 2px solid #2d1810;
+      text-shadow: none;
+      text-transform: none;
+      letter-spacing: 0.02em;
+    }
+
+    .end-compare {
+      background: #dff5e6;
+      color: #1a5c32;
+    }
+
+    .end-compare.behind {
+      background: #ffe8d9;
+      color: #9a3d10;
+    }
+
+    #screen-end.end-new-record .end-compare {
+      background: #fff3c4;
+      color: #b35f00;
+    }
+
+    .end-message {
+      background: linear-gradient(180deg, #ff9f43 0%, #ee5a24 100%);
+      color: #fff;
+      font-size: clamp(1.25rem, 5.5vw, 1.55rem);
+      line-height: 1.15;
+      text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .end-compare:empty,
+    .end-message:empty {
+      display: none;
+    }
+
+    .end-record {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(1.1rem, 5vw, 1.35rem);
+      color: #5a4a3a;
+      letter-spacing: 0.06em;
+    }
+
+    .end-record span {
+      color: #c45c26;
+      font-size: 1.15em;
+    }
+
+    .end-brand {
+      font-family: 'Bangers', cursive;
+      font-size: 0.95rem;
+      color: #8a7a6a;
+      letter-spacing: 0.2em;
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .end-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      width: min(100%, 22rem);
+      flex-shrink: 0;
+    }
+
+    .end-buttons .btn {
+      width: 100%;
+      font-size: 1.65rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="landscape-block">
+    <span style="font-size:3rem">📱↻</span>
+    <p>Поверни телефон<br>вертикально!</p>
+  </div>
+
+  <div id="app">
+    <!-- ====== МЕНЮ ====== -->
+    <section id="screen-menu" class="screen active" aria-hidden="false">
+      <span class="logo-emoji">🐄</span>
+      <h1 class="logo">УВЕЛИЧЬ<br>НАДОЙ</h1>
+      <p class="menu-record">🏆 Рекорд: <span id="menu-record">0.0</span> л</p>
+      <p class="menu-hint" id="menu-hint">🔊 Тапни экран — включится музыка</p>
+      <button type="button" class="btn btn-primary" id="btn-start">СТАРТ</button>
+    </section>
+
+    <!-- ====== ИГРА ====== -->
+    <section id="screen-game" class="screen" aria-hidden="true">
+      <header class="top-bar">
+        <div class="record-badge">
+          <span>🏆</span>
+          <span class="value" id="game-record">0.0</span>
+          <span>л</span>
+        </div>
+        <div class="timer-wrap" id="timer-wrap">
+          <div class="timer" id="timer" aria-live="polite">60</div>
+        </div>
+        <div class="liters-display" id="liters-wrap">
+          <span class="value" id="liters">0.0</span> л
+        </div>
+      </header>
+      <div class="combo-flash" id="combo-flash" aria-hidden="true"></div>
+      <div class="combo-badge" id="combo-badge" aria-hidden="true">КОМБО</div>
+      <div class="punchline-layer" id="punchline-layer" aria-live="polite"></div>
+
+      <div class="cow-scene" id="cow-scene">
+        <div class="cow-frame" id="cow-frame">
+          <img class="cow-img" id="cow-img" src="./assets/cow.jpg" alt="Корова" draggable="false">
+          <div class="udder" id="udder" role="button" aria-label="Дой корову">
+            <div class="udder-bag"></div>
+            <div class="teats-row">
+              <div class="teat t1" data-teat="0"><span class="teat-heat-bar" aria-hidden="true"></span></div>
+              <div class="teat t2" data-teat="1"><span class="teat-heat-bar" aria-hidden="true"></span></div>
+              <div class="teat t3" data-teat="2"><span class="teat-heat-bar" aria-hidden="true"></span></div>
+              <div class="teat t4" data-teat="3"><span class="teat-heat-bar" aria-hidden="true"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+      <div class="countdown-overlay hidden" id="countdown-overlay" aria-live="polite">
+        <span class="countdown-text" id="countdown-text">3</span>
+      </div>
+
+      <div class="bucket-zone">
+        <div class="bucket-wrap" id="bucket-wrap">
+          <div class="bucket-scaler" id="bucket-scaler">
+            <div class="bucket" id="bucket">
+              <div class="bucket-handle"></div>
+              <div class="bucket-rim"></div>
+              <div class="bucket-body">
+                <div class="bucket-milk" id="bucket-milk"></div>
+              </div>
+            </div>
+          </div>
+          <div class="bucket-meter">
+            <div class="bucket-meter-track" aria-hidden="true">
+              <div class="bucket-meter-fill" id="bucket-meter-fill"></div>
+            </div>
+            <div class="bucket-meter-label" id="bucket-meter-label">
+              <span class="fill-num" id="bucket-fill-num">0.0</span><span class="sep"> / </span><span class="cap-num" id="bucket-cap-num">1</span><span class="unit"> л</span>
+            </div>
+            <span class="bucket-tier-tag" id="bucket-tier-tag" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== КОНЕЦ ====== -->
+    <section id="screen-end" class="screen" aria-hidden="true">
+      <div class="end-card" id="end-card">
+        <div class="end-emoji">🐄</div>
+        <h2 class="end-title">Время<br>вышло!</h2>
+        <p class="end-subtitle">Ты надоил</p>
+        <div class="end-score-block">
+          <span class="end-score-num" id="end-liters">0.0</span>
+          <span class="end-score-unit">литров</span>
+        </div>
+        <div class="end-details">
+          <p class="end-compare" id="end-compare"></p>
+          <p class="end-message" id="end-message">—</p>
+        </div>
+        <p class="end-record">🏆 рекорд: <span id="end-record">0.0</span> л</p>
+        <p class="end-brand">Увеличь надой</p>
+      </div>
+      <div class="end-buttons">
+        <button type="button" class="btn btn-primary" id="btn-retry">ЕЩЁ РАЗ</button>
+        <button type="button" class="btn btn-secondary" id="btn-share">Поделиться</button>
+      </div>
+    </section>
+  </div>
+
+  <audio id="audio-menu" src="assets/menu.ogg" preload="auto" loop playsinline></audio>
+  <audio id="audio-game" src="assets/game.ogg" preload="auto" loop playsinline></audio>
+  <!-- Мычание: положи в assets/ файлы moo-soft, moo-angry, moo-hot (.ogg или .mp3) -->
+  <audio id="audio-moo-soft" preload="auto" playsinline>
+    <source src="assets/moo-soft.ogg" type="audio/ogg">
+    <source src="assets/moo-soft.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="audio-moo-angry" preload="auto" playsinline>
+    <source src="assets/moo-angry.ogg" type="audio/ogg">
+    <source src="assets/moo-angry.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="audio-moo-hot" preload="auto" playsinline>
+    <source src="assets/moo-hot.ogg" type="audio/ogg">
+    <source src="assets/moo-hot.mp3" type="audio/mpeg">
+  </audio>
+  <!-- Тик таймера (опционально): assets/tick.ogg или tick.mp3 -->
+  <audio id="audio-tick" preload="auto" playsinline>
+    <source src="assets/tick.ogg" type="audio/ogg">
+    <source src="assets/tick.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // ====== КОНФИГ ======
+    const CONFIG = {
+      ROUND_SECONDS: 60,
+      LITERS_PER_TAP: 0.1,
+      COMBO_THRESHOLD_TPS: 5,
+      COMBO_MULTIPLIER_MAX: 10,
+      COMBO_STICKY_MS: 1600,
+      /* Ведро: старт 1 л, растёт при каждом переполнении */
+      BUCKET_TIERS: [
+        { cap: 1, scale: 1, bonus: 0.3 },
+        { cap: 2, scale: 1.12, bonus: 0.4 },
+        { cap: 3.5, scale: 1.24, bonus: 0.5 },
+        { cap: 5, scale: 1.36, bonus: 0.65 },
+        { cap: 7, scale: 1.48, bonus: 0.8 },
+        { cap: 10, scale: 1.6, bonus: 1 },
+        { cap: 14, scale: 1.72, bonus: 1.2 },
+        { cap: 20, scale: 1.85, bonus: 1.5 },
+      ],
+      STORAGE_KEY: 'korova_highscore',
+      GAME_SHARE_URL: 'https://powerviking145-lgtm.github.io/Korovka/',
+      TIMER_CRITICAL_SEC: 5,
+      GAME_MUSIC_DELAY_MS: 500,
+      COUNTDOWN_MS: 850,
+      TEAT_HEAT_PER_TAP: 26,
+      TEAT_HEAT_DECAY_PER_SEC: 32,
+      TEAT_HEAT_WARN: 65,
+      TEAT_HEAT_MAX: 100,
+      TEAT_OVERHEAT_MULT: 0.35,
+      TEAT_HOT_MULT: 0.72,
+      COW_IMAGE: 'assets/cow.jpg',
+      AUDIO_MENU: 'assets/menu.ogg',
+      AUDIO_GAME: 'assets/game.ogg',
+      /* Позиция вымени — % от кадра cow.jpg (768×1376) */
+      UDDER: { left: 50, top: 45, width: 36, height: 20 },
+      COW_ASPECT_FALLBACK: 768 / 1376,
+      MILK_DROP_MS: 380,
+      MILK_DROP_ARC: 75,
+      SPLASH_COUNT: 8,
+      SPLASH_MS: 300,
+      DROP_POOL_SIZE: 50,
+      COW_CHEW_MIN_MS: 3000,
+      COW_CHEW_MAX_MS: 5500,
+      MOO_COOLDOWN_MS: 1100,
+      MOO_VOLUME: { soft: 0.78, angry: 0.92, hot: 0.88 },
+      TICK_VOLUME: 0.5,
+      PUNCHLINE_COOLDOWN_MS: 600,
+      PUNCHLINES_FUNNY: [
+        'А Я ТО ЧТО?!',
+        'ТЫ ДОЯР ИЛИ БЕЗУМЕЦ?!',
+        'Ё-МОЁ ВЫМЯ!!!',
+        'ЛИТР ЗА ЛИТРОМ?!',
+        'Я НЕ КОФЕМАШИНА!',
+        'ОЙ ВСЁЁЁ!!!',
+        'МОЛОКО — МОЁ СЛАБОЕ МЕСТО!',
+        'ДОИШЬ КАК БОГ!!!',
+        'СТОП, Я ЕЩЁ НЕ ГОТОВА!',
+        'ЭТО УЖЕ СПОРТ!!!',
+        'МУ-У-УДЕЦ!!!',
+        'КОРОВА В ШОКЕ, ДОЯР В ВОСТОРГЕ!',
+        'ВЫМЯ НЕ РЕЗИНОВОЕ!!!',
+        'Я ЕЩЁ НЕ ЛАТТЕ!!!',
+        'МУ-МУ-МУЛЬТИК!!!',
+        'ТЫ ЧЁ ТАМ ДЕЛАЕШЬ?!',
+        'МОЛОКОВОЗ ВОСТОРГ!!!',
+        'Я НЕ ФОНТАН!!!',
+        'ХВАТИТ, Я ПУХНУ!!!',
+        'КАПЕЦ ДОЯР!!!',
+        'МУ-МУ-МЕГА НАДОЙ!!!',
+        'ПРОСТО КОРОВА, ПРОСТО ДОЙ!!!',
+        'ТЫ МОЛОКО НАШЁЛ?!',
+        'ВЫМЯ — МОЯ СЛАБОСТЬ!!!',
+        'ДОЙ МЕНЯ НЕЖНЕЕ!!!',
+        'ЭТО УЖЕ МОЙ РЕКОРД!!!',
+        'КОРОВА БЛАГОДАРИТ!!!',
+        'МУ-МУ-МАШИНА!!!',
+        'СОСКИ В ДЕЛЕ!!!',
+        'НАДОЙ ПОШЁЛ В РОСТ!!!',
+        'Я ЖИВАЯ, НЕ ШЛАНГ!!!',
+        'ТЫ ЛУЧШИЙ ДОЯР!!!',
+        'ВЫМЯ СЧАСТЛИВО!!!',
+      ],
+      PUNCHLINES_ANGRY: [
+        'ХВАТИТ МУЧИТЬ!!!',
+        'Я В ЯРОСТИ!!!',
+        'ОСТАНОВИСЬ СЕЙЧАС ЖЕ!!!',
+        'НЕ ТРОГАЙ МЕНЯ!!!',
+        'МЕНЯ ДОЯТ!!!',
+        'АААА МУ-У-У!!!',
+        'ЭТО УЖЕ ТРАВМА!!!',
+        'Я ПОДАЮ В СУД!!!',
+        'ДОЯР, ТЫ ОХРЕНЕЛ?!',
+        'МУЧЕНИЦА КОРОВЬЯ!!!',
+        'ПОМОГИТЕ, Я КОРОВА!!!',
+        'ХВАТИТ, Я ВЗОРВУСЬ!!!',
+        'ПАЛЬЦЫ ГОРЯТ!!!',
+        'СОСКИ В АУ!!!',
+        'Я СЕЙЧАС ПНУ!!!',
+        'ДОЯР-ТИРАН!!!',
+        'МНЕ БОЛЬНО!!!',
+        'ВЫМЯ КРАСНОЕ УЖЕ!!!',
+        'СТОЙ, Я УСТАЛА!!!',
+        'ЭТО УЖЕ НАСИЛИЕ!!!',
+        'КОРОВА НЕ ИГРУШКА!!!',
+        'ОТСТАНЬ ОТ ВЫМЕНИ!!!',
+        'Я ЗВОНЮ В МИЛИЦИЮ!!!',
+        'ХВАТИТ ДОИТЬ!!!',
+        'ГОРЯЧИЙ СОСОК!!!',
+        'ВЫМЯ В ОГНЕ!!!',
+        'Я НЕ БЕСКОНЕЧНАЯ!!!',
+        'ДОЯР, ТЫ ПЕРЕГНУЛ!!!',
+        'МУ-У-У-УЧЕНИЕ!!!',
+        'СТОП, Я ЛОПНУ!!!',
+        'ЭТО УЖЕ ДИКОСТЬ!!!',
+        'НЕ ТРОГАЙ СОСКИ!!!',
+        'Я В ШОКЕ ОТ ТЕБЯ!!!',
+        'ВЫМЯ НЕ ВЫДЕРЖИТ!!!',
+      ],
+    };
+
+    // ====== СОСТОЯНИЕ ======
+    const game = {
+      state: 'menu',
+      liters: 0,
+      bucketFill: 0,
+      timer: CONFIG.ROUND_SECONDS,
+      highScore: 0,
+      comboMultiplier: 1,
+      tapTimes: [],
+      bucketOverflowing: false,
+      bucketTier: 0,
+      teatHeat: [0, 0, 0, 0],
+      lastTimerSec: -1,
+      lastComboMult: 1,
+      comboStickyMult: 1,
+      comboStickyUntil: 0,
+    };
+
+    // ====== DOM ======
+    const screens = {
+      menu: document.getElementById('screen-menu'),
+      game: document.getElementById('screen-game'),
+      end: document.getElementById('screen-end'),
+    };
+
+    const els = {
+      menuRecord: document.getElementById('menu-record'),
+      gameRecord: document.getElementById('game-record'),
+      gameRecordBadge: document.querySelector('#screen-game .record-badge'),
+      timer: document.getElementById('timer'),
+      timerWrap: document.getElementById('timer-wrap'),
+      teats: [...document.querySelectorAll('.teat')],
+      liters: document.getElementById('liters'),
+      bucketMilk: document.getElementById('bucket-milk'),
+      endLiters: document.getElementById('end-liters'),
+      endMessage: document.getElementById('end-message'),
+      endRecord: document.getElementById('end-record'),
+      endCompare: document.getElementById('end-compare'),
+      cowScene: document.getElementById('cow-scene'),
+      cowFrame: document.getElementById('cow-frame'),
+      cowImg: document.getElementById('cow-img'),
+      udder: document.getElementById('udder'),
+      countdownOverlay: document.getElementById('countdown-overlay'),
+      countdownText: document.getElementById('countdown-text'),
+      audioMenu: document.getElementById('audio-menu'),
+      audioGame: document.getElementById('audio-game'),
+      audioMooSoft: document.getElementById('audio-moo-soft'),
+      audioMooAngry: document.getElementById('audio-moo-angry'),
+      audioMooHot: document.getElementById('audio-moo-hot'),
+      audioTick: document.getElementById('audio-tick'),
+      menuHint: document.getElementById('menu-hint'),
+      litersWrap: document.getElementById('liters-wrap'),
+      comboBadge: document.getElementById('combo-badge'),
+      comboFlash: document.getElementById('combo-flash'),
+      canvas: document.getElementById('particles-canvas'),
+      bucketWrap: document.getElementById('bucket-wrap'),
+      bucket: document.getElementById('bucket'),
+      bucketScaler: document.getElementById('bucket-scaler'),
+      bucketMeterFill: document.getElementById('bucket-meter-fill'),
+      bucketFillNum: document.getElementById('bucket-fill-num'),
+      bucketCapNum: document.getElementById('bucket-cap-num'),
+      bucketTierTag: document.getElementById('bucket-tier-tag'),
+      punchlineLayer: document.getElementById('punchline-layer'),
+      endCard: document.getElementById('end-card'),
+    };
+
+    const cowVoice = {
+      playing: false,
+      nodes: [],
+      lastMooAt: 0,
+      lastPunchlineAt: 0,
+      mooBroken: { soft: false, angry: false, hot: false },
+      tickBroken: false,
+    };
+
+    const mooTracks = () => ({
+      soft: els.audioMooSoft,
+      angry: els.audioMooAngry,
+      hot: els.audioMooHot,
+    });
+
+    const milkParticles = {
+      drops: [],
+      splashes: [],
+      ctx: null,
+    };
+
+    let cowAspect = CONFIG.COW_ASPECT_FALLBACK;
+    let audioUnlocked = false;
+    let menuMusicOn = false;
+    let countdownRunning = false;
+    let milkAudioCtx = null;
+    let lastFrameTime = 0;
+    let cowChewTimer = null;
+    let gameMusicTimer = null;
+
+    // ====== СТЕЙТ-МАШИНА ======
+    function setState(next) {
+      game.state = next;
+
+      Object.values(screens).forEach((el) => {
+        el.classList.remove('active');
+        el.setAttribute('aria-hidden', 'true');
+      });
+
+      const screenKey = next === 'gameover' ? 'end' : (next === 'playing' || next === 'countdown') ? 'game' : 'menu';
+      const screen = screens[screenKey];
+      if (screen) {
+        screen.classList.add('active');
+        screen.setAttribute('aria-hidden', 'false');
+      }
+
+      if (next === 'menu') {
+        stopGameMusic();
+        if (audioUnlocked) startMenuMusic();
+        els.countdownOverlay.classList.add('hidden');
+      } else if (next === 'gameover') {
+        stopGameMusic();
+        els.countdownOverlay.classList.add('hidden');
+      }
+    }
+
+    function applyUdderHotspot() {
+      const u = CONFIG.UDDER;
+      els.udder.style.setProperty('--udder-left', u.left + '%');
+      els.udder.style.setProperty('--udder-top', u.top + '%');
+      els.udder.style.setProperty('--udder-width', u.width + '%');
+      els.udder.style.setProperty('--udder-height', u.height + '%');
+    }
+
+    function fitCowFrame() { /* кадр на 100% через CSS */ }
+
+    async function unlockAudio() {
+      if (audioUnlocked) return;
+      const tracks = [
+        els.audioMenu,
+        els.audioGame,
+        els.audioMooSoft,
+        els.audioMooAngry,
+        els.audioMooHot,
+        els.audioTick,
+      ].filter(Boolean);
+      for (const a of tracks) {
+        try {
+          a.volume = 0.001;
+          await a.play();
+          a.pause();
+          a.currentTime = 0;
+        } catch (_) {}
+      }
+      els.audioMenu.volume = 0.65;
+      els.audioGame.volume = 0.75;
+      audioUnlocked = true;
+      if (!milkAudioCtx) {
+        try {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (Ctx) milkAudioCtx = new Ctx();
+        } catch (_) {}
+      }
+    }
+
+    async function startMenuMusic() {
+      if (game.state !== 'menu') return;
+      if (!audioUnlocked) await unlockAudio();
+      if (menuMusicOn && !els.audioMenu.paused) return;
+
+      stopGameMusic();
+      menuMusicOn = true;
+      els.audioMenu.currentTime = 0;
+      try {
+        await els.audioMenu.play();
+        els.menuHint?.classList.add('hidden');
+      } catch (_) {
+        menuMusicOn = false;
+      }
+    }
+
+    function stopMenuMusic() {
+      menuMusicOn = false;
+      els.audioMenu.pause();
+    }
+
+    async function startGameMusic() {
+      if (game.state !== 'playing') return;
+      if (!audioUnlocked) await unlockAudio();
+      els.audioGame.currentTime = 0;
+      try {
+        await els.audioGame.play();
+      } catch (_) {}
+    }
+
+    function stopGameMusic() {
+      clearGameMusicTimer();
+      els.audioGame.pause();
+      els.audioGame.currentTime = 0;
+    }
+
+    function clearGameMusicTimer() {
+      if (gameMusicTimer) {
+        clearTimeout(gameMusicTimer);
+        gameMusicTimer = null;
+      }
+    }
+
+    function scheduleGameMusic() {
+      clearGameMusicTimer();
+      gameMusicTimer = setTimeout(() => {
+        gameMusicTimer = null;
+        if (game.state === 'playing') startGameMusic();
+      }, CONFIG.GAME_MUSIC_DELAY_MS);
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async function runCountdown() {
+      if (countdownRunning) return;
+      countdownRunning = true;
+      game.state = 'countdown';
+
+      stopMenuMusic();
+
+      const steps = ['3', '2', '1', 'Поехали!'];
+      els.countdownOverlay.classList.remove('hidden');
+
+      for (let i = 0; i < steps.length; i++) {
+        els.countdownText.textContent = steps[i];
+        els.countdownText.style.animation = 'none';
+        void els.countdownText.offsetWidth;
+        els.countdownText.style.animation = '';
+        await sleep(CONFIG.COUNTDOWN_MS);
+      }
+
+      els.countdownOverlay.classList.add('hidden');
+      game.state = 'playing';
+      game.lastTimerSec = CONFIG.ROUND_SECONDS;
+      countdownRunning = false;
+      lastFrameTime = performance.now();
+      updateHUD();
+      scheduleGameMusic();
+      startCowLife();
+
+      setTimeout(() => {
+        if (game.state !== 'playing') return;
+        cowVoice.lastPunchlineAt = 0;
+        showPunchline('Подои меня!', false);
+        tryPlayMoo('soft');
+      }, 450);
+    }
+
+    function startCowLife() {
+      stopCowLife();
+      scheduleCowChew();
+    }
+
+    function stopCowLife() {
+      if (cowChewTimer) clearTimeout(cowChewTimer);
+      cowChewTimer = null;
+      els.cowImg?.classList.remove('chew');
+    }
+
+    function scheduleCowChew() {
+      if (game.state !== 'playing') return;
+      const delay = CONFIG.COW_CHEW_MIN_MS + Math.random() * (CONFIG.COW_CHEW_MAX_MS - CONFIG.COW_CHEW_MIN_MS);
+      cowChewTimer = setTimeout(() => {
+        if (game.state !== 'playing') return;
+        els.cowImg.classList.remove('chew');
+        void els.cowImg.offsetWidth;
+        els.cowImg.classList.add('chew');
+        if (Math.random() < 0.22) tryPlayMoo('soft');
+        scheduleCowChew();
+      }, delay);
+    }
+
+    function tickRoundTimer(dt) {
+      if (game.state !== 'playing') return;
+      game.timer -= dt;
+      if (game.timer <= 0) {
+        game.timer = 0;
+        updateHUD();
+        endGame();
+        return;
+      }
+      updateHUD();
+    }
+
+    function loadHighScore() {
+      const saved = parseFloat(localStorage.getItem(CONFIG.STORAGE_KEY));
+      game.highScore = Number.isFinite(saved) ? saved : 0;
+      updateRecordDisplays();
+    }
+
+    function saveHighScore() {
+      if (game.liters > game.highScore) {
+        game.highScore = game.liters;
+        localStorage.setItem(CONFIG.STORAGE_KEY, String(game.highScore.toFixed(1)));
+      }
+      updateRecordDisplays();
+    }
+
+    function updateRecordDisplays() {
+      const text = game.highScore.toFixed(1);
+      els.menuRecord.textContent = text;
+      els.gameRecord.textContent = text;
+      els.endRecord.textContent = text;
+    }
+
+    function playTimerTickSynth() {
+      const ctx = getSfxCtx();
+      if (!ctx) return;
+      const t = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, t);
+      osc.frequency.exponentialRampToValueAtTime(660, t + 0.025);
+      gain.gain.setValueAtTime(0.09, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.05);
+      playNoiseBurst(ctx, t, 0.035, 0.012);
+    }
+
+    function playTimerTick() {
+      const tick = els.audioTick;
+      if (!tick || cowVoice.tickBroken) {
+        playTimerTickSynth();
+        return;
+      }
+      tick.volume = CONFIG.TICK_VOLUME;
+      tick.currentTime = 0;
+      tick.play().catch(() => {
+        cowVoice.tickBroken = true;
+        playTimerTickSynth();
+      });
+    }
+
+    function bindSampleFallback(audioEl, brokenKey) {
+      if (!audioEl) return;
+      audioEl.addEventListener('error', () => {
+        if (brokenKey === 'tick') cowVoice.tickBroken = true;
+        else if (brokenKey) cowVoice.mooBroken[brokenKey] = true;
+      });
+    }
+
+    function updateTimerHUD() {
+      const sec = Math.max(0, Math.ceil(game.timer));
+      const critical = game.state === 'playing' && sec <= CONFIG.TIMER_CRITICAL_SEC && sec > 0;
+      els.timerWrap?.classList.toggle('critical', critical);
+      els.timer.textContent = String(sec);
+
+      if (game.state === 'playing' && sec !== game.lastTimerSec) {
+        if (critical && sec > 0) {
+          playTimerTick();
+          els.timer.classList.remove('tick-pop');
+          void els.timer.offsetWidth;
+          els.timer.classList.add('tick-pop');
+        }
+        game.lastTimerSec = sec;
+      }
+    }
+
+    function updateHUD() {
+      els.liters.textContent = game.liters.toFixed(1);
+      updateTimerHUD();
+
+      const cap = getBucketCap();
+      const pct = Math.min(100, (game.bucketFill / cap) * 100);
+      els.bucketMilk.style.height = pct + '%';
+      if (els.bucketMeterFill) {
+        els.bucketMeterFill.style.width = pct + '%';
+        els.bucketMeterFill.classList.toggle('near-full', pct >= 88 && !game.bucketOverflowing);
+      }
+      if (els.bucketFillNum) els.bucketFillNum.textContent = game.bucketFill.toFixed(1);
+      els.bucket.classList.toggle('full', game.bucketFill >= cap * 0.98 && !game.bucketOverflowing);
+
+    }
+
+    function getComboTierClass(mult) {
+      if (mult >= 10) return 'level-mega';
+      if (mult >= 7) return 'level-high';
+      if (mult >= 4) return 'level-mid';
+      if (mult > 1) return 'level-low';
+      return '';
+    }
+
+    const COMBO_TIER_CLASSES = ['level-low', 'level-mid', 'level-high', 'level-mega'];
+
+    function updateComboDisplay(burst) {
+      const badge = els.comboBadge;
+      if (!badge) return;
+      const mult = game.comboMultiplier;
+      const on = mult > 1;
+
+      badge.classList.toggle('active', on);
+      badge.setAttribute('aria-hidden', on ? 'false' : 'true');
+
+      const tier = getComboTierClass(mult);
+      const hadTier = COMBO_TIER_CLASSES.find((c) => badge.classList.contains(c)) || '';
+      if (tier !== hadTier) {
+        COMBO_TIER_CLASSES.forEach((c) => badge.classList.remove(c));
+        if (tier) badge.classList.add(tier);
+      }
+
+      const label = on ? 'КОМБО ×' + mult : 'КОМБО';
+      if (badge.textContent !== label) badge.textContent = label;
+
+      if (burst && on) {
+        badge.classList.remove('combo-burst');
+        void badge.offsetWidth;
+        badge.classList.add('combo-burst');
+      }
+    }
+
+    function flashCombo() {
+      const flash = els.comboFlash;
+      if (!flash) return;
+      flash.classList.remove('on');
+      void flash.offsetWidth;
+      flash.classList.add('on');
+    }
+
+    function playApplause(kind) {
+      const ctx = getSfxCtx();
+      if (!ctx) return;
+      const t = ctx.currentTime;
+      const clapCount = kind === 'mega' ? 10 : kind === 'start' ? 6 : 3;
+      const vol = kind === 'mega' ? 0.14 : kind === 'start' ? 0.11 : 0.08;
+
+      for (let i = 0; i < clapCount; i++) {
+        const ct = t + i * (kind === 'mega' ? 0.09 : 0.12) + Math.random() * 0.05;
+        const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.05), ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let j = 0; j < data.length; j++) {
+          data[j] = (Math.random() * 2 - 1) * (1 - j / data.length);
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buf;
+        const bp = ctx.createBiquadFilter();
+        bp.type = 'bandpass';
+        bp.frequency.value = 900 + Math.random() * 600;
+        bp.Q.value = 0.6;
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(vol + Math.random() * 0.04, ct);
+        g.gain.exponentialRampToValueAtTime(0.001, ct + 0.06);
+        noise.connect(bp);
+        bp.connect(g);
+        g.connect(ctx.destination);
+        noise.start(ct);
+      }
+
+      if (kind === 'tick') return;
+
+      const cheerDelay = kind === 'mega' ? 0.35 : 0.2;
+      setTimeout(() => {
+        if (kind === 'mega') {
+          playTone(392, 784, 0.2, 0.14, 'sine');
+          setTimeout(() => playTone(523, 1046, 0.18, 0.12, 'sine'), 90);
+          setTimeout(() => playTone(659, 1318, 0.22, 0.1, 'triangle'), 180);
+        } else {
+          playTone(440, 880, 0.14, 0.12, 'sine');
+          setTimeout(() => playTone(554, 1108, 0.12, 0.1, 'sine'), 70);
+        }
+      }, cheerDelay * 1000);
+    }
+
+    function handleComboLevelUp(mult, prevMult) {
+      updateComboDisplay(true);
+      flashCombo();
+
+      if (prevMult < 2 && mult >= 2) {
+        playApplause('start');
+        if (navigator.vibrate) navigator.vibrate([20, 30, 40]);
+      } else if (mult >= 10 && prevMult < 10) {
+        playApplause('mega');
+        if (navigator.vibrate) navigator.vibrate([25, 20, 25, 20, 50]);
+      } else if (mult >= 7 && prevMult < 7) {
+        playApplause('mega');
+        if (navigator.vibrate) navigator.vibrate([18, 18, 35]);
+      } else if (mult > prevMult) {
+        playApplause('tick');
+      }
+    }
+
+    function popLitersHUD() {
+      const el = els.litersWrap;
+      el.classList.remove('pop');
+      void el.offsetWidth;
+      el.classList.add('pop');
+    }
+
+    function popRecordBadge() {
+      const el = els.gameRecordBadge;
+      if (!el) return;
+      el.classList.remove('pop');
+      void el.offsetWidth;
+      el.classList.add('pop');
+    }
+
+    function getSfxCtx() {
+      if (!audioUnlocked) return null;
+      try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return null;
+        if (!milkAudioCtx) milkAudioCtx = new Ctx();
+        if (milkAudioCtx.state === 'suspended') milkAudioCtx.resume();
+        return milkAudioCtx;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function playNoiseBurst(ctx, t, volume, duration) {
+      const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * duration), ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) {
+        data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(volume, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + duration);
+      noise.connect(g);
+      g.connect(ctx.destination);
+      noise.start(t);
+    }
+
+    function playTone(freqStart, freqEnd, duration, volume, type) {
+      const ctx = getSfxCtx();
+      if (!ctx) return;
+      const t = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type || 'triangle';
+      osc.frequency.setValueAtTime(freqStart, t);
+      osc.frequency.exponentialRampToValueAtTime(Math.max(40, freqEnd), t + duration);
+      gain.gain.setValueAtTime(volume, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + duration + 0.02);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + duration + 0.05);
+    }
+
+    function playMilkSquirt(comboMult) {
+      const ctx = getSfxCtx();
+      if (!ctx) return;
+      const t = ctx.currentTime;
+      const mult = comboMult || 1;
+      const boost = mult > 1 ? Math.min(1, (mult - 1) / 9) : 0;
+      const freq = 500 + boost * 200;
+      const endFreq = 130 + boost * 40;
+      const vol = 0.16 + boost * 0.12;
+      playTone(freq, endFreq, 0.07, vol, 'triangle');
+      playNoiseBurst(ctx, t, 0.07 + boost * 0.08, 0.035);
+      if (mult >= 7) {
+        playTone(880, 440, 0.05, 0.08, 'sine');
+      }
+    }
+
+    function playSplashSound() {
+      const ctx = getSfxCtx();
+      if (!ctx) return;
+      const t = ctx.currentTime;
+      playTone(280, 90, 0.05, 0.1, 'sine');
+      playNoiseBurst(ctx, t + 0.01, 0.06, 0.03);
+    }
+
+    function playBonusSound() {
+      playTone(440, 880, 0.12, 0.18, 'sine');
+      setTimeout(() => playTone(660, 1200, 0.1, 0.14, 'triangle'), 80);
+    }
+
+    function playNewRecordSound() {
+      playTone(523, 784, 0.1, 0.15, 'sine');
+      setTimeout(() => playTone(784, 1046, 0.12, 0.12, 'sine'), 100);
+    }
+
+    // ====== МЫЧАНИЕ (без наслоения) ======
+    function stopMoo() {
+      Object.values(mooTracks()).forEach((a) => {
+        if (!a) return;
+        a.pause();
+        a.currentTime = 0;
+      });
+      cowVoice.nodes.forEach((n) => {
+        try {
+          n.stop?.();
+          n.disconnect?.();
+        } catch (_) {}
+      });
+      cowVoice.nodes = [];
+      cowVoice.playing = false;
+    }
+
+    function resolveMooKey(variant) {
+      if (variant === 'angry') return 'angry';
+      if (variant === 'hot') return 'hot';
+      return 'soft';
+    }
+
+    function playMooSample(key) {
+      const tracks = mooTracks();
+      const audio = tracks[key];
+      if (!audio || cowVoice.mooBroken[key]) return false;
+
+      stopMoo();
+      cowVoice.playing = true;
+      cowVoice.lastMooAt = performance.now();
+      audio.volume = CONFIG.MOO_VOLUME[key] ?? 0.8;
+      audio.currentTime = 0;
+
+      const onDone = () => {
+        audio.removeEventListener('ended', onDone);
+        cowVoice.playing = false;
+      };
+      audio.addEventListener('ended', onDone);
+
+      return audio.play().then(() => true).catch(() => {
+        cowVoice.mooBroken[key] = true;
+        cowVoice.playing = false;
+        return false;
+      });
+    }
+
+    function playMooSynth(variant) {
+      if (cowVoice.playing) return;
+      const now = performance.now();
+      if (now - cowVoice.lastMooAt < CONFIG.MOO_COOLDOWN_MS) return;
+
+      const ctx = getSfxCtx();
+      if (!ctx) return;
+
+      const angry = variant === 'angry' || variant === 'hot';
+      const dur = angry ? 0.95 : 0.78;
+      const t = ctx.currentTime;
+
+      cowVoice.playing = true;
+      cowVoice.lastMooAt = now;
+
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(0.001, t);
+      master.gain.exponentialRampToValueAtTime(angry ? 0.42 : 0.34, t + 0.06);
+      master.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      master.connect(ctx.destination);
+      cowVoice.nodes.push(master);
+
+      const bodyFilter = ctx.createBiquadFilter();
+      bodyFilter.type = 'lowpass';
+      bodyFilter.frequency.setValueAtTime(angry ? 900 : 1100, t);
+      bodyFilter.frequency.exponentialRampToValueAtTime(280, t + dur);
+      bodyFilter.Q.value = 0.9;
+      bodyFilter.connect(master);
+      cowVoice.nodes.push(bodyFilter);
+
+      const voice = ctx.createOscillator();
+      voice.type = 'sawtooth';
+      const fStart = angry ? 340 : 300;
+      const fMid = angry ? 130 : 145;
+      const fEnd = angry ? 88 : 98;
+      voice.frequency.setValueAtTime(fStart, t);
+      voice.frequency.exponentialRampToValueAtTime(fMid, t + dur * 0.38);
+      voice.frequency.exponentialRampToValueAtTime(fEnd, t + dur);
+
+      const voiceGain = ctx.createGain();
+      voiceGain.gain.setValueAtTime(0.001, t);
+      voiceGain.gain.linearRampToValueAtTime(angry ? 0.32 : 0.26, t + 0.05);
+      voiceGain.gain.setValueAtTime(angry ? 0.28 : 0.22, t + dur * 0.35);
+      voiceGain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      voice.connect(voiceGain);
+      voiceGain.connect(bodyFilter);
+      voice.start(t);
+      voice.stop(t + dur + 0.05);
+      cowVoice.nodes.push(voice, voiceGain);
+
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.frequency.value = angry ? 6.5 : 5;
+      lfoGain.gain.value = angry ? 14 : 10;
+      lfo.connect(lfoGain);
+      lfoGain.connect(voice.frequency);
+      lfo.start(t);
+      lfo.stop(t + dur);
+      cowVoice.nodes.push(lfo, lfoGain);
+
+      const nasal = ctx.createBiquadFilter();
+      nasal.type = 'bandpass';
+      nasal.frequency.value = angry ? 520 : 480;
+      nasal.Q.value = 2.2;
+      const nasalOsc = ctx.createOscillator();
+      nasalOsc.type = 'triangle';
+      nasalOsc.frequency.setValueAtTime(angry ? 220 : 195, t);
+      nasalOsc.frequency.exponentialRampToValueAtTime(95, t + dur);
+      const nasalGain = ctx.createGain();
+      nasalGain.gain.setValueAtTime(angry ? 0.14 : 0.11, t);
+      nasalGain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      nasalOsc.connect(nasal);
+      nasal.connect(nasalGain);
+      nasalGain.connect(master);
+      nasalOsc.start(t);
+      nasalOsc.stop(t + dur + 0.05);
+      cowVoice.nodes.push(nasalOsc, nasal, nasalGain);
+
+      const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * dur), ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) {
+        const env = 1 - i / data.length;
+        data[i] = (Math.random() * 2 - 1) * env * env;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+      const noiseFilter = ctx.createBiquadFilter();
+      noiseFilter.type = 'bandpass';
+      noiseFilter.frequency.setValueAtTime(400, t);
+      noiseFilter.frequency.exponentialRampToValueAtTime(180, t + dur);
+      noiseFilter.Q.value = 0.8;
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(angry ? 0.1 : 0.07, t);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.7);
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(master);
+      noise.start(t);
+      cowVoice.nodes.push(noise, noiseFilter, noiseGain);
+
+      const endMoo = () => {
+        cowVoice.playing = false;
+        cowVoice.nodes = [];
+      };
+      voice.onended = endMoo;
+      setTimeout(endMoo, (dur + 0.12) * 1000);
+    }
+
+    async function playMoo(variant) {
+      if (cowVoice.playing) return;
+      const now = performance.now();
+      if (now - cowVoice.lastMooAt < CONFIG.MOO_COOLDOWN_MS) return;
+
+      const key = resolveMooKey(variant);
+      if (audioUnlocked) {
+        const ok = await playMooSample(key);
+        if (ok) return;
+      }
+      playMooSynth(variant);
+    }
+
+    function tryPlayMoo(variant) {
+      playMoo(variant);
+    }
+
+    // ====== ШУТКИ ПО ЦЕНТРУ ======
+    function showPunchline(text, angry) {
+      const now = performance.now();
+      if (now - cowVoice.lastPunchlineAt < CONFIG.PUNCHLINE_COOLDOWN_MS) return;
+      cowVoice.lastPunchlineAt = now;
+
+      const layer = els.punchlineLayer;
+      if (!layer) return;
+      layer.innerHTML = '';
+
+      const el = document.createElement('div');
+      el.className = angry ? 'punchline punchline-angry' : 'punchline';
+      el.textContent = text;
+      layer.appendChild(el);
+      setTimeout(() => {
+        if (el.parentNode === layer) el.remove();
+      }, angry ? 1150 : 1100);
+    }
+
+    function pickRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function reactCow(isCombo) {
+      const now = performance.now();
+      const recentTaps = game.tapTimes.filter((t) => now - t < 450).length;
+      const furious = isCombo || recentTaps >= 6;
+
+      if (furious) {
+        showPunchline(pickRandom(CONFIG.PUNCHLINES_ANGRY), true);
+        tryPlayMoo('angry');
+      } else if (Math.random() < 0.4) {
+        showPunchline(pickRandom(CONFIG.PUNCHLINES_FUNNY), false);
+        if (Math.random() < 0.45) tryPlayMoo('soft');
+      } else if (Math.random() < 0.1) {
+        tryPlayMoo('soft');
+      }
+    }
+
+    function calcComboMult(recordTap) {
+      const now = performance.now();
+      game.tapTimes = game.tapTimes.filter((t) => now - t < 1000);
+      if (recordTap) game.tapTimes.push(now);
+
+      const tps = game.tapTimes.length;
+      let mult = 1;
+
+      if (tps > CONFIG.COMBO_THRESHOLD_TPS) {
+        mult = Math.min(
+          CONFIG.COMBO_MULTIPLIER_MAX,
+          tps - CONFIG.COMBO_THRESHOLD_TPS + 1
+        );
+        game.comboStickyMult = mult;
+        game.comboStickyUntil = now + CONFIG.COMBO_STICKY_MS;
+      } else if (now < game.comboStickyUntil) {
+        mult = game.comboStickyMult || 1;
+      } else {
+        game.comboStickyMult = 1;
+        mult = 1;
+      }
+
+      return mult;
+    }
+
+    function getComboMultiplier() {
+      return calcComboMult(true);
+    }
+
+    function hapticTap(isCombo) {
+      if (!navigator.vibrate) return;
+      navigator.vibrate(isCombo ? [12, 8, 18] : 15);
+    }
+
+    function getTeatIndex(teatEl) {
+      if (!teatEl?.dataset?.teat) return -1;
+      const idx = parseInt(teatEl.dataset.teat, 10);
+      return Number.isFinite(idx) ? idx : -1;
+    }
+
+    function getTeatHeatMult(idx) {
+      if (idx < 0) return 1;
+      const h = game.teatHeat[idx];
+      if (h >= CONFIG.TEAT_HEAT_MAX) return CONFIG.TEAT_OVERHEAT_MULT;
+      if (h >= CONFIG.TEAT_HEAT_WARN) return CONFIG.TEAT_HOT_MULT;
+      return 1;
+    }
+
+    function addTeatHeat(idx) {
+      if (idx < 0) return;
+      game.teatHeat[idx] = Math.min(
+        CONFIG.TEAT_HEAT_MAX,
+        game.teatHeat[idx] + CONFIG.TEAT_HEAT_PER_TAP
+      );
+      updateTeatVisuals();
+    }
+
+    function tickTeatHeat(dt) {
+      if (game.state !== 'playing') return;
+      let changed = false;
+      for (let i = 0; i < game.teatHeat.length; i++) {
+        if (game.teatHeat[i] > 0) {
+          const next = Math.max(0, game.teatHeat[i] - CONFIG.TEAT_HEAT_DECAY_PER_SEC * dt);
+          if (next !== game.teatHeat[i]) {
+            game.teatHeat[i] = next;
+            changed = true;
+          }
+        }
+      }
+      if (changed) updateTeatVisuals();
+    }
+
+    function updateTeatVisuals() {
+      els.teats.forEach((el, i) => {
+        const h = game.teatHeat[i] || 0;
+        const norm = Math.min(1, h / CONFIG.TEAT_HEAT_MAX);
+        el.style.setProperty('--heat', norm.toFixed(3));
+        el.classList.toggle('hot', h >= CONFIG.TEAT_HEAT_WARN && h < CONFIG.TEAT_HEAT_MAX);
+        el.classList.toggle('overheated', h >= CONFIG.TEAT_HEAT_MAX);
+      });
+    }
+
+    function squishTarget(teatEl) {
+      const target = teatEl || els.udder;
+      target.classList.remove('squish');
+      void target.offsetWidth;
+      target.classList.add('squish');
+    }
+
+    function spawnFloatLiter(x, y, amount, label, extraClass) {
+      const node = document.createElement('span');
+      node.className = 'float-liter' + (extraClass ? ' ' + extraClass : '');
+      node.textContent = label || ('+' + amount.toFixed(1));
+      if (label && !extraClass) {
+        node.style.color = '#ffb347';
+        node.style.fontSize = '1.1rem';
+      }
+      node.style.left = x + 'px';
+      node.style.top = y + 'px';
+      screens.game.appendChild(node);
+      node.addEventListener('animationend', () => node.remove());
+    }
+
+    // ====== ВЕДРО ======
+    function getBucketTierIndex() {
+      return Math.min(game.bucketTier, CONFIG.BUCKET_TIERS.length - 1);
+    }
+
+    function getBucketTierData() {
+      return CONFIG.BUCKET_TIERS[getBucketTierIndex()];
+    }
+
+    function getBucketCap() {
+      return getBucketTierData().cap;
+    }
+
+    function formatBucketCap(n) {
+      const s = Number(n).toFixed(1);
+      return s.endsWith('.0') ? s.slice(0, -2) : s;
+    }
+
+    function applyBucketVisuals(animateGrow) {
+      const data = getBucketTierData();
+      const wrap = els.bucketWrap;
+      const scaler = els.bucketScaler;
+      if (!wrap || !scaler) return;
+
+      if (animateGrow && game.bucketTier > 0) {
+        const prev = CONFIG.BUCKET_TIERS[game.bucketTier - 1];
+        wrap.style.setProperty('--bucket-scale-from', prev.scale);
+        wrap.style.setProperty('--bucket-scale-to', data.scale);
+        wrap.classList.remove('bucket-growing');
+        void wrap.offsetWidth;
+        wrap.classList.add('bucket-growing');
+        setTimeout(() => wrap.classList.remove('bucket-growing'), 780);
+      }
+
+      scaler.style.setProperty('--bucket-scale', data.scale);
+
+      if (els.bucketCapNum) els.bucketCapNum.textContent = formatBucketCap(data.cap);
+      if (els.bucketTierTag) {
+        if (game.bucketTier > 0) {
+          els.bucketTierTag.textContent = 'ВЕДРО Ур.' + (game.bucketTier + 1);
+          els.bucketTierTag.classList.add('visible');
+          els.bucketTierTag.setAttribute('aria-hidden', 'false');
+        } else {
+          els.bucketTierTag.textContent = '';
+          els.bucketTierTag.classList.remove('visible');
+          els.bucketTierTag.setAttribute('aria-hidden', 'true');
+        }
+      }
+    }
+
+    function addToBucket(amount) {
+      if (game.state !== 'playing' || game.bucketOverflowing) return;
+
+      const cap = getBucketCap();
+      game.bucketFill += amount;
+      if (game.bucketFill >= cap) {
+        triggerBucketOverflow();
+      } else {
+        updateHUD();
+      }
+    }
+
+    function spawnOverflowSplashes() {
+      const bRect = els.bucket.getBoundingClientRect();
+      const cRect = els.canvas.getBoundingClientRect();
+      const cx = bRect.left + bRect.width / 2 - cRect.left;
+      const cy = bRect.top + 6 - cRect.top;
+
+      for (let i = 0; i < 14; i++) {
+        const s = acquireSplash();
+        if (!s) break;
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.8;
+        const speed = 3 + Math.random() * 5;
+        s.x = cx + (Math.random() - 0.5) * 20;
+        s.y = cy;
+        s.vx = Math.cos(angle) * speed;
+        s.vy = Math.sin(angle) * speed - 1;
+        s.start = performance.now();
+        s.maxLife = 450 + Math.random() * 200;
+        s.active = true;
+      }
+    }
+
+    function triggerBucketOverflow() {
+      if (game.bucketOverflowing) return;
+      const tierData = getBucketTierData();
+      const bonus = tierData.bonus;
+      const atMaxTier = game.bucketTier >= CONFIG.BUCKET_TIERS.length - 1;
+
+      game.bucketOverflowing = true;
+      game.bucketFill = tierData.cap;
+      updateHUD();
+
+      els.bucketWrap.classList.add('overflowing');
+      wobbleBucket();
+      spawnOverflowSplashes();
+
+      if (navigator.vibrate) navigator.vibrate([25, 50, 25, 50, 25]);
+      playBonusSound();
+      showPunchline(
+        atMaxTier ? 'ВЕДРО МАКСИМУМ!!!' : pickRandom(CONFIG.PUNCHLINES_ANGRY),
+        true
+      );
+      tryPlayMoo('angry');
+
+      setTimeout(() => {
+        game.liters += bonus;
+        game.bucketFill = 0;
+        game.bucketOverflowing = false;
+        els.bucketWrap.classList.remove('overflowing');
+
+        if (!atMaxTier) {
+          game.bucketTier += 1;
+          applyBucketVisuals(true);
+        }
+
+        updateHUD();
+        popLitersHUD();
+
+        const rect = els.bucket.getBoundingClientRect();
+        spawnFloatLiter(
+          rect.left + rect.width / 2 - 36,
+          rect.top - 8,
+          bonus,
+          '+' + bonus.toFixed(1) + ' бонус!'
+        );
+      }, 520);
+    }
+
+    // ====== КАПЛИ МОЛОКА (этап 4) ======
+    function initMilkParticles() {
+      milkParticles.ctx = els.canvas.getContext('2d');
+      for (let i = 0; i < CONFIG.DROP_POOL_SIZE; i++) {
+        milkParticles.drops.push({ active: false, x0: 0, y0: 0, x1: 0, y1: 0, cx: 0, cy: 0, start: 0, duration: CONFIG.MILK_DROP_MS, amount: 0 });
+      }
+      for (let i = 0; i < 30; i++) {
+        milkParticles.splashes.push({ active: false, x: 0, y: 0, vx: 0, vy: 0, start: 0, maxLife: CONFIG.SPLASH_MS });
+      }
+    }
+
+    function resizeParticlesCanvas() {
+      const parent = screens.game;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = parent.clientWidth;
+      const h = parent.clientHeight;
+      if (w < 1 || h < 1) return;
+      els.canvas.width = Math.round(w * dpr);
+      els.canvas.height = Math.round(h * dpr);
+      els.canvas.style.width = w + 'px';
+      els.canvas.style.height = h + 'px';
+      milkParticles.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function clearMilkParticles() {
+      milkParticles.drops.forEach((d) => { d.active = false; });
+      milkParticles.splashes.forEach((s) => { s.active = false; });
+      if (milkParticles.ctx) {
+        milkParticles.ctx.save();
+        milkParticles.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        milkParticles.ctx.clearRect(0, 0, els.canvas.width, els.canvas.height);
+        milkParticles.ctx.restore();
+      }
+    }
+
+    function canvasPointFromRect(targetRect, offsetX, offsetY) {
+      const cRect = els.canvas.getBoundingClientRect();
+      return {
+        x: targetRect.left + targetRect.width * offsetX - cRect.left,
+        y: targetRect.top + targetRect.height * offsetY - cRect.top,
+      };
+    }
+
+    function acquireDrop() {
+      return milkParticles.drops.find((d) => !d.active) || null;
+    }
+
+    function acquireSplash() {
+      return milkParticles.splashes.find((s) => !s.active) || null;
+    }
+
+    function spawnMilkStream(teatEl, amount) {
+      const teat = teatEl || els.udder;
+      const tRect = teat.getBoundingClientRect();
+      const bRect = els.bucket.getBoundingClientRect();
+      const from = canvasPointFromRect(tRect, 0.5, 1);
+      const to = canvasPointFromRect(bRect, 0.5, 0.12);
+
+      const drop = acquireDrop();
+      if (!drop) return;
+
+      drop.x0 = from.x;
+      drop.y0 = from.y - 2;
+      drop.x1 = to.x;
+      drop.y1 = to.y;
+      drop.cx = (from.x + to.x) / 2;
+      drop.cy = Math.min(from.y, to.y) - CONFIG.MILK_DROP_ARC;
+      drop.start = performance.now();
+      drop.duration = CONFIG.MILK_DROP_MS;
+      drop.amount = amount || CONFIG.LITERS_PER_TAP;
+      drop.isCombo = amount > CONFIG.LITERS_PER_TAP + 0.001;
+      drop.lastX = drop.x0;
+      drop.lastY = drop.y0;
+      drop.active = true;
+    }
+
+    function bezier2(p0, p1, p2, t) {
+      const u = 1 - t;
+      return {
+        x: u * u * p0.x + 2 * u * t * p1.x + t * t * p2.x,
+        y: u * u * p0.y + 2 * u * t * p1.y + t * t * p2.y,
+      };
+    }
+
+    function spawnSplash(x, y) {
+      for (let i = 0; i < CONFIG.SPLASH_COUNT; i++) {
+        const s = acquireSplash();
+        if (!s) break;
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.4;
+        const speed = 1.5 + Math.random() * 3.5;
+        s.x = x;
+        s.y = y;
+        s.vx = Math.cos(angle) * speed;
+        s.vy = Math.sin(angle) * speed;
+        s.start = performance.now();
+        s.maxLife = CONFIG.SPLASH_MS;
+        s.active = true;
+      }
+    }
+
+    function wobbleBucket() {
+      const scaler = els.bucketScaler;
+      if (!scaler) return;
+      scaler.classList.remove('wobble');
+      void scaler.offsetWidth;
+      scaler.classList.add('wobble');
+    }
+
+    function tickMilkParticles(now) {
+      const ctx = milkParticles.ctx;
+      if (!ctx) return false;
+
+      ctx.clearRect(0, 0, els.canvas.clientWidth, els.canvas.clientHeight);
+      let any = false;
+
+      for (const d of milkParticles.drops) {
+        if (!d.active) continue;
+        any = true;
+        const t = (now - d.start) / d.duration;
+
+        if (t >= 1) {
+          d.active = false;
+          spawnSplash(d.x1, d.y1);
+          wobbleBucket();
+          playSplashSound();
+          if (d.amount > 0) addToBucket(d.amount);
+          continue;
+        }
+
+        const p0 = { x: d.x0, y: d.y0 };
+        const p1 = { x: d.cx, y: d.cy };
+        const p2 = { x: d.x1, y: d.y1 };
+        const pos = bezier2(p0, p1, p2, t);
+
+        if (d.lastX != null && t > 0.05) {
+          ctx.beginPath();
+          ctx.moveTo(d.lastX, d.lastY);
+          ctx.lineTo(pos.x, pos.y);
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+          ctx.lineWidth = d.isCombo ? 3 : 2;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+        }
+        d.lastX = pos.x;
+        d.lastY = pos.y;
+
+        const r = d.isCombo ? 6 : 5;
+        ctx.beginPath();
+        ctx.ellipse(pos.x, pos.y + 3, r * 0.7, r, 0, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = '#fffef8';
+        ctx.fill();
+      }
+
+      for (const s of milkParticles.splashes) {
+        if (!s.active) continue;
+        any = true;
+        const age = now - s.start;
+        if (age > s.maxLife) {
+          s.active = false;
+          continue;
+        }
+        const life = 1 - age / s.maxLife;
+        s.x += s.vx;
+        s.y += s.vy;
+        s.vy += 0.22;
+
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 2 + life * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${life * 0.9})`;
+        ctx.fill();
+      }
+
+      return any;
+    }
+
+    function gameLoop(now) {
+      if (!lastFrameTime) lastFrameTime = now;
+      const dt = Math.min((now - lastFrameTime) / 1000, 0.1);
+      lastFrameTime = now;
+
+      tickRoundTimer(dt);
+      tickTeatHeat(dt);
+      refreshComboFromTaps();
+
+      if (screens.game.classList.contains('active')) {
+        tickMilkParticles(now);
+      }
+      requestAnimationFrame(gameLoop);
+    }
+
+    function onMilkTap(e) {
+      if (game.state !== 'playing') return;
+      e.preventDefault();
+
+      const teat = e.target.closest('.teat');
+      const teatIdx = getTeatIndex(teat);
+      squishTarget(teat);
+
+      if (teatIdx >= 0) addTeatHeat(teatIdx);
+      const heatMult = getTeatHeatMult(teatIdx);
+      const wasOverheat = teatIdx >= 0 && game.teatHeat[teatIdx] >= CONFIG.TEAT_HEAT_MAX;
+
+      const prevCombo = game.comboMultiplier;
+      const mult = getComboMultiplier();
+      game.comboMultiplier = mult;
+      if (mult > prevCombo) {
+        handleComboLevelUp(mult, prevCombo);
+      } else if (mult < prevCombo) {
+        updateComboDisplay(false);
+      }
+      game.lastComboMult = mult;
+
+      const added = CONFIG.LITERS_PER_TAP * mult * heatMult;
+      const isCombo = mult > 1;
+      const prevRecord = game.highScore;
+      game.liters += added;
+
+      updateHUD();
+      popLitersHUD();
+      if (game.liters > prevRecord) {
+        popRecordBadge();
+        if (game.liters - added < prevRecord && game.liters >= prevRecord) {
+          playNewRecordSound();
+        }
+      }
+      playMilkSquirt(mult);
+      hapticTap(isCombo || wasOverheat);
+      if (wasOverheat) {
+        tryPlayMoo('hot');
+        if (Math.random() < 0.35) showPunchline('ГОРЯЧИЙ СОСОК!!!', true);
+      } else {
+        reactCow(isCombo);
+      }
+
+      spawnMilkStream(teat, added);
+
+      const rect = (teat || els.udder).getBoundingClientRect();
+      const floatLabel = wasOverheat
+        ? '🔥 +' + added.toFixed(1)
+        : heatMult < 1
+          ? '+' + added.toFixed(1)
+          : null;
+      spawnFloatLiter(
+        rect.left + rect.width / 2 - 18,
+        rect.top + rect.height * 0.3,
+        added,
+        floatLabel,
+        wasOverheat ? 'overheat' : ''
+      );
+    }
+
+    function getEndMessage(liters) {
+      if (liters >= 15) return 'Доярка от бога! 🙏';
+      if (liters >= 8) return 'Неплохо, корова довольна 😌';
+      if (liters >= 3) return 'Ну такое, попробуй ещё 🤷';
+      return 'Корова в шоке! 😱';
+    }
+
+    function resetRound() {
+      game.liters = 0;
+      game.bucketFill = 0;
+      game.bucketTier = 0;
+      applyBucketVisuals(false);
+      game.timer = CONFIG.ROUND_SECONDS;
+      game.comboMultiplier = 1;
+      game.lastComboMult = 1;
+      game.comboStickyMult = 1;
+      game.comboStickyUntil = 0;
+      game.tapTimes = [];
+      els.comboBadge?.classList.remove('active', 'level-low', 'level-mid', 'level-high', 'level-mega', 'combo-burst');
+      els.comboFlash?.classList.remove('on');
+      game.bucketOverflowing = false;
+      game.teatHeat = [0, 0, 0, 0];
+      game.lastTimerSec = CONFIG.ROUND_SECONDS;
+      els.bucketWrap?.classList.remove('overflowing');
+      els.timerWrap?.classList.remove('critical');
+      els.timer?.classList.remove('tick-pop');
+      screens.end.classList.remove('end-new-record');
+      updateTeatVisuals();
+      stopCowLife();
+      stopMoo();
+      clearGameMusicTimer();
+      if (els.punchlineLayer) els.punchlineLayer.innerHTML = '';
+      clearMilkParticles();
+      updateComboDisplay(false);
+      updateHUD();
+    }
+
+    function refreshComboFromTaps() {
+      if (game.state !== 'playing') return;
+      const mult = calcComboMult(false);
+      if (mult === game.comboMultiplier) return;
+      const prev = game.comboMultiplier;
+      game.comboMultiplier = mult;
+      game.lastComboMult = mult;
+      if (mult > prev) handleComboLevelUp(mult, prev);
+      else if (mult < prev) updateComboDisplay(false);
+    }
+
+    async function startGame() {
+      if (countdownRunning || game.state === 'countdown') return;
+      await unlockAudio();
+      resetRound();
+      setState('countdown');
+      updateHUD();
+      fitCowFrame();
+      await runCountdown();
+    }
+
+    function formatEndCompare(score, prevRecord) {
+      if (score > prevRecord) return '🎉 Новый рекорд!';
+      if (prevRecord <= 0) return 'Первый забег — жми ещё раз!';
+      const diff = score - prevRecord;
+      if (diff >= 0) return `+${diff.toFixed(1)} л к рекорду`;
+      return `До рекорда не хватило ${Math.abs(diff).toFixed(1)} л`;
+    }
+
+    function endGame() {
+      if (game.state === 'gameover') return;
+
+      const score = game.liters;
+      const prevRecord = game.highScore;
+
+      game.state = 'gameover';
+      stopCowLife();
+      stopMoo();
+      stopGameMusic();
+      clearMilkParticles();
+      if (els.punchlineLayer) els.punchlineLayer.innerHTML = '';
+      els.bucketWrap?.classList.remove('overflowing');
+      game.bucketOverflowing = false;
+
+      saveHighScore();
+      if (score > prevRecord) playNewRecordSound();
+
+      els.endLiters.textContent = score.toFixed(1);
+      els.endMessage.textContent = getEndMessage(score);
+
+      const compareText = formatEndCompare(score, prevRecord);
+      const isNewRecord = score > prevRecord;
+      if (els.endCompare) {
+        els.endCompare.textContent = compareText;
+        els.endCompare.classList.toggle('behind', score < prevRecord && prevRecord > 0);
+      }
+      screens.end.classList.toggle('end-new-record', isNewRecord);
+
+      setState('gameover');
+    }
+
+    function getGameShareUrl() {
+      if (CONFIG.GAME_SHARE_URL) return CONFIG.GAME_SHARE_URL;
+      try {
+        const u = new URL(window.location.href);
+        u.hash = '';
+        u.search = '';
+        return u.href;
+      } catch (_) {
+        return window.location.href.split('#')[0].split('?')[0];
+      }
+    }
+
+    async function renderShareCardBlob() {
+      const w = 540;
+      const h = 960;
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      try {
+        await document.fonts.load('48px Bangers');
+        await document.fonts.load('72px Bangers');
+        await document.fonts.load('120px Bangers');
+      } catch (_) {}
+
+      const score = game.liters.toFixed(1);
+      const message = els.endMessage.textContent || '';
+      const compare = els.endCompare.textContent || '';
+      const record = game.highScore.toFixed(1);
+
+      const bg = ctx.createLinearGradient(0, 0, 0, h);
+      bg.addColorStop(0, '#fff8ef');
+      bg.addColorStop(0.5, '#f0e4d0');
+      bg.addColorStop(1, '#e8d4bc');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
+
+      const cardX = 36;
+      const cardY = 80;
+      const cardW = w - 72;
+      const cardH = h - 200;
+      ctx.fillStyle = 'rgba(255,255,255,0.95)';
+      roundRect(ctx, cardX, cardY, cardW, cardH, 24);
+      ctx.fill();
+      ctx.strokeStyle = '#2d1810';
+      ctx.lineWidth = 5;
+      roundRect(ctx, cardX, cardY, cardW, cardH, 24);
+      ctx.stroke();
+
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      ctx.font = '56px Bangers, sans-serif';
+      ctx.fillStyle = '#2d1810';
+      ctx.fillText('🐄', w / 2, cardY + 55);
+
+      drawComicText(ctx, 'ВРЕМЯ ВЫШЛО!', w / 2, cardY + 115, '48px Bangers', '#fff', '#ee5a24', 4);
+
+      ctx.font = '28px Bangers, sans-serif';
+      ctx.fillStyle = '#5a4a3a';
+      ctx.fillText('ТЫ НАДОИЛ', w / 2, cardY + 175);
+
+      drawComicText(ctx, score + ' Л', w / 2, cardY + 280, '120px Bangers', '#fff', '#0984e3', 5);
+
+      const behind = els.endCompare?.classList.contains('behind');
+      let badgeY = cardY + 355;
+      if (compare) {
+        badgeY = drawBadgeText(ctx, compare, w / 2, badgeY, cardW - 56, {
+          bg: behind ? '#ffe8d9' : '#dff5e6',
+          color: behind ? '#9a3d10' : '#1a5c32',
+          font: '30px Bangers, sans-serif',
+        }) + 12;
+      }
+      if (message) {
+        drawBadgeText(ctx, message, w / 2, badgeY, cardW - 56, {
+          bg: '#ee5a24',
+          color: '#fff',
+          font: '32px Bangers, sans-serif',
+        });
+      }
+
+      ctx.font = '28px Bangers, sans-serif';
+      ctx.fillStyle = '#5a4a3a';
+      ctx.fillText('🏆 рекорд: ' + record + ' л', w / 2, cardY + cardH - 55);
+
+      ctx.font = '22px Bangers, sans-serif';
+      ctx.fillStyle = '#8a7a6a';
+      ctx.fillText('УВЕЛИЧЬ НАДОЙ', w / 2, cardY + cardH - 38);
+
+      const gameUrl = getGameShareUrl();
+      if (gameUrl && !gameUrl.startsWith('file:')) {
+        ctx.font = '20px Bangers, sans-serif';
+        ctx.fillStyle = '#0984e3';
+        const shortUrl = gameUrl.length > 44 ? gameUrl.slice(0, 41) + '…' : gameUrl;
+        ctx.fillText(shortUrl, w / 2, cardY + cardH - 6);
+      }
+
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), 'image/png', 0.92);
+      });
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function drawComicText(ctx, text, x, y, font, fill, shadow, offset) {
+      ctx.font = font;
+      ctx.textAlign = 'center';
+      ctx.fillStyle = shadow;
+      ctx.fillText(text, x + offset, y + offset);
+      ctx.fillStyle = fill;
+      ctx.fillText(text, x, y);
+    }
+
+    function drawBadgeText(ctx, text, centerX, topY, maxWidth, opts) {
+      const font = opts.font || '30px Bangers, sans-serif';
+      const padX = 18;
+      const padY = 12;
+      const lineH = 36;
+      ctx.font = font;
+      const lines = wrapTextLines(ctx, text, maxWidth - padX * 2);
+      const lineWidths = lines.map((l) => ctx.measureText(l).width);
+      const boxW = Math.min(maxWidth, Math.max(...lineWidths, 0) + padX * 2);
+      const boxH = lines.length * lineH + padY * 2;
+      const boxX = centerX - boxW / 2;
+      roundRect(ctx, boxX, topY, boxW, boxH, 14);
+      ctx.fillStyle = opts.bg || '#dff5e6';
+      ctx.fill();
+      ctx.strokeStyle = '#2d1810';
+      ctx.lineWidth = 3;
+      roundRect(ctx, boxX, topY, boxW, boxH, 14);
+      ctx.stroke();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = opts.color || '#1a5c32';
+      lines.forEach((line, i) => {
+        ctx.fillText(line, centerX, topY + padY + lineH * (i + 0.5));
+      });
+      return topY + boxH;
+    }
+
+    function wrapTextLines(ctx, text, maxWidth) {
+      const words = text.split(' ');
+      const lines = [];
+      let line = '';
+      words.forEach((word) => {
+        const test = line ? line + ' ' + word : word;
+        if (ctx.measureText(test).width > maxWidth && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = test;
+        }
+      });
+      if (line) lines.push(line);
+      return lines.length ? lines : [text];
+    }
+
+    async function shareResults() {
+      const score = game.liters.toFixed(1);
+      const message = els.endMessage.textContent;
+      const compare = els.endCompare.textContent;
+      const gameUrl = getGameShareUrl();
+      const urlBlock = gameUrl && !gameUrl.startsWith('file:')
+        ? `\n\n🎮 Играть:\n${gameUrl}`
+        : '';
+      const text = `🐄 УВЕЛИЧЬ НАДОЙ\n\n⏱ Время вышло!\n🥛 Я надоил ${score} л\n${message}\n${compare}\n\n🏆 Рекорд: ${game.highScore.toFixed(1)} л${urlBlock}`;
+
+      let sharePayload = { title: 'УВЕЛИЧЬ НАДОЙ 🐄', text };
+      if (gameUrl && !gameUrl.startsWith('file:')) {
+        sharePayload.url = gameUrl;
+      }
+
+      try {
+        const blob = await renderShareCardBlob();
+        if (blob) {
+          const file = new File([blob], 'uvelich-nadoi.png', { type: 'image/png' });
+          if (navigator.canShare?.({ files: [file] })) {
+            sharePayload = { ...sharePayload, files: [file] };
+          }
+        }
+      } catch (_) {}
+
+      if (navigator.share) {
+        try {
+          await navigator.share(sharePayload);
+          return;
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+        }
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (_) {}
+    }
+
+    // ====== СОБЫТИЯ ======
+    document.getElementById('btn-start').addEventListener('click', () => startGame());
+
+    document.getElementById('btn-retry').addEventListener('click', () => startGame());
+
+    screens.menu.addEventListener('pointerdown', () => {
+      startMenuMusic();
+    }, { passive: true });
+
+    screens.menu.addEventListener('click', (e) => {
+      if (e.target.closest('#btn-start')) return;
+      startMenuMusic();
+    });
+
+    document.getElementById('btn-share').addEventListener('click', () => shareResults());
+
+    // ====== ДОЙКА (этап 3) ======
+    els.udder.addEventListener('pointerdown', onMilkTap);
+
+    // ====== ИНИТ ======
+    els.cowImg.src = CONFIG.COW_IMAGE;
+    els.audioMenu.src = CONFIG.AUDIO_MENU;
+    els.audioGame.src = CONFIG.AUDIO_GAME;
+    els.audioMenu.volume = 0.65;
+    els.audioGame.volume = 0.75;
+
+    bindSampleFallback(els.audioMooSoft, 'soft');
+    bindSampleFallback(els.audioMooAngry, 'angry');
+    bindSampleFallback(els.audioMooHot, 'hot');
+    bindSampleFallback(els.audioTick, 'tick');
+
+    applyUdderHotspot();
+
+    els.cowImg.addEventListener('load', () => {
+      if (els.cowImg.naturalWidth > 0) {
+        cowAspect = els.cowImg.naturalWidth / els.cowImg.naturalHeight;
+      }
+    });
+
+    if (els.cowImg.complete && els.cowImg.naturalWidth > 0) {
+      cowAspect = els.cowImg.naturalWidth / els.cowImg.naturalHeight;
+    }
+
+    els.audioMenu.load();
+    els.audioGame.load();
+
+    loadHighScore();
+    applyBucketVisuals(false);
+    setState('menu');
+    updateHUD();
+
+    initMilkParticles();
+    function onResize() {
+      resizeParticlesCanvas();
+    }
+    onResize();
+    window.addEventListener('resize', onResize);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', onResize);
+    }
+    lastFrameTime = performance.now();
+    requestAnimationFrame(gameLoop);
+  </script>
+</body>
+</html>
