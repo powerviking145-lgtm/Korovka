@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>УВЕЛИЧЬ НАДОЙ 🐄</title>
+  <title>УДВОЙ НАДОЙ 🐄</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
@@ -2082,7 +2082,7 @@
           <p class="end-message" id="end-message">—</p>
         </div>
         <p class="end-record">🏆 рекорд: <span id="end-record">0.0</span> л</p>
-        <p class="end-brand">Увеличь надой</p>
+        <p class="end-brand">Удвой надой</p>
       </div>
       <div class="end-buttons">
         <button type="button" class="btn btn-primary" id="btn-retry">ЕЩЁ РАЗ</button>
@@ -4404,7 +4404,7 @@
 
       ctx.font = '700 22px Fredoka, sans-serif';
       ctx.fillStyle = 'rgba(29, 53, 87, 0.55)';
-      ctx.fillText('УВЕЛИЧЬ НАДОЙ', w / 2, cardY + cardH - 38);
+      ctx.fillText('УДВОЙ НАДОЙ', w / 2, cardY + cardH - 38);
 
       const gameUrl = getGameShareUrl();
       if (gameUrl && !gameUrl.startsWith('file:')) {
@@ -4490,7 +4490,7 @@
       const urlBlock = gameUrl && !gameUrl.startsWith('file:')
         ? `\n\n🎮 Играть:\n${gameUrl}`
         : '';
-      return `🐄 УВЕЛИЧЬ НАДОЙ\n\n⏱ Время вышло!\n🥛 Я надоил ${score} л\n${message}\n${compare}\n\n🏆 Рекорд: ${game.highScore.toFixed(1)} л${urlBlock}`;
+      return `🐄 УДВОЙ НАДОЙ\n\n⏱ Время вышло!\n🥛 Я надоил ${score} л\n${message}\n${compare}\n\n🏆 Рекорд: ${game.highScore.toFixed(1)} л${urlBlock}`;
     }
 
     function canTryShare(payload) {
@@ -4569,7 +4569,7 @@
         if (!blob) return;
 
         game.shareBlob = blob;
-        const title = 'УВЕЛИЧЬ НАДОЙ 🐄';
+        const title = 'УДВОЙ НАДОЙ 🐄';
         const text = buildShareText();
         const file = new File([blob], 'uvelich-nadoi.png', { type: 'image/png' });
 
