@@ -325,6 +325,10 @@
 
     /* ====== ИГРОВОЙ ЭКРАН ====== */
     #screen-game {
+      --hud-blue: #1d3557;
+      --hud-cream: #fff8e1;
+      --hud-orange: #f4a261;
+      --hud-font: 'Fredoka', system-ui, sans-serif;
       position: absolute;
       inset: 0;
       width: 100%;
@@ -336,12 +340,38 @@
       background: #1a1208;
     }
 
+    #screen-game::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 9.5rem;
+      z-index: 11;
+      pointer-events: none;
+      background: linear-gradient(
+        180deg,
+        rgba(135, 206, 235, 0.72) 0%,
+        rgba(135, 206, 235, 0.35) 45%,
+        transparent 100%
+      );
+    }
+
+    #screen-game.screen-shake {
+      animation: screen-shake 0.38s ease;
+    }
+
+    @keyframes screen-shake {
+      0%, 100% { transform: translate(0, 0); }
+      15% { transform: translate(-2px, 1px); }
+      30% { transform: translate(3px, -2px); }
+      45% { transform: translate(-2px, -1px); }
+      60% { transform: translate(2px, 2px); }
+      75% { transform: translate(-1px, 1px); }
+    }
+
     /* ====== HUD (стиль референса) ====== */
     #screen-game .top-bar {
-      --hud-blue: #1d3557;
-      --hud-cream: #fff8e1;
-      --hud-orange: #f4a261;
-      --hud-font: 'Fredoka', system-ui, sans-serif;
       position: absolute;
       top: calc(var(--safe-top) + 0.25rem);
       left: 0;
@@ -527,6 +557,107 @@
       z-index: 1;
     }
 
+    .cow-scene::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      background: radial-gradient(
+        ellipse 120% 90% at 50% 45%,
+        transparent 42%,
+        rgba(20, 30, 50, 0.22) 100%
+      );
+    }
+
+    .cow-scene::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background: linear-gradient(
+        165deg,
+        rgba(255, 210, 140, 0.18) 0%,
+        rgba(255, 180, 100, 0.1) 40%,
+        transparent 70%
+      );
+      mix-blend-mode: soft-light;
+    }
+
+    .cow-scene-sign-cover {
+      position: absolute;
+      right: 0;
+      bottom: 18%;
+      width: 42%;
+      height: 28%;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      background: radial-gradient(
+        ellipse 90% 80% at 70% 60%,
+        rgba(58, 92, 48, 0.55) 0%,
+        rgba(45, 70, 38, 0.35) 45%,
+        transparent 72%
+      );
+    }
+
+    .cow-scene.playing .cow-scene-sign-cover {
+      opacity: 1;
+    }
+
+    .tap-hint {
+      position: absolute;
+      left: 50%;
+      top: 72%;
+      transform: translate(-50%, -50%);
+      z-index: 6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    .tap-hint.visible {
+      opacity: 1;
+      animation: tap-hint-bob 1.1s ease-in-out infinite;
+    }
+
+    .tap-hint-finger {
+      font-size: 2.2rem;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+    }
+
+    .tap-hint-text {
+      font-family: var(--hud-font, 'Fredoka', sans-serif);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #fff;
+      -webkit-text-stroke: 1.5px var(--hud-blue, #1d3557);
+      paint-order: stroke fill;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    @keyframes tap-hint-bob {
+      0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+      50% { transform: translate(-50%, -50%) translateY(-8px); }
+    }
+
+    .udder.combo-aura {
+      filter: drop-shadow(0 0 12px rgba(255, 200, 80, 0.45));
+      animation: udder-combo-aura 1.2s ease-in-out infinite;
+    }
+
+    @keyframes udder-combo-aura {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 200, 80, 0.35)); }
+      50% { filter: drop-shadow(0 0 18px rgba(255, 200, 80, 0.65)); }
+    }
+
     .cow-frame {
       position: absolute;
       inset: 0;
@@ -534,7 +665,8 @@
       height: 100%;
     }
 
-    .cow-img {
+    .cow-img,
+    .cow-bg-video {
       display: block;
       width: 100%;
       height: 100%;
@@ -543,16 +675,32 @@
       pointer-events: none;
       -webkit-user-drag: none;
       transform-origin: center 38%;
+      filter: saturate(1.05);
       animation: cow-idle 5s ease-in-out infinite;
     }
 
-    .cow-img.chew {
+    .cow-bg-video {
+      display: none;
+      position: absolute;
+      inset: 0;
+    }
+
+    .cow-frame.has-video .cow-bg-video {
+      display: block;
+    }
+
+    .cow-frame.has-video .cow-img {
+      display: none;
+    }
+
+    .cow-frame.chew .cow-img,
+    .cow-frame.chew .cow-bg-video {
       animation: cow-chew 0.5s ease;
     }
 
     @keyframes cow-idle {
       0%, 100% { transform: scale(1) translateY(0); }
-      50% { transform: scale(1.006) translateY(2px); }
+      50% { transform: scale(1.01) translateY(3px); }
     }
 
     @keyframes cow-chew {
@@ -574,6 +722,25 @@
       z-index: 2;
     }
 
+    .udder::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -6%;
+      transform: translateX(-50%);
+      width: 88%;
+      height: 22%;
+      background: radial-gradient(ellipse, rgba(0, 0, 0, 0.32) 0%, transparent 68%);
+      pointer-events: none;
+      z-index: 0;
+      animation: udder-shadow-drift 5s ease-in-out infinite;
+    }
+
+    @keyframes udder-shadow-drift {
+      0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+      50% { transform: translateX(-50%) scale(1.06) translateY(2px); opacity: 1; }
+    }
+
     .udder.squish {
       animation: udder-squish 0.08s ease;
     }
@@ -582,82 +749,182 @@
       50% { transform: translate(-50%, 0) scale(0.94); }
     }
 
-    /* Мешок на картинке — поверх только 4 соска */
-    .udder-bag,
-    .udder-bag::before,
-    .udder-bag::after {
-      display: none;
+    /* Гнездо вымени — постоянная подложка под кластер сосков */
+    .udder-bag {
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 88%;
+      height: 52%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+      background: radial-gradient(
+        ellipse 86% 74% at 50% 38%,
+        rgba(255, 225, 205, 0.45) 0%,
+        rgba(232, 195, 175, 0.18) 48%,
+        transparent 74%
+      );
+      transition: opacity 0.12s ease;
+    }
+
+    .udder.squish .udder-bag,
+    .udder.combo-aura .udder-bag {
+      opacity: 0.65;
     }
 
     .teats-row {
       position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 65%;
-      display: flex;
-      justify-content: space-evenly;
-      align-items: flex-end;
-      padding: 0 6% 2%;
-      gap: 2%;
+      left: 50%;
+      top: var(--cluster-top, 42%);
+      width: var(--cluster-w, clamp(162px, 46vw, 238px));
+      height: var(--cluster-h, clamp(52px, 14vw, 72px));
+      margin-top: calc(var(--overlap-udder, 4%) * -1);
+      transform: translateX(-50%);
+      z-index: 1;
+      transform-origin: top center;
     }
 
-    .teat {
-      position: relative;
-      flex: 1;
-      max-width: 22%;
+    .udder.squish .teats-row {
+      animation: teats-row-squish 0.08s ease;
+    }
+
+    @keyframes teats-row-squish {
+      50% { transform: translateX(-50%) scaleY(0.94); }
+    }
+
+    .teats-svg {
+      display: block;
+      width: 100%;
       height: 100%;
-      --heat: 0;
-      background: linear-gradient(180deg, #ffc4c4 0%, #f08a8a 55%, #e07070 100%);
-      border: 2px solid #d06068;
-      border-radius: 45% 45% 50% 50%;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.25);
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      pointer-events: none;
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.22));
     }
 
-    .teat::before {
+    .teat-shape {
+      fill: url(#teat-grad);
+      stroke: rgba(72, 38, 32, 0.42);
+      stroke-width: 0.9;
+      opacity: 0.96;
+      transition: fill 0.15s ease, stroke 0.12s ease, filter 0.12s ease;
+    }
+
+    .teat-nipple {
+      stroke: rgba(60, 30, 25, 0.35);
+      stroke-width: 0.6;
+    }
+
+    .teat-shape.heat-visible {
+      filter: brightness(calc(1 + var(--heat, 0) * 0.12));
+    }
+
+    .teat-shape.hot {
+      fill: url(#teat-heat-grad);
+      stroke: rgba(180, 55, 40, 0.55);
+      filter: drop-shadow(0 0 8px rgba(255, 120, 60, 0.4));
+    }
+
+    .teat-shape.overheated {
+      fill: url(#teat-heat-grad);
+      stroke: rgba(160, 35, 25, 0.65);
+      animation: teat-shape-overheat 0.35s ease infinite alternate;
+    }
+
+    @keyframes teat-shape-overheat {
+      from { filter: brightness(1.05) saturate(1.15); }
+      to { filter: brightness(1.22) saturate(1.35) drop-shadow(0 0 10px rgba(255, 80, 50, 0.55)); }
+    }
+
+    .teat-shape.tap-flash {
+      animation: teat-shape-tap-flash 0.14s ease;
+    }
+
+    .teat-nipple.tap-flash {
+      fill: #f0c0b0;
+    }
+
+    @keyframes teat-shape-tap-flash {
+      0% {
+        filter: brightness(1.3);
+        stroke: rgba(255, 255, 255, 0.85);
+        stroke-width: 1.6;
+      }
+      100% {
+        filter: brightness(1);
+        stroke: rgba(72, 38, 32, 0.42);
+        stroke-width: 0.9;
+      }
+    }
+
+    .udder.tap-hint-active .teats-row::before {
       content: '';
       position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: linear-gradient(
-        180deg,
-        rgba(255, 120, 60, calc(var(--heat) * 0.7)) 0%,
-        rgba(255, 40, 20, calc(var(--heat) * 0.55)) 100%
-      );
+      inset: -10% -4%;
+      border: 2.5px solid rgba(255, 255, 255, 0.75);
+      border-radius: 38% 38% 34% 34%;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
       pointer-events: none;
-      z-index: 1;
-      opacity: calc(0.15 + var(--heat) * 0.85);
+      z-index: 2;
+      animation: teats-hint-pulse 1.1s ease-in-out infinite;
     }
 
-    .teat.hot {
-      border-color: #e74c3c;
-      box-shadow: 0 0 12px rgba(255, 100, 50, 0.45);
+    @keyframes teats-hint-pulse {
+      0%, 100% { opacity: 0.55; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.04); }
     }
 
-    .teat.overheated {
-      border-color: #c0392b;
-      box-shadow: 0 0 18px rgba(255, 50, 30, 0.75);
-      animation: teat-overheat-glow 0.35s ease infinite alternate;
+    .udder.tap-hint-active .teat-shape {
+      animation: teat-hint-glow 1.1s ease-in-out infinite;
     }
 
-    @keyframes teat-overheat-glow {
-      from { filter: brightness(1.05) saturate(1.2); }
-      to { filter: brightness(1.35) saturate(1.5); }
+    .udder.tap-hint-active .teat-shape.ts1 { animation-delay: 0s; }
+    .udder.tap-hint-active .teat-shape.ts2 { animation-delay: 0.12s; }
+    .udder.tap-hint-active .teat-shape.ts3 { animation-delay: 0.24s; }
+    .udder.tap-hint-active .teat-shape.ts4 { animation-delay: 0.36s; }
+
+    @keyframes teat-hint-glow {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.2); }
+    }
+
+    /* Прозрачные hitbox поверх SVG */
+    .teat {
+      position: absolute;
+      width: var(--hitbox-w, clamp(32px, 9vw, 44px));
+      height: var(--hitbox-h, clamp(40px, 11vw, 56px));
+      left: var(--hit-x, 50%);
+      top: var(--hit-y, 55%);
+      transform: translate(-50%, -50%);
+      --heat: 0;
+      background: transparent;
+      border: none;
+      border-radius: 40% 40% 50% 50%;
+      touch-action: manipulation;
+      z-index: 3;
     }
 
     .teat-heat-bar {
       position: absolute;
-      top: -7px;
-      left: 12%;
-      right: 12%;
-      height: 5px;
-      background: rgba(0, 0, 0, 0.2);
+      top: auto;
+      bottom: 4px;
+      left: 16%;
+      right: 16%;
+      height: 3px;
+      padding: 0;
+      background: var(--hud-cream, #fff8e1);
+      border: 1px solid var(--hud-blue, #1d3557);
       border-radius: 99px;
       overflow: hidden;
       z-index: 2;
       pointer-events: none;
-      opacity: calc(0.35 + var(--heat) * 0.65);
+      opacity: 0;
+      box-shadow: none;
+      transition: opacity 0.15s ease;
+    }
+
+    .teat.heat-visible .teat-heat-bar {
+      opacity: calc(0.45 + var(--heat) * 0.55);
     }
 
     .teat-heat-bar::after {
@@ -665,49 +932,42 @@
       display: block;
       height: 100%;
       width: calc(var(--heat) * 100%);
-      background: linear-gradient(90deg, #f39c12, #e74c3c);
+      background: linear-gradient(90deg, #f4a261, #e76f51);
       border-radius: inherit;
       transition: width 0.1s linear;
     }
 
-    .teat::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 11px;
-      height: 11px;
-      background: #c85858;
-      border-radius: 50%;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.3);
-      z-index: 3;
+    .udder.debug-udder {
+      outline: 2px dashed rgba(255, 60, 60, 0.55);
+      outline-offset: 2px;
     }
 
-    .teat.squish {
-      animation: teat-squish 0.08s ease;
+    .udder.debug-udder .teats-svg {
+      outline: 1px dashed rgba(100, 160, 255, 0.7);
     }
 
-    @keyframes teat-squish {
-      50% { transform: scaleY(0.82) scaleX(1.06); }
+    .udder.debug-udder .teat {
+      outline: 1px solid rgba(60, 200, 80, 0.75);
+      background: rgba(60, 200, 80, 0.12);
     }
 
     .combo-badge {
       position: absolute;
-      top: calc(var(--safe-top) + 6.75rem);
+      top: calc(var(--safe-top) + 7.25rem);
       left: 50%;
       transform: translateX(-50%) scale(0.2);
       transform-origin: center center;
-      font-family: 'Bangers', cursive;
-      font-size: clamp(1.75rem, 8vw, 2.35rem);
-      color: #fff;
-      background: linear-gradient(180deg, #ff9f43 0%, #ee5a24 100%);
-      padding: 0.3rem 1rem 0.35rem;
+      font-family: var(--hud-font, 'Fredoka', sans-serif);
+      font-weight: 700;
+      font-size: clamp(1.65rem, 7.5vw, 2.2rem);
+      color: var(--hud-blue, #1d3557);
+      background: var(--hud-cream, #fff8e1);
+      padding: 0.35rem 1.1rem 0.4rem;
       border-radius: 999px;
-      border: 3px solid #2d1810;
-      box-shadow: 0 5px 0 #c0392b, 0 0 20px rgba(238, 90, 36, 0.45);
-      text-shadow: 2px 2px 0 #c0392b;
-      letter-spacing: 0.08em;
+      border: 3px solid var(--hud-blue, #1d3557);
+      box-shadow: 0 4px 0 rgba(29, 53, 87, 0.18), 0 0 16px rgba(244, 162, 97, 0.35);
+      text-shadow: none;
+      letter-spacing: 0.06em;
       z-index: 14;
       opacity: 0;
       visibility: hidden;
@@ -720,7 +980,12 @@
       opacity: 1;
       visibility: visible;
       transform: translateX(-50%) scale(1);
-      transition: opacity 0.2s ease, visibility 0s;
+      transition: opacity 0.2s ease, visibility 0s, transform 0.25s ease, top 0.25s ease;
+    }
+
+    .combo-badge.active.punchline-active {
+      transform: translateX(-50%) scale(0.82);
+      top: calc(var(--safe-top) + 6.5rem);
     }
 
     .combo-badge.active.combo-burst {
@@ -728,30 +993,30 @@
     }
 
     .combo-badge.level-mid {
-      font-size: clamp(2.1rem, 9.5vw, 2.85rem);
-      background: linear-gradient(180deg, #fdcb6e 0%, #e17055 100%);
-      box-shadow: 0 5px 0 #c0392b, 0 0 28px rgba(253, 203, 110, 0.55);
+      font-size: clamp(1.9rem, 8.5vw, 2.55rem);
+      color: var(--hud-orange, #f4a261);
+      background: var(--hud-cream, #fff8e1);
+      box-shadow: 0 4px 0 rgba(29, 53, 87, 0.18), 0 0 22px rgba(244, 162, 97, 0.5);
     }
 
     .combo-badge.level-high {
-      font-size: clamp(2.35rem, 10.5vw, 3.1rem);
-      background: linear-gradient(180deg, #ffeaa7 0%, #fdcb6e 50%, #e17055 100%);
-      color: #2d1810;
-      text-shadow: 2px 2px 0 #fff;
+      font-size: clamp(2.1rem, 9.5vw, 2.85rem);
+      color: #e9a319;
+      background: linear-gradient(180deg, #fff8e1 0%, #ffe8b8 100%);
+      box-shadow: 0 5px 0 rgba(29, 53, 87, 0.2), 0 0 30px rgba(255, 200, 80, 0.55);
       animation: combo-high-glow 0.35s ease infinite alternate;
     }
 
     .combo-badge.level-mega {
-      font-size: clamp(2.6rem, 12vw, 3.5rem);
-      background: linear-gradient(180deg, #fff 0%, #fdcb6e 35%, #e17055 70%, #d63031 100%);
-      color: #2d1810;
-      text-shadow:
-        2px 2px 0 #fff,
-        0 0 18px rgba(255, 220, 80, 0.9);
+      font-size: clamp(2.35rem, 10.5vw, 3.15rem);
+      color: #fff;
+      background: linear-gradient(180deg, #f4a261 0%, #e76f51 100%);
+      border-color: #fff8e1;
+      text-shadow: 0 2px 0 rgba(29, 53, 87, 0.35);
       box-shadow:
-        0 6px 0 #c0392b,
-        0 0 40px rgba(255, 200, 50, 0.85),
-        0 0 80px rgba(238, 90, 36, 0.4);
+        0 5px 0 rgba(29, 53, 87, 0.25),
+        0 0 36px rgba(255, 200, 80, 0.75),
+        0 0 60px rgba(231, 111, 81, 0.35);
       animation: combo-mega-pulse 0.28s ease infinite alternate;
     }
 
@@ -760,7 +1025,9 @@
       inset: 0;
       z-index: 11;
       pointer-events: none;
-      background: radial-gradient(circle at 50% 35%, rgba(255, 220, 100, 0.45), transparent 55%);
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255, 220, 100, 0.42), transparent 52%),
+        linear-gradient(90deg, rgba(255, 220, 120, 0.22) 0%, transparent 18%, transparent 82%, rgba(255, 220, 120, 0.22) 100%);
       opacity: 0;
     }
 
@@ -792,10 +1059,12 @@
 
     .float-liter {
       position: absolute;
-      font-family: 'Bangers', cursive;
-      font-size: 1.35rem;
-      color: #0984e3;
-      text-shadow: 0 1px 0 #fff;
+      font-family: var(--hud-font, 'Fredoka', sans-serif);
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #fff;
+      -webkit-text-stroke: 1.5px var(--hud-blue, #1d3557);
+      paint-order: stroke fill;
       pointer-events: none;
       z-index: 15;
       animation: float-up 0.55s ease forwards;
@@ -816,8 +1085,8 @@
       position: absolute;
       left: 0;
       right: 0;
-      top: calc(var(--safe-top) + 8.75rem);
-      bottom: 46%;
+      top: calc(var(--safe-top) + 7rem);
+      bottom: 58%;
       z-index: 18;
       display: flex;
       align-items: center;
@@ -827,47 +1096,53 @@
     }
 
     .punchline {
-      font-family: 'Bangers', cursive;
-      font-size: clamp(2.2rem, 12vw, 4.2rem);
+      font-family: var(--hud-font, 'Fredoka', sans-serif);
+      font-weight: 700;
+      font-size: clamp(1.85rem, 10vw, 3.5rem);
       line-height: 0.95;
       text-align: center;
       color: #fff;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
+      -webkit-text-stroke: 3px var(--hud-blue, #1d3557);
+      paint-order: stroke fill;
       text-shadow:
-        4px 4px 0 #ee5a24,
-        -2px -2px 0 #2d1810,
-        0 8px 24px rgba(0,0,0,0.55);
-      animation: punchline-show 1.1s ease forwards;
+        0 4px 0 var(--hud-blue, #1d3557),
+        0 8px 20px rgba(0, 0, 0, 0.4);
+      animation: punchline-show var(--ph-dur, 2.8s) ease forwards;
       max-width: 92%;
-      transform: rotate(-2deg);
+      transform: rotate(-1.5deg);
     }
 
     .punchline-angry {
-      color: #ffe8e8;
-      transform: rotate(2deg) scale(1.05);
+      color: #fff5f0;
+      font-size: clamp(1.55rem, 8.5vw, 2.85rem);
+      transform: rotate(1.5deg) scale(1.04);
+      -webkit-text-stroke: 3px #c1121f;
       text-shadow:
-        4px 4px 0 #c0392b,
-        0 0 20px rgba(255, 50, 50, 0.8),
-        0 8px 28px rgba(0,0,0,0.6);
-      animation: punchline-angry 1.15s ease forwards;
+        0 4px 0 #c1121f,
+        0 0 18px rgba(255, 80, 60, 0.65),
+        0 8px 24px rgba(0, 0, 0, 0.5);
+      animation: punchline-angry var(--ph-dur, 3s) ease forwards;
     }
 
     @keyframes punchline-show {
-      0% { opacity: 0; transform: scale(0.3) rotate(-8deg); }
-      18% { opacity: 1; transform: scale(1.15) rotate(-2deg); }
-      75% { opacity: 1; transform: scale(1) rotate(-2deg); }
-      100% { opacity: 0; transform: scale(0.85) rotate(0deg); }
+      0% { opacity: 0; transform: scale(0.35) rotate(-6deg); }
+      10% { opacity: 1; transform: scale(1.08) rotate(-1.5deg); }
+      14% { opacity: 1; transform: scale(1) rotate(-1.5deg); }
+      88% { opacity: 1; transform: scale(1) rotate(-1.5deg); }
+      100% { opacity: 0; transform: scale(0.92) rotate(0deg); }
     }
 
     @keyframes punchline-angry {
-      0% { opacity: 0; transform: scale(0.4) rotate(6deg); }
-      12% { opacity: 1; transform: scale(1.2) rotate(-3deg); }
-      20% { transform: scale(1.15) rotate(3deg); }
-      28% { transform: scale(1.18) rotate(-2deg); }
-      36% { transform: scale(1.12) rotate(2deg); }
-      80% { opacity: 1; transform: scale(1.05) rotate(0deg); }
-      100% { opacity: 0; transform: scale(0.9); }
+      0% { opacity: 0; transform: scale(0.45) rotate(5deg); }
+      10% { opacity: 1; transform: scale(1.12) rotate(-2deg); }
+      16% { transform: scale(1.06) rotate(2deg); }
+      22% { transform: scale(1.08) rotate(-1deg); }
+      28% { transform: scale(1.04) rotate(1deg); }
+      34% { transform: scale(1.05) rotate(0deg); }
+      88% { opacity: 1; transform: scale(1.03) rotate(0deg); }
+      100% { opacity: 0; transform: scale(0.94); }
     }
 
     /* Отсчёт 3-2-1-Поехали */
@@ -887,10 +1162,13 @@
     }
 
     .countdown-text {
-      font-family: 'Bangers', cursive;
-      font-size: clamp(4rem, 22vw, 7rem);
+      font-family: var(--hud-font, 'Fredoka', sans-serif);
+      font-weight: 700;
+      font-size: clamp(3.8rem, 20vw, 6.5rem);
       color: #fff;
-      text-shadow: 0 4px 0 #ee5a24, 0 8px 24px rgba(0,0,0,0.4);
+      -webkit-text-stroke: 4px var(--hud-blue, #1d3557);
+      paint-order: stroke fill;
+      text-shadow: 0 4px 0 var(--hud-blue, #1d3557), 0 8px 24px rgba(0, 0, 0, 0.35);
       animation: countdown-pop 0.35s ease;
     }
 
@@ -904,12 +1182,48 @@
       position: absolute;
       left: 0;
       right: 0;
-      bottom: calc(var(--safe-bottom) + 0.75rem);
+      bottom: calc(var(--safe-bottom) + 1.1rem + var(--bucket-zone-lift, 0px));
       z-index: 9;
       display: flex;
       align-items: flex-end;
       justify-content: center;
       pointer-events: none;
+      transform: translateY(calc(var(--bucket-tier, 0) * -2px));
+    }
+
+    .bucket-zone::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 2.4rem;
+      transform: translateX(-50%);
+      width: calc(8.5rem * var(--bucket-scale, 1));
+      height: calc(1.2rem * var(--bucket-scale, 1));
+      background: radial-gradient(ellipse, rgba(0, 0, 0, 0.42) 0%, transparent 70%);
+      pointer-events: none;
+      animation: bucket-shadow-drift 5s ease-in-out infinite;
+    }
+
+    .bucket-zone-grass {
+      position: absolute;
+      left: 50%;
+      bottom: -2px;
+      transform: translateX(-50%);
+      width: calc(9rem * var(--bucket-scale, 1));
+      height: 14px;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        linear-gradient(82deg, transparent 8%, #4a7a3a 12%, transparent 16%),
+        linear-gradient(98deg, transparent 22%, #5d8f48 26%, transparent 30%),
+        linear-gradient(75deg, transparent 68%, #4a7a3a 72%, transparent 76%),
+        linear-gradient(105deg, transparent 84%, #3d6b32 88%, transparent 92%);
+      opacity: 0.55;
+    }
+
+    @keyframes bucket-shadow-drift {
+      0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.88; }
+      50% { transform: translateX(-50%) scale(1.05) translateY(2px); opacity: 1; }
     }
 
     .bucket-zone .bucket {
@@ -924,10 +1238,14 @@
     }
 
     .bucket-scaler {
+      position: relative;
       transform: scale(var(--bucket-scale, 1));
       transform-origin: center bottom;
       transition: transform 0.55s cubic-bezier(0.34, 1.35, 0.64, 1);
-      filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.4));
+      filter:
+        drop-shadow(0 8px 14px rgba(0, 0, 0, 0.45))
+        brightness(1.02)
+        saturate(0.92);
     }
 
     .bucket-wrap.bucket-growing .bucket-scaler {
@@ -951,6 +1269,33 @@
       height: 118px;
     }
 
+    .bucket-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center bottom;
+      z-index: 1;
+      pointer-events: none;
+      display: none;
+    }
+
+    .bucket.has-img .bucket-img {
+      display: block;
+    }
+
+    .bucket.has-img .bucket-css {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .bucket-css {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
     .bucket-handle {
       position: absolute;
       top: 0;
@@ -972,10 +1317,13 @@
       transform: translateX(-50%);
       width: 132px;
       height: 22px;
-      background: linear-gradient(180deg, #d4c4a8 0%, #9a8268 100%);
+      background: linear-gradient(180deg, #e8dcc8 0%, #b89a78 55%, #8b7355 100%);
       border: 2px solid #5c4835;
       border-radius: 50%;
       z-index: 3;
+      box-shadow:
+        inset 0 3px 6px rgba(255, 255, 255, 0.45),
+        0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .bucket-body {
@@ -985,11 +1333,19 @@
       transform: translateX(-50%);
       width: 118px;
       height: 84px;
-      background: linear-gradient(90deg, #8b7355 0%, #b89a78 35%, #a08868 65%, #7a6348 100%);
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(90, 70, 50, 0.15) 0px,
+          rgba(90, 70, 50, 0.15) 3px,
+          transparent 3px,
+          transparent 9px
+        ),
+        linear-gradient(90deg, #7a6348 0%, #b89a78 32%, #c4a882 50%, #a08868 68%, #6b5235 100%);
       clip-path: polygon(6% 0%, 94% 0%, 78% 100%, 22% 100%);
       overflow: hidden;
       z-index: 2;
-      box-shadow: inset 0 -10px 18px rgba(0,0,0,0.2);
+      box-shadow: inset 0 -10px 18px rgba(0,0,0,0.22), inset 4px 0 12px rgba(255,255,255,0.08);
     }
 
     .bucket-body::before {
@@ -1001,48 +1357,74 @@
       pointer-events: none;
     }
 
+    .bucket-body::after {
+      content: '';
+      position: absolute;
+      left: 8%;
+      top: 8%;
+      width: 22%;
+      height: 75%;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.22), transparent);
+      clip-path: polygon(0 0, 100% 0, 80% 100%, 0 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
     .bucket-milk {
       position: absolute;
       bottom: 0;
       left: 8%;
       right: 8%;
       height: 0%;
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.98) 0%,
-        #fffef6 35%,
-        #f5ecd8 75%,
-        #e8dcc4 100%
-      );
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.95) 18%, rgba(255, 255, 255, 0.95) 82%, rgba(255, 255, 255, 0.5) 100%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, #fffef6 35%, #f5ecd8 75%, #e8dcc4 100%);
       transition: height 0.38s cubic-bezier(0.34, 1.25, 0.64, 1);
-      clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%);
+      clip-path: polygon(2% 0, 98% 0, 88% 100%, 12% 100%);
+      border-radius: 4px 4px 0 0;
       transform-origin: center bottom;
       overflow: hidden;
+      z-index: 1;
+    }
+
+    .bucket-milk.ripple::before {
+      animation: milk-surface-wave 1.4s ease-in-out infinite, milk-ripple 0.45s ease;
+    }
+
+    @keyframes milk-ripple {
+      0% { transform: translateY(0) scaleX(1); filter: brightness(1); }
+      35% { transform: translateY(-5px) scaleX(1.08); filter: brightness(1.15); }
+      100% { transform: translateY(0) scaleX(1); filter: brightness(1); }
     }
 
     .bucket-milk::before {
       content: '';
       position: absolute;
-      top: -4px;
-      left: -15%;
-      width: 130%;
-      height: 14px;
-      background: rgba(255, 255, 255, 0.75);
-      border-radius: 45%;
+      top: -6px;
+      left: -18%;
+      width: 136%;
+      height: 16px;
+      background: rgba(255, 255, 255, 0.82);
+      border-radius: 48% 48% 42% 42%;
       animation: milk-surface-wave 1.4s ease-in-out infinite;
+      box-shadow: 0 -1px 3px rgba(255, 255, 255, 0.5);
     }
 
     .bucket-milk::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        105deg,
-        transparent 30%,
-        rgba(255, 255, 255, 0.45) 48%,
-        transparent 62%
-      );
+      background: linear-gradient(105deg, transparent 28%, rgba(255, 255, 255, 0.42) 48%, transparent 64%);
       animation: milk-shine 2.2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .bucket-milk.foamy::after {
+      background:
+        radial-gradient(circle at 22% 12%, rgba(255,255,255,0.9) 0 3px, transparent 4px),
+        radial-gradient(circle at 48% 8%, rgba(255,255,255,0.75) 0 2px, transparent 3px),
+        radial-gradient(circle at 72% 14%, rgba(255,255,255,0.85) 0 2.5px, transparent 3.5px),
+        linear-gradient(105deg, transparent 28%, rgba(255, 255, 255, 0.35) 48%, transparent 64%);
     }
 
     @keyframes milk-surface-wave {
@@ -1081,81 +1463,129 @@
       animation: bucket-wobble 0.45s ease;
     }
 
-    .bucket-meter {
-      margin-top: 0.55rem;
+    .bucket-wrap.overflowing .bucket::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 40%;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.85) 0%, transparent 72%);
+      pointer-events: none;
+      z-index: 5;
+      animation: bucket-overflow-splash 0.5s ease forwards;
+    }
+
+    @keyframes bucket-overflow-splash {
+      0% { opacity: 0; transform: translateX(-50%) scaleY(0.4); }
+      35% { opacity: 1; transform: translateX(-50%) scaleY(1.1); }
+      100% { opacity: 0; transform: translateX(-50%) scaleY(1.3) translateY(-12px); }
+    }
+
+    .bucket-meter-overlay {
+      position: absolute;
+      left: 50%;
+      bottom: 4px;
+      transform: translateX(-50%);
+      width: 92%;
+      z-index: 6;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.18rem;
       pointer-events: none;
-      min-width: 7.5rem;
     }
 
     .bucket-meter-track {
       width: 100%;
-      max-width: 110px;
-      height: 10px;
+      height: 8px;
       padding: 2px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 2px solid rgba(255, 255, 255, 0.45);
+      background: var(--hud-cream, #fff8e1);
+      border: 2.5px solid var(--hud-blue, #1d3557);
       border-radius: 99px;
       overflow: hidden;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 3px 0 rgba(29, 53, 87, 0.12);
     }
 
     .bucket-meter-fill {
       height: 100%;
       width: 0%;
       border-radius: 99px;
-      background: linear-gradient(90deg, #dfe6f0 0%, #ffffff 45%, #f5ecd8 100%);
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.55);
+      background: linear-gradient(90deg, #f5ecd8 0%, #ffffff 50%, #fff8e1 100%);
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
       transition: width 0.38s cubic-bezier(0.34, 1.25, 0.64, 1);
     }
 
     .bucket-meter-fill.near-full {
-      background: linear-gradient(90deg, #ffeaa7, #fff, #fdcb6e);
-      box-shadow: 0 0 10px rgba(253, 203, 110, 0.8);
+      background: linear-gradient(90deg, #f4a261, #fff8e1, #ffe8b8);
+      box-shadow: 0 0 8px rgba(244, 162, 97, 0.65);
     }
 
     .bucket-meter-label {
-      font-family: 'Bangers', cursive;
-      font-size: 1.45rem;
-      letter-spacing: 0.06em;
-      color: #fff;
-      text-shadow:
-        2px 2px 0 #2d1810,
-        0 2px 8px rgba(0, 0, 0, 0.45);
+      font-family: var(--hud-font, 'Fredoka', sans-serif);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.03em;
+      color: var(--hud-blue, #1d3557);
+      background: rgba(255, 248, 225, 0.92);
+      border: 2px solid var(--hud-blue, #1d3557);
+      border-radius: 10px;
+      padding: 0.12rem 0.4rem 0.1rem;
+      box-shadow: 0 2px 0 rgba(29, 53, 87, 0.1);
       line-height: 1;
+      white-space: nowrap;
     }
 
     .bucket-meter-label .fill-num {
-      color: #74b9ff;
-      font-size: 1.55em;
+      color: var(--hud-orange, #f4a261);
+      font-size: 1.15em;
     }
 
     .bucket-meter-label .cap-num {
-      color: #fdcb6e;
+      color: var(--hud-blue, #1d3557);
     }
 
+    .bucket-meter-label .sep,
     .bucket-meter-label .unit {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 0.85em;
+      color: var(--hud-blue, #1d3557);
+      opacity: 0.75;
+      font-size: 0.92em;
     }
 
     .bucket-tier-tag {
-      font-family: 'Bangers', cursive;
-      font-size: 0.95rem;
-      letter-spacing: 0.12em;
-      color: #ffeaa7;
-      text-shadow: 1px 1px 0 #2d1810;
+      position: absolute;
+      top: -1.65rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      font-family: var(--hud-font, 'Fredoka', sans-serif);
+      font-weight: 700;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      color: #fff;
+      background: var(--hud-orange, #f4a261);
+      border: 2px solid var(--hud-blue, #1d3557);
+      border-radius: 8px;
+      padding: 0.1rem 0.35rem;
       opacity: 0;
-      transform: translateY(4px);
-      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+      white-space: nowrap;
+      transition: opacity 0.2s ease, transform 0.25s ease;
     }
 
     .bucket-tier-tag.visible {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .bucket-tier-tag.tier-flash {
+      animation: tier-tag-pop 0.38s cubic-bezier(0.34, 1.4, 0.64, 1);
+    }
+
+    @keyframes tier-tag-pop {
+      0% { transform: translateX(-50%) translateY(4px) scale(0.6); opacity: 0; }
+      55% { transform: translateX(-50%) translateY(-2px) scale(1.08); opacity: 1; }
+      100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
     }
 
     /* Canvas — капли молока (между коровой и ведром) */
@@ -1175,9 +1605,9 @@
       80% { transform: rotate(-2deg) translateY(1px); }
     }
 
-    /* ====== ФИНАЛЬНЫЙ ЭКРАН (стиль реплик) ====== */
+    /* ====== ФИНАЛЬНЫЙ ЭКРАН ====== */
     #screen-end {
-      background: linear-gradient(165deg, #fff8ef 0%, #f0e4d0 45%, #e8d4bc 100%);
+      background: linear-gradient(165deg, #fff8e1 0%, #f5ecd8 45%, #e8dcc8 100%);
       gap: 0.75rem;
       padding: 1.25rem 1rem;
       justify-content: center;
@@ -1188,21 +1618,21 @@
       width: min(100%, 22rem);
       padding: 1.25rem 1.1rem 1rem;
       border-radius: 1.25rem;
-      background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,248,238,0.88) 100%);
-      border: 3px solid #2d1810;
+      background: linear-gradient(180deg, #fff8e1 0%, rgba(255, 248, 225, 0.95) 100%);
+      border: 3px solid #1d3557;
       box-shadow:
-        0 8px 0 #c9b89a,
-        0 16px 40px rgba(45, 24, 16, 0.22);
+        0 6px 0 rgba(29, 53, 87, 0.18),
+        0 16px 40px rgba(29, 53, 87, 0.12);
       text-align: center;
       animation: end-card-in 0.45s cubic-bezier(0.34, 1.4, 0.64, 1);
     }
 
     #screen-end.end-new-record .end-card {
-      border-color: #ee5a24;
+      border-color: #f4a261;
       box-shadow:
-        0 8px 0 #ee5a24,
-        0 0 28px rgba(255, 159, 67, 0.45),
-        0 16px 40px rgba(45, 24, 16, 0.22);
+        0 6px 0 rgba(244, 162, 97, 0.45),
+        0 0 28px rgba(244, 162, 97, 0.35),
+        0 16px 40px rgba(29, 53, 87, 0.12);
     }
 
     @keyframes end-card-in {
@@ -1211,31 +1641,39 @@
     }
 
     .end-emoji {
-      font-size: clamp(2.5rem, 12vw, 3.5rem);
+      width: clamp(3rem, 14vw, 4rem);
+      height: clamp(3rem, 14vw, 4rem);
+      margin: 0 auto 0.15rem;
       line-height: 1;
-      margin-bottom: 0.15rem;
+    }
+
+    .end-emoji svg {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     .end-title {
-      font-family: 'Bangers', cursive;
-      font-size: clamp(2.4rem, 13vw, 3.6rem);
-      line-height: 0.92;
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 11vw, 3rem);
+      line-height: 0.95;
       color: #fff;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      transform: rotate(-2deg);
-      text-shadow:
-        4px 4px 0 #ee5a24,
-        -2px -2px 0 #2d1810,
-        0 6px 20px rgba(0,0,0,0.25);
+      letter-spacing: 0.06em;
+      transform: rotate(-1.5deg);
+      -webkit-text-stroke: 3px #1d3557;
+      paint-order: stroke fill;
+      text-shadow: 0 4px 0 #1d3557;
       margin-bottom: 0.35rem;
     }
 
     .end-subtitle {
-      font-family: 'Bangers', cursive;
-      font-size: clamp(1.35rem, 6vw, 1.75rem);
-      color: #5a4a3a;
-      letter-spacing: 0.12em;
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(1rem, 5vw, 1.25rem);
+      color: #1d3557;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       margin-bottom: 0.15rem;
     }
@@ -1248,24 +1686,24 @@
     }
 
     .end-score-num {
-      font-family: 'Bangers', cursive;
-      font-size: clamp(4rem, 22vw, 5.5rem);
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(3.5rem, 20vw, 5rem);
       line-height: 0.9;
       color: #fff;
-      text-shadow:
-        5px 5px 0 #0984e3,
-        -2px -2px 0 #2d1810,
-        0 8px 24px rgba(9, 132, 227, 0.35);
-      letter-spacing: 0.02em;
+      -webkit-text-stroke: 4px #1d3557;
+      paint-order: stroke fill;
+      text-shadow: 0 4px 0 #1d3557;
+      letter-spacing: -0.02em;
     }
 
     .end-score-unit {
-      font-family: 'Bangers', cursive;
-      font-size: clamp(1.5rem, 7vw, 2rem);
-      color: #2d1810;
-      letter-spacing: 0.15em;
-      margin-top: -0.15rem;
-      text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.1rem, 5.5vw, 1.45rem);
+      color: #1d3557;
+      letter-spacing: 0.12em;
+      margin-top: -0.1rem;
     }
 
     .end-details {
@@ -1278,39 +1716,41 @@
 
     .end-compare,
     .end-message {
-      font-family: 'Bangers', cursive;
-      font-size: clamp(1.15rem, 5vw, 1.4rem);
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.95rem, 4.2vw, 1.15rem);
       line-height: 1.2;
       margin: 0;
-      padding: 0.5rem 0.7rem;
-      border-radius: 0.65rem;
-      border: 2px solid #2d1810;
+      padding: 0.45rem 0.65rem;
+      border-radius: 12px;
+      border: 2.5px solid #1d3557;
       text-shadow: none;
       text-transform: none;
       letter-spacing: 0.02em;
     }
 
     .end-compare {
-      background: #dff5e6;
-      color: #1a5c32;
+      background: #fff8e1;
+      color: #1d3557;
     }
 
     .end-compare.behind {
-      background: #ffe8d9;
-      color: #9a3d10;
+      background: #fff5f0;
+      color: #c1121f;
+      border-color: #c1121f;
     }
 
     #screen-end.end-new-record .end-compare {
-      background: #fff3c4;
-      color: #b35f00;
+      background: #fff8e1;
+      color: #e9a319;
+      border-color: #f4a261;
     }
 
     .end-message {
-      background: linear-gradient(180deg, #ff9f43 0%, #ee5a24 100%);
-      color: #fff;
-      font-size: clamp(1.25rem, 5.5vw, 1.55rem);
+      background: #1d3557;
+      color: #fff8e1;
+      font-size: clamp(1.05rem, 4.8vw, 1.3rem);
       line-height: 1.15;
-      text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
     }
 
     .end-compare:empty,
@@ -1319,22 +1759,24 @@
     }
 
     .end-record {
-      font-family: 'Bangers', cursive;
-      font-size: clamp(1.1rem, 5vw, 1.35rem);
-      color: #5a4a3a;
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.95rem, 4.2vw, 1.15rem);
+      color: #1d3557;
       letter-spacing: 0.06em;
     }
 
     .end-record span {
-      color: #c45c26;
+      color: #f4a261;
       font-size: 1.15em;
     }
 
     .end-brand {
-      font-family: 'Bangers', cursive;
-      font-size: 0.95rem;
-      color: #8a7a6a;
-      letter-spacing: 0.2em;
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: rgba(29, 53, 87, 0.55);
+      letter-spacing: 0.18em;
       margin-top: 0.5rem;
       text-transform: uppercase;
     }
@@ -1508,11 +1950,51 @@
       <div class="punchline-layer" id="punchline-layer" aria-live="polite"></div>
 
       <div class="cow-scene" id="cow-scene">
+        <div class="cow-scene-sign-cover" aria-hidden="true"></div>
         <div class="cow-frame" id="cow-frame">
+          <video
+            class="cow-bg-video"
+            id="cow-bg-video"
+            muted
+            loop
+            playsinline
+            preload="auto"
+            tabindex="-1"
+            aria-hidden="true"
+          ></video>
           <img class="cow-img" id="cow-img" src="./assets/cow.jpg" alt="Корова" draggable="false">
           <div class="udder" id="udder" role="button" aria-label="Дой корову">
+            <div class="tap-hint" id="tap-hint" aria-hidden="true">
+              <span class="tap-hint-finger">👆</span>
+              <span class="tap-hint-text">Тапай!</span>
+            </div>
             <div class="udder-bag"></div>
-            <div class="teats-row">
+            <div class="teats-row" id="teats-row">
+              <svg class="teats-svg" viewBox="0 0 200 72" aria-hidden="true">
+                <defs>
+                  <linearGradient id="teat-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#f4ddd2"/>
+                    <stop offset="45%" stop-color="#e4b8a8"/>
+                    <stop offset="100%" stop-color="#cc9488"/>
+                  </linearGradient>
+                  <linearGradient id="teat-heat-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#ffd0b0"/>
+                    <stop offset="55%" stop-color="#ff9068"/>
+                    <stop offset="100%" stop-color="#e85040"/>
+                  </linearGradient>
+                  <filter id="teat-shadow" x="-20%" y="-10%" width="140%" height="130%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="1.8" flood-color="rgba(40,20,15,0.35)"/>
+                  </filter>
+                </defs>
+                <path class="teat-shape ts1" data-shape="0" filter="url(#teat-shadow)" d="M 18 3 C 11 3 8 9 9 17 C 10 28 12 42 14 54 C 15 62 21 69 30 69 C 39 69 43 61 43 53 C 42 40 41 26 42 16 C 43 8 39 3 32 3 C 26 3 18 3 18 3 Z"/>
+                <path class="teat-shape ts2" data-shape="1" filter="url(#teat-shadow)" d="M 50 5 C 43 5 40 11 41 19 C 42 30 44 44 46 56 C 47 64 53 70 62 70 C 71 70 75 62 75 54 C 74 42 73 28 74 18 C 75 10 71 5 64 5 C 57 5 50 5 50 5 Z"/>
+                <path class="teat-shape ts3" data-shape="2" filter="url(#teat-shadow)" d="M 126 5 C 119 5 116 11 117 19 C 118 30 120 44 122 56 C 123 64 129 70 138 70 C 147 70 151 62 151 54 C 150 42 149 28 150 18 C 151 10 147 5 140 5 C 133 5 126 5 126 5 Z"/>
+                <path class="teat-shape ts4" data-shape="3" filter="url(#teat-shadow)" d="M 162 3 C 155 3 152 9 153 17 C 154 28 156 42 158 54 C 159 62 165 69 174 69 C 183 69 187 61 187 53 C 186 40 185 26 186 16 C 187 8 183 3 176 3 C 170 3 162 3 162 3 Z"/>
+                <ellipse class="teat-nipple tn1" cx="30" cy="67" rx="5" ry="4.5" fill="#d8a090"/>
+                <ellipse class="teat-nipple tn2" cx="62" cy="68" rx="5" ry="4.5" fill="#d8a090"/>
+                <ellipse class="teat-nipple tn3" cx="138" cy="68" rx="5" ry="4.5" fill="#d8a090"/>
+                <ellipse class="teat-nipple tn4" cx="174" cy="67" rx="5" ry="4.5" fill="#d8a090"/>
+              </svg>
               <div class="teat t1" data-teat="0"><span class="teat-heat-bar" aria-hidden="true"></span></div>
               <div class="teat t2" data-teat="1"><span class="teat-heat-bar" aria-hidden="true"></span></div>
               <div class="teat t3" data-teat="2"><span class="teat-heat-bar" aria-hidden="true"></span></div>
@@ -1528,25 +2010,29 @@
         <span class="countdown-text" id="countdown-text">3</span>
       </div>
 
-      <div class="bucket-zone">
+      <div class="bucket-zone" id="bucket-zone">
         <div class="bucket-wrap" id="bucket-wrap">
           <div class="bucket-scaler" id="bucket-scaler">
+            <div class="bucket-zone-grass" aria-hidden="true"></div>
             <div class="bucket" id="bucket">
-              <div class="bucket-handle"></div>
-              <div class="bucket-rim"></div>
-              <div class="bucket-body">
-                <div class="bucket-milk" id="bucket-milk"></div>
+              <img class="bucket-img" id="bucket-img" src="./assets/bucket.png" alt="" draggable="false">
+              <div class="bucket-css">
+                <div class="bucket-handle"></div>
+                <div class="bucket-rim"></div>
+                <div class="bucket-body">
+                  <div class="bucket-milk" id="bucket-milk"></div>
+                </div>
+              </div>
+              <div class="bucket-meter-overlay">
+                <span class="bucket-tier-tag" id="bucket-tier-tag" aria-hidden="true"></span>
+                <div class="bucket-meter-track" aria-hidden="true">
+                  <div class="bucket-meter-fill" id="bucket-meter-fill"></div>
+                </div>
+                <div class="bucket-meter-label" id="bucket-meter-label">
+                  <span class="fill-num" id="bucket-fill-num">0.0</span><span class="sep"> / </span><span class="cap-num" id="bucket-cap-num">1</span><span class="unit"> л</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="bucket-meter">
-            <div class="bucket-meter-track" aria-hidden="true">
-              <div class="bucket-meter-fill" id="bucket-meter-fill"></div>
-            </div>
-            <div class="bucket-meter-label" id="bucket-meter-label">
-              <span class="fill-num" id="bucket-fill-num">0.0</span><span class="sep"> / </span><span class="cap-num" id="bucket-cap-num">1</span><span class="unit"> л</span>
-            </div>
-            <span class="bucket-tier-tag" id="bucket-tier-tag" aria-hidden="true"></span>
           </div>
         </div>
       </div>
@@ -1555,7 +2041,18 @@
     <!-- ====== КОНЕЦ ====== -->
     <section id="screen-end" class="screen" aria-hidden="true">
       <div class="end-card" id="end-card">
-        <div class="end-emoji">🐄</div>
+        <div class="end-emoji" aria-hidden="true">
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="32" cy="38" rx="22" ry="18" fill="#fff8e1" stroke="#1d3557" stroke-width="2.5"/>
+            <ellipse cx="32" cy="22" rx="16" ry="14" fill="#fff8e1" stroke="#1d3557" stroke-width="2.5"/>
+            <ellipse cx="22" cy="18" rx="5" ry="7" fill="#1d3557"/>
+            <ellipse cx="42" cy="18" rx="5" ry="7" fill="#1d3557"/>
+            <circle cx="24" cy="20" r="2" fill="#fff"/>
+            <circle cx="44" cy="20" r="2" fill="#fff"/>
+            <ellipse cx="32" cy="28" rx="5" ry="4" fill="#f4a261"/>
+            <path d="M18 42 Q32 52 46 42" fill="none" stroke="#1d3557" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
         <h2 class="end-title">Время<br>вышло!</h2>
         <p class="end-subtitle">Ты надоил</p>
         <div class="end-score-block">
@@ -1629,6 +2126,11 @@
         { cap: 14, scale: 1.72, bonus: 1.2 },
         { cap: 20, scale: 1.85, bonus: 1.5 },
       ],
+      /* Визуальный scale отдельно от геймплея — пологая кривая */
+      BUCKET_VISUAL_SCALES: [1, 1.08, 1.12, 1.16, 1.2, 1.24, 1.28, 1.32, 1.35],
+      TAP_HINT_MS: 5000,
+      IDLE_DRIP_MIN_SEC: 4,
+      IDLE_DRIP_MAX_SEC: 6,
       STORAGE_KEY: 'korova_highscore',
       GAME_SHARE_URL: 'https://powerviking145-lgtm.github.io/Korovka/',
       TIMER_CRITICAL_SEC: 5,
@@ -1641,23 +2143,47 @@
       TEAT_OVERHEAT_MULT: 0.35,
       TEAT_HOT_MULT: 0.72,
       COW_IMAGE: 'assets/cow.jpg',
+      /* Видео-фон раунда (если файл есть — вместо cow.jpg) */
+      COW_VIDEO: 'assets/game.mp4',
       AUDIO_MENU: 'assets/menu.ogg',
       AUDIO_GAME: 'assets/game.ogg',
       MENU_VIDEO: 'assets/menu.mp4',
-      /* Позиция вымени — % от кадра cow.jpg (768×1376) */
-      UDDER: { left: 50, top: 45, width: 36, height: 20 },
+      /* Позиция вымени — % от кадра (картинка / видео) */
+      UDDER: { left: 50, top: 46, width: 36, height: 20 },
+      /* SVG-кластер сосков + hitbox */
+      TEATS: {
+        clusterTop: 42,
+        clusterWidth: 'clamp(162px, 46vw, 238px)',
+        clusterHeight: 'clamp(52px, 14vw, 72px)',
+        overlapUdder: 4,
+        hitboxWidth: 'clamp(36px, 10vw, 48px)',
+        hitboxHeight: 'clamp(44px, 12vw, 60px)',
+        hitboxOffsets: [
+          { x: 18, y: 66 },
+          { x: 38, y: 72 },
+          { x: 62, y: 72 },
+          { x: 82, y: 66 },
+        ],
+      },
       COW_ASPECT_FALLBACK: 768 / 1376,
       MILK_DROP_MS: 380,
       MILK_DROP_ARC: 75,
-      SPLASH_COUNT: 8,
-      SPLASH_MS: 300,
+      SPLASH_COUNT: 10,
+      SPLASH_MS: 340,
       DROP_POOL_SIZE: 50,
+      RING_POOL_SIZE: 12,
+      SPARKLE_POOL_SIZE: 24,
       COW_CHEW_MIN_MS: 3000,
       COW_CHEW_MAX_MS: 5500,
       MOO_COOLDOWN_MS: 1100,
       MOO_VOLUME: { soft: 0.78, angry: 0.92, hot: 0.88 },
       TICK_VOLUME: 0.5,
-      PUNCHLINE_COOLDOWN_MS: 600,
+      PUNCHLINE_HOLD_MS: 2800,
+      PUNCHLINE_HOLD_ANGRY_MS: 3000,
+      PUNCHLINE_GAP_MS: 550,
+      PUNCHLINE_QUEUE_MAX: 2,
+      PUNCHLINE_FUNNY_CHANCE: 0.16,
+      PUNCHLINE_ANGRY_CHANCE: 0.2,
       PUNCHLINES_FUNNY: [
         'А Я ТО ЧТО?!',
         'ТЫ ДОЯР ИЛИ БЕЗУМЕЦ?!',
@@ -1748,6 +2274,7 @@
       comboStickyMult: 1,
       comboStickyUntil: 0,
       shareBlob: null,
+      punchlinesUsed: new Set(),
     };
 
     // ====== DOM ======
@@ -1766,6 +2293,8 @@
       timer: document.getElementById('timer'),
       timerWrap: document.getElementById('timer-wrap'),
       teats: [...document.querySelectorAll('.teat')],
+      teatShapes: [...document.querySelectorAll('.teat-shape')],
+      teatNipples: [...document.querySelectorAll('.teat-nipple')],
       liters: document.getElementById('liters'),
       bucketMilk: document.getElementById('bucket-milk'),
       endLiters: document.getElementById('end-liters'),
@@ -1774,7 +2303,9 @@
       endCompare: document.getElementById('end-compare'),
       cowScene: document.getElementById('cow-scene'),
       cowFrame: document.getElementById('cow-frame'),
+      cowBgVideo: document.getElementById('cow-bg-video'),
       cowImg: document.getElementById('cow-img'),
+      tapHint: document.getElementById('tap-hint'),
       udder: document.getElementById('udder'),
       countdownOverlay: document.getElementById('countdown-overlay'),
       countdownText: document.getElementById('countdown-text'),
@@ -1788,8 +2319,10 @@
       comboBadge: document.getElementById('combo-badge'),
       comboFlash: document.getElementById('combo-flash'),
       canvas: document.getElementById('particles-canvas'),
+      bucketZone: document.getElementById('bucket-zone'),
       bucketWrap: document.getElementById('bucket-wrap'),
       bucket: document.getElementById('bucket'),
+      bucketImg: document.getElementById('bucket-img'),
       bucketScaler: document.getElementById('bucket-scaler'),
       bucketMeterFill: document.getElementById('bucket-meter-fill'),
       bucketFillNum: document.getElementById('bucket-fill-num'),
@@ -1803,6 +2336,14 @@
       btnShareDownload: document.getElementById('btn-share-download'),
       btnShareCopy: document.getElementById('btn-share-copy'),
       btnShareClose: document.getElementById('btn-share-close'),
+    };
+
+    const punchlineQueue = {
+      items: [],
+      showing: false,
+      currentText: '',
+      hideTimer: null,
+      processTimer: null,
     };
 
     const cowVoice = {
@@ -1823,6 +2364,8 @@
     const milkParticles = {
       drops: [],
       splashes: [],
+      rings: [],
+      sparkles: [],
       ctx: null,
     };
 
@@ -1835,6 +2378,10 @@
     let cowChewTimer = null;
     let gameMusicTimer = null;
     let menuMusicRetryTimer = null;
+    let bucketTierTagTimer = null;
+    let tapHintTimer = null;
+    let idleDripTimer = 0;
+    let idleDripNext = 5;
 
     // ====== СТЕЙТ-МАШИНА ======
     function setState(next) {
@@ -1855,18 +2402,51 @@
       if (next === 'menu') {
         stopGameMusic();
         els.countdownOverlay.classList.add('hidden');
+        pauseGameVideo();
         playMenuVideo();
         tryAutoplayMenuMusic();
         scheduleMenuMusicRetries();
       } else {
         clearMenuMusicRetries();
         pauseMenuVideo();
-        if (next === 'countdown' || next === 'playing') stopMenuMusic();
+        if (next === 'countdown' || next === 'playing') {
+          stopMenuMusic();
+          playGameVideo();
+        } else {
+          pauseGameVideo();
+        }
         if (next === 'gameover') {
           stopGameMusic();
           els.countdownOverlay.classList.add('hidden');
         }
       }
+
+      syncCowSceneClass();
+      if (next !== 'playing' && next !== 'countdown') hideTapHint();
+    }
+
+    function syncCowSceneClass() {
+      els.cowScene?.classList.toggle('playing', game.state === 'playing' || game.state === 'countdown');
+    }
+
+    function showTapHint() {
+      const hint = els.tapHint;
+      if (!hint) return;
+      hint.classList.add('visible');
+      hint.setAttribute('aria-hidden', 'false');
+      els.udder?.classList.add('tap-hint-active');
+      if (tapHintTimer) clearTimeout(tapHintTimer);
+      tapHintTimer = setTimeout(hideTapHint, CONFIG.TAP_HINT_MS);
+    }
+
+    function hideTapHint() {
+      if (tapHintTimer) {
+        clearTimeout(tapHintTimer);
+        tapHintTimer = null;
+      }
+      els.tapHint?.classList.remove('visible');
+      els.tapHint?.setAttribute('aria-hidden', 'true');
+      els.udder?.classList.remove('tap-hint-active');
     }
 
     async function playMenuVideo() {
@@ -1942,12 +2522,39 @@
       els.menuBgVideo?.pause();
     }
 
+    async function playGameVideo() {
+      const v = els.cowBgVideo;
+      if (!v || v.dataset.broken === '1' || !els.cowFrame?.classList.contains('has-video')) return;
+      if (game.state !== 'playing' && game.state !== 'countdown') return;
+      try {
+        if (v.readyState < 2) v.load();
+        await v.play();
+      } catch (_) {}
+    }
+
+    function pauseGameVideo() {
+      els.cowBgVideo?.pause();
+    }
+
     function applyUdderHotspot() {
       const u = CONFIG.UDDER;
+      const t = CONFIG.TEATS;
       els.udder.style.setProperty('--udder-left', u.left + '%');
       els.udder.style.setProperty('--udder-top', u.top + '%');
       els.udder.style.setProperty('--udder-width', u.width + '%');
       els.udder.style.setProperty('--udder-height', u.height + '%');
+      els.udder.style.setProperty('--cluster-top', t.clusterTop + '%');
+      els.udder.style.setProperty('--cluster-w', t.clusterWidth);
+      els.udder.style.setProperty('--cluster-h', t.clusterHeight);
+      els.udder.style.setProperty('--overlap-udder', t.overlapUdder + '%');
+      els.udder.style.setProperty('--hitbox-w', t.hitboxWidth);
+      els.udder.style.setProperty('--hitbox-h', t.hitboxHeight);
+      t.hitboxOffsets.forEach((off, i) => {
+        const el = els.teats[i];
+        if (!el) return;
+        el.style.setProperty('--hit-x', off.x + '%');
+        el.style.setProperty('--hit-y', off.y + '%');
+      });
     }
 
     function fitCowFrame() { /* кадр на 100% через CSS */ }
@@ -2066,6 +2673,10 @@
       game.lastTimerSec = CONFIG.ROUND_SECONDS;
       countdownRunning = false;
       lastFrameTime = performance.now();
+      syncCowSceneClass();
+      showTapHint();
+      idleDripTimer = 0;
+      idleDripNext = CONFIG.IDLE_DRIP_MIN_SEC + Math.random() * (CONFIG.IDLE_DRIP_MAX_SEC - CONFIG.IDLE_DRIP_MIN_SEC);
       updateHUD();
       scheduleGameMusic();
       startCowLife();
@@ -2073,7 +2684,7 @@
       setTimeout(() => {
         if (game.state !== 'playing') return;
         cowVoice.lastPunchlineAt = 0;
-        showPunchline('Подои меня!', false);
+        showPunchline('Подои меня!', false, 3);
         tryPlayMoo('soft');
       }, 450);
     }
@@ -2086,7 +2697,7 @@
     function stopCowLife() {
       if (cowChewTimer) clearTimeout(cowChewTimer);
       cowChewTimer = null;
-      els.cowImg?.classList.remove('chew');
+      els.cowFrame?.classList.remove('chew');
     }
 
     function scheduleCowChew() {
@@ -2094,9 +2705,9 @@
       const delay = CONFIG.COW_CHEW_MIN_MS + Math.random() * (CONFIG.COW_CHEW_MAX_MS - CONFIG.COW_CHEW_MIN_MS);
       cowChewTimer = setTimeout(() => {
         if (game.state !== 'playing') return;
-        els.cowImg.classList.remove('chew');
-        void els.cowImg.offsetWidth;
-        els.cowImg.classList.add('chew');
+        els.cowFrame?.classList.remove('chew');
+        void els.cowFrame?.offsetWidth;
+        els.cowFrame?.classList.add('chew');
         if (Math.random() < 0.22) tryPlayMoo('soft');
         scheduleCowChew();
       }, delay);
@@ -2212,6 +2823,7 @@
       }
       if (els.bucketFillNum) els.bucketFillNum.textContent = game.bucketFill.toFixed(1);
       els.bucket.classList.toggle('full', game.bucketFill >= cap * 0.98 && !game.bucketOverflowing);
+      els.bucketMilk.classList.toggle('foamy', pct >= 70 && !game.bucketOverflowing);
 
     }
 
@@ -2233,6 +2845,7 @@
 
       badge.classList.toggle('active', on);
       badge.setAttribute('aria-hidden', on ? 'false' : 'true');
+      els.udder?.classList.toggle('combo-aura', mult >= 4);
 
       const tier = getComboTierClass(mult);
       const hadTier = COMBO_TIER_CLASSES.find((c) => badge.classList.contains(c)) || '';
@@ -2257,6 +2870,14 @@
       flash.classList.remove('on');
       void flash.offsetWidth;
       flash.classList.add('on');
+    }
+
+    function screenShake() {
+      const screen = screens.game;
+      if (!screen) return;
+      screen.classList.remove('screen-shake');
+      void screen.offsetWidth;
+      screen.classList.add('screen-shake');
     }
 
     function playApplause(kind) {
@@ -2312,9 +2933,11 @@
         if (navigator.vibrate) navigator.vibrate([20, 30, 40]);
       } else if (mult >= 10 && prevMult < 10) {
         playApplause('mega');
+        screenShake();
         if (navigator.vibrate) navigator.vibrate([25, 20, 25, 20, 50]);
       } else if (mult >= 7 && prevMult < 7) {
         playApplause('mega');
+        screenShake();
         if (navigator.vibrate) navigator.vibrate([18, 18, 35]);
       } else if (mult > prevMult) {
         playApplause('tick');
@@ -2588,23 +3211,89 @@
       playMoo(variant);
     }
 
-    // ====== ШУТКИ ПО ЦЕНТРУ ======
-    function showPunchline(text, angry) {
-      const now = performance.now();
-      if (now - cowVoice.lastPunchlineAt < CONFIG.PUNCHLINE_COOLDOWN_MS) return;
-      cowVoice.lastPunchlineAt = now;
+    // ====== ШУТКИ ПО ЦЕНТРУ (очередь + долгий показ) ======
+    function clearPunchlines() {
+      punchlineQueue.items = [];
+      punchlineQueue.showing = false;
+      punchlineQueue.currentText = '';
+      if (punchlineQueue.hideTimer) clearTimeout(punchlineQueue.hideTimer);
+      if (punchlineQueue.processTimer) clearTimeout(punchlineQueue.processTimer);
+      punchlineQueue.hideTimer = null;
+      punchlineQueue.processTimer = null;
+      if (els.punchlineLayer) els.punchlineLayer.innerHTML = '';
+      els.comboBadge?.classList.remove('punchline-active');
+    }
 
+    function schedulePunchlineProcess(delay) {
+      if (punchlineQueue.processTimer) clearTimeout(punchlineQueue.processTimer);
+      punchlineQueue.processTimer = setTimeout(() => {
+        punchlineQueue.processTimer = null;
+        processPunchlineQueue();
+      }, delay);
+    }
+
+    function processPunchlineQueue() {
+      if (punchlineQueue.showing || !punchlineQueue.items.length) return;
+
+      const item = punchlineQueue.items.shift();
       const layer = els.punchlineLayer;
-      if (!layer) return;
+      if (!layer || !item) return;
+
+      punchlineQueue.showing = true;
+      punchlineQueue.currentText = item.text;
+      els.comboBadge?.classList.add('punchline-active');
       layer.innerHTML = '';
 
       const el = document.createElement('div');
-      el.className = angry ? 'punchline punchline-angry' : 'punchline';
-      el.textContent = text;
+      el.className = item.angry ? 'punchline punchline-angry' : 'punchline';
+      const holdMs = item.angry ? CONFIG.PUNCHLINE_HOLD_ANGRY_MS : CONFIG.PUNCHLINE_HOLD_MS;
+      el.style.setProperty('--ph-dur', holdMs + 'ms');
+      el.textContent = item.text;
       layer.appendChild(el);
-      setTimeout(() => {
+
+      punchlineQueue.hideTimer = setTimeout(() => {
         if (el.parentNode === layer) el.remove();
-      }, angry ? 1150 : 1100);
+        punchlineQueue.showing = false;
+        punchlineQueue.currentText = '';
+        punchlineQueue.hideTimer = null;
+        if (!punchlineQueue.items.length) els.comboBadge?.classList.remove('punchline-active');
+        cowVoice.lastPunchlineAt = performance.now();
+        schedulePunchlineProcess(CONFIG.PUNCHLINE_GAP_MS);
+      }, holdMs);
+    }
+
+    function pickUnusedPunchline(arr) {
+      const unused = arr.filter((t) => !game.punchlinesUsed.has(t));
+      if (!unused.length) return null;
+      return unused[Math.floor(Math.random() * unused.length)];
+    }
+
+    function showPunchline(text, angry, priority) {
+      const pri = priority ?? (angry ? 2 : 1);
+      if (!text) return;
+
+      if (game.punchlinesUsed.has(text)) return;
+      if (punchlineQueue.currentText === text) return;
+      if (punchlineQueue.items.some((i) => i.text === text)) return;
+
+      game.punchlinesUsed.add(text);
+
+      const item = { text, angry: !!angry, priority: pri };
+      let inserted = false;
+      for (let i = 0; i < punchlineQueue.items.length; i++) {
+        if (pri > punchlineQueue.items[i].priority) {
+          punchlineQueue.items.splice(i, 0, item);
+          inserted = true;
+          break;
+        }
+      }
+      if (!inserted) punchlineQueue.items.push(item);
+
+      if (punchlineQueue.items.length > CONFIG.PUNCHLINE_QUEUE_MAX) {
+        punchlineQueue.items.length = CONFIG.PUNCHLINE_QUEUE_MAX;
+      }
+
+      processPunchlineQueue();
     }
 
     function pickRandom(arr) {
@@ -2616,13 +3305,19 @@
       const recentTaps = game.tapTimes.filter((t) => now - t < 450).length;
       const furious = isCombo || recentTaps >= 6;
 
-      if (furious) {
-        showPunchline(pickRandom(CONFIG.PUNCHLINES_ANGRY), true);
-        tryPlayMoo('angry');
-      } else if (Math.random() < 0.4) {
-        showPunchline(pickRandom(CONFIG.PUNCHLINES_FUNNY), false);
-        if (Math.random() < 0.45) tryPlayMoo('soft');
-      } else if (Math.random() < 0.1) {
+      if (furious && Math.random() < CONFIG.PUNCHLINE_ANGRY_CHANCE) {
+        const line = pickUnusedPunchline(CONFIG.PUNCHLINES_ANGRY);
+        if (line) {
+          showPunchline(line, true, 2);
+          tryPlayMoo('angry');
+        }
+      } else if (!furious && Math.random() < CONFIG.PUNCHLINE_FUNNY_CHANCE) {
+        const line = pickUnusedPunchline(CONFIG.PUNCHLINES_FUNNY);
+        if (line) {
+          showPunchline(line, false, 1);
+          if (Math.random() < 0.45) tryPlayMoo('soft');
+        }
+      } else if (Math.random() < 0.08) {
         tryPlayMoo('soft');
       }
     }
@@ -2699,21 +3394,60 @@
       if (changed) updateTeatVisuals();
     }
 
+    function syncTeatShapeVisual(i, norm, h) {
+      const shape = els.teatShapes[i];
+      const nipple = els.teatNipples[i];
+      if (!shape) return;
+      shape.style.setProperty('--heat', norm.toFixed(3));
+      const heatVis = norm > 0.35;
+      const hot = h >= CONFIG.TEAT_HEAT_WARN && h < CONFIG.TEAT_HEAT_MAX;
+      const over = h >= CONFIG.TEAT_HEAT_MAX;
+      shape.classList.toggle('heat-visible', heatVis);
+      shape.classList.toggle('hot', hot);
+      shape.classList.toggle('overheated', over);
+      if (nipple) {
+        nipple.classList.toggle('hot', hot);
+        nipple.classList.toggle('overheated', over);
+        if (hot || over) nipple.setAttribute('fill', '#e87868');
+        else nipple.setAttribute('fill', '#d8a090');
+      }
+    }
+
+    function flashTeatShape(i) {
+      const shape = els.teatShapes[i];
+      const nipple = els.teatNipples[i];
+      if (!shape) return;
+      shape.classList.remove('tap-flash');
+      nipple?.classList.remove('tap-flash');
+      void shape.offsetWidth;
+      shape.classList.add('tap-flash');
+      nipple?.classList.add('tap-flash');
+      setTimeout(() => {
+        shape.classList.remove('tap-flash');
+        nipple?.classList.remove('tap-flash');
+      }, 160);
+    }
+
     function updateTeatVisuals() {
       els.teats.forEach((el, i) => {
         const h = game.teatHeat[i] || 0;
         const norm = Math.min(1, h / CONFIG.TEAT_HEAT_MAX);
         el.style.setProperty('--heat', norm.toFixed(3));
+        el.classList.toggle('heat-visible', norm > 0.35);
         el.classList.toggle('hot', h >= CONFIG.TEAT_HEAT_WARN && h < CONFIG.TEAT_HEAT_MAX);
         el.classList.toggle('overheated', h >= CONFIG.TEAT_HEAT_MAX);
+        syncTeatShapeVisual(i, norm, h);
       });
     }
 
     function squishTarget(teatEl) {
-      const target = teatEl || els.udder;
-      target.classList.remove('squish');
-      void target.offsetWidth;
-      target.classList.add('squish');
+      els.udder?.classList.remove('squish');
+      void els.udder?.offsetWidth;
+      els.udder?.classList.add('squish');
+      if (teatEl?.classList?.contains('teat')) {
+        const idx = getTeatIndex(teatEl);
+        if (idx >= 0) flashTeatShape(idx);
+      }
     }
 
     function spawnFloatLiter(x, y, amount, label, extraClass) {
@@ -2748,36 +3482,70 @@
       return s.endsWith('.0') ? s.slice(0, -2) : s;
     }
 
+    function getBucketVisualScale(tierIdx) {
+      const scales = CONFIG.BUCKET_VISUAL_SCALES;
+      const i = Math.min(Math.max(0, tierIdx), scales.length - 1);
+      return scales[i] ?? 1.35;
+    }
+
+    function flashBucketTierTag() {
+      if (!els.bucketTierTag || game.bucketTier <= 0) return;
+      els.bucketTierTag.textContent = 'Ур.' + (game.bucketTier + 1);
+      els.bucketTierTag.classList.remove('visible', 'tier-flash');
+      void els.bucketTierTag.offsetWidth;
+      els.bucketTierTag.classList.add('visible', 'tier-flash');
+      els.bucketTierTag.setAttribute('aria-hidden', 'false');
+      if (bucketTierTagTimer) clearTimeout(bucketTierTagTimer);
+      bucketTierTagTimer = setTimeout(() => {
+        els.bucketTierTag.classList.remove('visible', 'tier-flash');
+        els.bucketTierTag.setAttribute('aria-hidden', 'true');
+      }, 1600);
+    }
+
     function applyBucketVisuals(animateGrow) {
       const data = getBucketTierData();
       const wrap = els.bucketWrap;
       const scaler = els.bucketScaler;
       if (!wrap || !scaler) return;
 
+      const visScale = getBucketVisualScale(game.bucketTier);
+      const tierLift = game.bucketTier * 0.28;
+      const zone = els.bucketZone;
+
+      if (zone) {
+        zone.style.setProperty('--bucket-tier', String(game.bucketTier));
+        zone.style.setProperty('--bucket-zone-lift', tierLift + 'rem');
+        zone.style.setProperty('--bucket-scale', String(visScale));
+      }
+      wrap.style.setProperty('--bucket-scale', String(visScale));
+      scaler.style.setProperty('--bucket-scale', String(visScale));
+
       if (animateGrow && game.bucketTier > 0) {
-        const prev = CONFIG.BUCKET_TIERS[game.bucketTier - 1];
-        wrap.style.setProperty('--bucket-scale-from', prev.scale);
-        wrap.style.setProperty('--bucket-scale-to', data.scale);
+        const prevVis = getBucketVisualScale(game.bucketTier - 1);
+        wrap.style.setProperty('--bucket-scale-from', String(prevVis));
+        wrap.style.setProperty('--bucket-scale-to', String(visScale));
         wrap.classList.remove('bucket-growing');
         void wrap.offsetWidth;
         wrap.classList.add('bucket-growing');
+        screenShake();
+        flashBucketTierTag();
         setTimeout(() => wrap.classList.remove('bucket-growing'), 780);
       }
 
-      scaler.style.setProperty('--bucket-scale', data.scale);
-
       if (els.bucketCapNum) els.bucketCapNum.textContent = formatBucketCap(data.cap);
-      if (els.bucketTierTag) {
-        if (game.bucketTier > 0) {
-          els.bucketTierTag.textContent = 'ВЕДРО Ур.' + (game.bucketTier + 1);
-          els.bucketTierTag.classList.add('visible');
-          els.bucketTierTag.setAttribute('aria-hidden', 'false');
-        } else {
-          els.bucketTierTag.textContent = '';
-          els.bucketTierTag.classList.remove('visible');
-          els.bucketTierTag.setAttribute('aria-hidden', 'true');
-        }
+      if (els.bucketTierTag && game.bucketTier <= 0) {
+        els.bucketTierTag.textContent = '';
+        els.bucketTierTag.classList.remove('visible', 'tier-flash');
+        els.bucketTierTag.setAttribute('aria-hidden', 'true');
       }
+    }
+
+    function rippleBucketMilk() {
+      const milk = els.bucketMilk;
+      if (!milk) return;
+      milk.classList.remove('ripple');
+      void milk.offsetWidth;
+      milk.classList.add('ripple');
     }
 
     function addToBucket(amount) {
@@ -2785,6 +3553,7 @@
 
       const cap = getBucketCap();
       game.bucketFill += amount;
+      rippleBucketMilk();
       if (game.bucketFill >= cap) {
         triggerBucketOverflow();
       } else {
@@ -2829,10 +3598,10 @@
 
       if (navigator.vibrate) navigator.vibrate([25, 50, 25, 50, 25]);
       playBonusSound();
-      showPunchline(
-        atMaxTier ? 'ВЕДРО МАКСИМУМ!!!' : pickRandom(CONFIG.PUNCHLINES_ANGRY),
-        true
-      );
+      const overflowLine = atMaxTier
+        ? 'ВЕДРО МАКСИМУМ!!!'
+        : pickUnusedPunchline(CONFIG.PUNCHLINES_ANGRY);
+      if (overflowLine) showPunchline(overflowLine, true, 3);
       tryPlayMoo('angry');
 
       setTimeout(() => {
@@ -2859,14 +3628,20 @@
       }, 520);
     }
 
-    // ====== КАПЛИ МОЛОКА (этап 4) ======
+    // ====== КАПЛИ МОЛОКА ======
     function initMilkParticles() {
       milkParticles.ctx = els.canvas.getContext('2d');
       for (let i = 0; i < CONFIG.DROP_POOL_SIZE; i++) {
-        milkParticles.drops.push({ active: false, x0: 0, y0: 0, x1: 0, y1: 0, cx: 0, cy: 0, start: 0, duration: CONFIG.MILK_DROP_MS, amount: 0 });
+        milkParticles.drops.push({ active: false, x0: 0, y0: 0, x1: 0, y1: 0, cx: 0, cy: 0, start: 0, duration: CONFIG.MILK_DROP_MS, amount: 0, isCombo: false, lastX: null, lastY: null });
       }
-      for (let i = 0; i < 30; i++) {
-        milkParticles.splashes.push({ active: false, x: 0, y: 0, vx: 0, vy: 0, start: 0, maxLife: CONFIG.SPLASH_MS });
+      for (let i = 0; i < 40; i++) {
+        milkParticles.splashes.push({ active: false, x: 0, y: 0, vx: 0, vy: 0, start: 0, maxLife: CONFIG.SPLASH_MS, size: 1 });
+      }
+      for (let i = 0; i < CONFIG.RING_POOL_SIZE; i++) {
+        milkParticles.rings.push({ active: false, x: 0, y: 0, start: 0, maxLife: 280, radius: 4 });
+      }
+      for (let i = 0; i < CONFIG.SPARKLE_POOL_SIZE; i++) {
+        milkParticles.sparkles.push({ active: false, x: 0, y: 0, vx: 0, vy: 0, start: 0, maxLife: 420, size: 1 });
       }
     }
 
@@ -2886,6 +3661,8 @@
     function clearMilkParticles() {
       milkParticles.drops.forEach((d) => { d.active = false; });
       milkParticles.splashes.forEach((s) => { s.active = false; });
+      milkParticles.rings.forEach((r) => { r.active = false; });
+      milkParticles.sparkles.forEach((s) => { s.active = false; });
       if (milkParticles.ctx) {
         milkParticles.ctx.save();
         milkParticles.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -2908,6 +3685,74 @@
 
     function acquireSplash() {
       return milkParticles.splashes.find((s) => !s.active) || null;
+    }
+
+    function acquireRing() {
+      return milkParticles.rings.find((r) => !r.active) || null;
+    }
+
+    function acquireSparkle() {
+      return milkParticles.sparkles.find((s) => !s.active) || null;
+    }
+
+    function drawMilkTrail(ctx, x0, y0, x1, y1, isCombo) {
+      const coreW = isCombo ? 5.5 : 3.5;
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x1, y1);
+      ctx.strokeStyle = 'rgba(255, 248, 225, 0.22)';
+      ctx.lineWidth = coreW + 5;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x1, y1);
+      const grad = ctx.createLinearGradient(x0, y0, x1, y1);
+      grad.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+      grad.addColorStop(1, 'rgba(255, 255, 255, 0.95)');
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = coreW;
+      ctx.stroke();
+    }
+
+    function drawMilkDrop(ctx, x, y, r, isCombo) {
+      if (isCombo) {
+        ctx.save();
+        ctx.shadowBlur = 14;
+        ctx.shadowColor = 'rgba(255, 200, 90, 0.6)';
+      }
+      const grad = ctx.createRadialGradient(x - r * 0.25, y - r * 0.35, r * 0.08, x, y, r);
+      grad.addColorStop(0, '#ffffff');
+      grad.addColorStop(0.55, '#fff8e8');
+      grad.addColorStop(1, '#f0e0c8');
+      ctx.beginPath();
+      ctx.ellipse(x, y + r * 0.12, r * 0.62, r, 0, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(x - r * 0.22, y - r * 0.18, r * 0.2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.78)';
+      ctx.fill();
+      if (isCombo) ctx.restore();
+    }
+
+    function spawnSparkles(x, y, count) {
+      for (let i = 0; i < count; i++) {
+        const sp = acquireSparkle();
+        if (!sp) break;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 0.8 + Math.random() * 2.2;
+        sp.x = x;
+        sp.y = y;
+        sp.vx = Math.cos(angle) * speed;
+        sp.vy = Math.sin(angle) * speed - 1.2;
+        sp.start = performance.now();
+        sp.maxLife = 380 + Math.random() * 180;
+        sp.size = 1.5 + Math.random() * 2;
+        sp.active = true;
+      }
     }
 
     function spawnMilkStream(teatEl, amount) {
@@ -2933,6 +3778,67 @@
       drop.lastX = drop.x0;
       drop.lastY = drop.y0;
       drop.active = true;
+
+      if (game.comboMultiplier >= 7) {
+        spawnSparkles(from.x, from.y, 3);
+      }
+
+      const trail = acquireDrop();
+      if (trail) {
+        trail.x0 = from.x + (Math.random() - 0.5) * 5;
+        trail.y0 = from.y - 1;
+        trail.x1 = to.x + (Math.random() - 0.5) * 8;
+        trail.y1 = to.y;
+        trail.cx = (trail.x0 + trail.x1) / 2 + (Math.random() - 0.5) * 14;
+        trail.cy = Math.min(trail.y0, trail.y1) - CONFIG.MILK_DROP_ARC * 0.82;
+        trail.start = performance.now() + 45;
+        trail.duration = CONFIG.MILK_DROP_MS * 0.9;
+        trail.amount = 0;
+        trail.isCombo = drop.isCombo;
+        trail.isTrail = true;
+        trail.isIdle = false;
+        trail.lastX = trail.x0;
+        trail.lastY = trail.y0;
+        trail.active = true;
+      }
+    }
+
+    function spawnIdleDrip(teatEl) {
+      if (!teatEl || game.state !== 'playing') return;
+      const tRect = teatEl.getBoundingClientRect();
+      const from = canvasPointFromRect(tRect, 0.5, 1);
+      const drop = acquireDrop();
+      if (!drop) return;
+
+      drop.x0 = from.x;
+      drop.y0 = from.y;
+      drop.x1 = from.x + (Math.random() - 0.5) * 14;
+      drop.y1 = from.y + 38 + Math.random() * 28;
+      drop.cx = (drop.x0 + drop.x1) / 2;
+      drop.cy = drop.y0 + 10;
+      drop.start = performance.now();
+      drop.duration = 420 + Math.random() * 120;
+      drop.amount = 0;
+      drop.isCombo = false;
+      drop.isTrail = false;
+      drop.isIdle = true;
+      drop.lastX = drop.x0;
+      drop.lastY = drop.y0;
+      drop.active = true;
+    }
+
+    function tickIdleDrip(dt) {
+      if (game.state !== 'playing') return;
+      const overheated = game.teatHeat.some((h) => h >= CONFIG.TEAT_HEAT_MAX);
+      if (overheated) return;
+
+      idleDripTimer += dt;
+      if (idleDripTimer < idleDripNext) return;
+      idleDripTimer = 0;
+      idleDripNext = CONFIG.IDLE_DRIP_MIN_SEC + Math.random() * (CONFIG.IDLE_DRIP_MAX_SEC - CONFIG.IDLE_DRIP_MIN_SEC);
+
+      const teat = els.teats[Math.floor(Math.random() * els.teats.length)];
+      spawnIdleDrip(teat);
     }
 
     function bezier2(p0, p1, p2, t) {
@@ -2944,17 +3850,28 @@
     }
 
     function spawnSplash(x, y) {
+      const ring = acquireRing();
+      if (ring) {
+        ring.x = x;
+        ring.y = y;
+        ring.start = performance.now();
+        ring.maxLife = 300;
+        ring.radius = 5;
+        ring.active = true;
+      }
+
       for (let i = 0; i < CONFIG.SPLASH_COUNT; i++) {
         const s = acquireSplash();
         if (!s) break;
-        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.4;
-        const speed = 1.5 + Math.random() * 3.5;
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.6;
+        const speed = 1.8 + Math.random() * 4.2;
         s.x = x;
         s.y = y;
         s.vx = Math.cos(angle) * speed;
         s.vy = Math.sin(angle) * speed;
         s.start = performance.now();
-        s.maxLife = CONFIG.SPLASH_MS;
+        s.maxLife = CONFIG.SPLASH_MS + Math.random() * 80;
+        s.size = 0.7 + Math.random() * 1.3;
         s.active = true;
       }
     }
@@ -2981,10 +3898,16 @@
 
         if (t >= 1) {
           d.active = false;
+          if (d.isIdle) {
+            spawnSplash(d.x1, d.y1);
+            continue;
+          }
           spawnSplash(d.x1, d.y1);
-          wobbleBucket();
-          playSplashSound();
-          if (d.amount > 0) addToBucket(d.amount);
+          if (d.amount > 0) {
+            wobbleBucket();
+            playSplashSound();
+            addToBucket(d.amount);
+          }
           continue;
         }
 
@@ -2994,27 +3917,34 @@
         const pos = bezier2(p0, p1, p2, t);
 
         if (d.lastX != null && t > 0.05) {
-          ctx.beginPath();
-          ctx.moveTo(d.lastX, d.lastY);
-          ctx.lineTo(pos.x, pos.y);
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-          ctx.lineWidth = d.isCombo ? 3 : 2;
-          ctx.lineCap = 'round';
-          ctx.stroke();
+          drawMilkTrail(ctx, d.lastX, d.lastY, pos.x, pos.y, d.isCombo);
         }
         d.lastX = pos.x;
         d.lastY = pos.y;
 
-        const r = d.isCombo ? 6 : 5;
-        ctx.beginPath();
-        ctx.ellipse(pos.x, pos.y + 3, r * 0.7, r, 0, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.fill();
+        const r = d.isTrail
+          ? (d.isCombo ? 4 : 3.2)
+          : d.isIdle
+            ? 3.2
+            : (d.isCombo ? 7 : 5.5);
+        drawMilkDrop(ctx, pos.x, pos.y, r, d.isCombo && !d.isTrail);
+      }
 
+      for (const ring of milkParticles.rings) {
+        if (!ring.active) continue;
+        any = true;
+        const age = now - ring.start;
+        if (age > ring.maxLife) {
+          ring.active = false;
+          continue;
+        }
+        const life = 1 - age / ring.maxLife;
+        const rad = ring.radius + (1 - life) * 14;
         ctx.beginPath();
-        ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = '#fffef8';
-        ctx.fill();
+        ctx.arc(ring.x, ring.y, rad, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${life * 0.65})`;
+        ctx.lineWidth = 2 + life * 2;
+        ctx.stroke();
       }
 
       for (const s of milkParticles.splashes) {
@@ -3030,10 +3960,36 @@
         s.y += s.vy;
         s.vy += 0.22;
 
+        const dropR = (1.5 + life * 3.5) * (s.size || 1);
+        const sg = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, dropR);
+        sg.addColorStop(0, `rgba(255, 255, 255, ${life * 0.95})`);
+        sg.addColorStop(1, `rgba(245, 230, 200, ${life * 0.4})`);
         ctx.beginPath();
-        ctx.arc(s.x, s.y, 2 + life * 3, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${life * 0.9})`;
+        ctx.arc(s.x, s.y, dropR, 0, Math.PI * 2);
+        ctx.fillStyle = sg;
         ctx.fill();
+      }
+
+      for (const sp of milkParticles.sparkles) {
+        if (!sp.active) continue;
+        any = true;
+        const age = now - sp.start;
+        if (age > sp.maxLife) {
+          sp.active = false;
+          continue;
+        }
+        const life = 1 - age / sp.maxLife;
+        sp.x += sp.vx;
+        sp.y += sp.vy;
+        sp.vy += 0.08;
+        ctx.save();
+        ctx.translate(sp.x, sp.y);
+        ctx.rotate(age * 0.012);
+        ctx.fillStyle = `rgba(255, 220, 100, ${life * 0.9})`;
+        const sz = sp.size * life;
+        ctx.fillRect(-sz * 0.5, -sz * 0.15, sz, sz * 0.3);
+        ctx.fillRect(-sz * 0.15, -sz * 0.5, sz * 0.3, sz);
+        ctx.restore();
       }
 
       return any;
@@ -3046,6 +4002,7 @@
 
       tickRoundTimer(dt);
       tickTeatHeat(dt);
+      tickIdleDrip(dt);
       refreshComboFromTaps();
 
       if (screens.game.classList.contains('active')) {
@@ -3057,6 +4014,7 @@
     function onMilkTap(e) {
       if (game.state !== 'playing') return;
       e.preventDefault();
+      hideTapHint();
 
       const teat = e.target.closest('.teat');
       const teatIdx = getTeatIndex(teat);
@@ -3087,13 +4045,14 @@
         popRecordBadge();
         if (game.liters - added < prevRecord && game.liters >= prevRecord) {
           playNewRecordSound();
+          screenShake();
         }
       }
       playMilkSquirt(mult);
       hapticTap(isCombo || wasOverheat);
       if (wasOverheat) {
         tryPlayMoo('hot');
-        if (Math.random() < 0.35) showPunchline('ГОРЯЧИЙ СОСОК!!!', true);
+        if (Math.random() < 0.5) showPunchline('ГОРЯЧИЙ СОСОК!!!', true, 3);
       } else {
         reactCow(isCombo);
       }
@@ -3133,6 +4092,13 @@
       game.comboStickyMult = 1;
       game.comboStickyUntil = 0;
       game.shareBlob = null;
+      game.punchlinesUsed = new Set();
+      idleDripTimer = 0;
+      idleDripNext = CONFIG.IDLE_DRIP_MIN_SEC;
+      if (bucketTierTagTimer) clearTimeout(bucketTierTagTimer);
+      bucketTierTagTimer = null;
+      hideTapHint();
+      els.udder?.classList.remove('combo-aura');
       game.tapTimes = [];
       closeShareFallback();
       els.comboBadge?.classList.remove('active', 'level-low', 'level-mid', 'level-high', 'level-mega', 'combo-burst');
@@ -3149,7 +4115,7 @@
       stopMoo();
       clearGameMusicTimer();
       countdownRunning = false;
-      if (els.punchlineLayer) els.punchlineLayer.innerHTML = '';
+      clearPunchlines();
       clearMilkParticles();
       updateComboDisplay(false);
       updateHUD();
@@ -3177,6 +4143,7 @@
       clearMenuMusicRetries();
       stopMenuMusic();
       pauseMenuVideo();
+      pauseGameVideo();
 
       try {
         resetRound();
@@ -3212,7 +4179,7 @@
       stopMoo();
       stopGameMusic();
       clearMilkParticles();
-      if (els.punchlineLayer) els.punchlineLayer.innerHTML = '';
+      clearPunchlines();
       els.bucketWrap?.classList.remove('overflowing');
       game.bucketOverflowing = false;
 
@@ -3263,9 +4230,9 @@
       if (!ctx) return null;
 
       try {
-        await document.fonts.load('48px Bangers');
-        await document.fonts.load('72px Bangers');
-        await document.fonts.load('120px Bangers');
+        await document.fonts.load('700 48px Fredoka');
+        await document.fonts.load('700 72px Fredoka');
+        await document.fonts.load('700 120px Fredoka');
       } catch (_) {}
 
       const score = game.liters.toFixed(1);
@@ -3274,9 +4241,9 @@
       const record = game.highScore.toFixed(1);
 
       const bg = ctx.createLinearGradient(0, 0, 0, h);
-      bg.addColorStop(0, '#fff8ef');
-      bg.addColorStop(0.5, '#f0e4d0');
-      bg.addColorStop(1, '#e8d4bc');
+      bg.addColorStop(0, '#fff8e1');
+      bg.addColorStop(0.5, '#f5ecd8');
+      bg.addColorStop(1, '#e8dcc8');
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, w, h);
 
@@ -3284,10 +4251,10 @@
       const cardY = 80;
       const cardW = w - 72;
       const cardH = h - 200;
-      ctx.fillStyle = 'rgba(255,255,255,0.95)';
+      ctx.fillStyle = '#fff8e1';
       roundRect(ctx, cardX, cardY, cardW, cardH, 24);
       ctx.fill();
-      ctx.strokeStyle = '#2d1810';
+      ctx.strokeStyle = '#1d3557';
       ctx.lineWidth = 5;
       roundRect(ctx, cardX, cardY, cardW, cardH, 24);
       ctx.stroke();
@@ -3295,47 +4262,47 @@
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
-      ctx.font = '56px Bangers, sans-serif';
-      ctx.fillStyle = '#2d1810';
+      ctx.font = '700 56px Fredoka, sans-serif';
+      ctx.fillStyle = '#1d3557';
       ctx.fillText('🐄', w / 2, cardY + 55);
 
-      drawComicText(ctx, 'ВРЕМЯ ВЫШЛО!', w / 2, cardY + 115, '48px Bangers', '#fff', '#ee5a24', 4);
+      drawComicText(ctx, 'ВРЕМЯ ВЫШЛО!', w / 2, cardY + 115, '700 48px Fredoka, sans-serif', '#fff', '#1d3557', 4);
 
-      ctx.font = '28px Bangers, sans-serif';
-      ctx.fillStyle = '#5a4a3a';
+      ctx.font = '700 28px Fredoka, sans-serif';
+      ctx.fillStyle = '#1d3557';
       ctx.fillText('ТЫ НАДОИЛ', w / 2, cardY + 175);
 
-      drawComicText(ctx, score + ' Л', w / 2, cardY + 280, '120px Bangers', '#fff', '#0984e3', 5);
+      drawComicText(ctx, score + ' Л', w / 2, cardY + 280, '700 120px Fredoka, sans-serif', '#fff', '#1d3557', 5);
 
       const behind = els.endCompare?.classList.contains('behind');
       let badgeY = cardY + 355;
       if (compare) {
         badgeY = drawBadgeText(ctx, compare, w / 2, badgeY, cardW - 56, {
-          bg: behind ? '#ffe8d9' : '#dff5e6',
-          color: behind ? '#9a3d10' : '#1a5c32',
-          font: '30px Bangers, sans-serif',
+          bg: behind ? '#fff5f0' : '#fff8e1',
+          color: behind ? '#c1121f' : '#1d3557',
+          font: '700 30px Fredoka, sans-serif',
         }) + 12;
       }
       if (message) {
         drawBadgeText(ctx, message, w / 2, badgeY, cardW - 56, {
-          bg: '#ee5a24',
-          color: '#fff',
-          font: '32px Bangers, sans-serif',
+          bg: '#1d3557',
+          color: '#fff8e1',
+          font: '700 32px Fredoka, sans-serif',
         });
       }
 
-      ctx.font = '28px Bangers, sans-serif';
-      ctx.fillStyle = '#5a4a3a';
+      ctx.font = '700 28px Fredoka, sans-serif';
+      ctx.fillStyle = '#1d3557';
       ctx.fillText('🏆 рекорд: ' + record + ' л', w / 2, cardY + cardH - 55);
 
-      ctx.font = '22px Bangers, sans-serif';
-      ctx.fillStyle = '#8a7a6a';
+      ctx.font = '700 22px Fredoka, sans-serif';
+      ctx.fillStyle = 'rgba(29, 53, 87, 0.55)';
       ctx.fillText('УВЕЛИЧЬ НАДОЙ', w / 2, cardY + cardH - 38);
 
       const gameUrl = getGameShareUrl();
       if (gameUrl && !gameUrl.startsWith('file:')) {
-        ctx.font = '20px Bangers, sans-serif';
-        ctx.fillStyle = '#0984e3';
+        ctx.font = '700 20px Fredoka, sans-serif';
+        ctx.fillStyle = '#f4a261';
         const shortUrl = gameUrl.length > 44 ? gameUrl.slice(0, 41) + '…' : gameUrl;
         ctx.fillText(shortUrl, w / 2, cardY + cardH - 6);
       }
@@ -3568,6 +4535,28 @@
 
     // ====== ИНИТ ======
     els.cowImg.src = CONFIG.COW_IMAGE;
+
+    function initCowBgVideo() {
+      const v = els.cowBgVideo;
+      const frame = els.cowFrame;
+      if (!v || !frame || !CONFIG.COW_VIDEO) return;
+      const enable = () => {
+        frame.classList.add('has-video');
+        playGameVideo();
+      };
+      const disable = () => {
+        v.dataset.broken = '1';
+        frame.classList.remove('has-video');
+        v.removeAttribute('src');
+      };
+      v.addEventListener('loadeddata', enable);
+      v.addEventListener('error', disable);
+      v.src = CONFIG.COW_VIDEO;
+      v.load();
+      if (v.readyState >= 2) enable();
+    }
+    initCowBgVideo();
+
     els.audioMenu.src = CONFIG.AUDIO_MENU;
     els.audioGame.src = CONFIG.AUDIO_GAME;
     if (els.menuBgVideo) {
@@ -3592,6 +4581,23 @@
     bindSampleFallback(els.audioTick, 'tick');
 
     applyUdderHotspot();
+
+    if (new URLSearchParams(location.search).get('debug') === 'udder') {
+      els.udder?.classList.add('debug-udder');
+    }
+
+    function initBucketImg() {
+      const img = els.bucketImg;
+      const bucket = els.bucket;
+      if (!img || !bucket) return;
+      const apply = () => {
+        if (img.naturalWidth > 0) bucket.classList.add('has-img');
+      };
+      img.addEventListener('load', apply);
+      img.addEventListener('error', () => bucket.classList.remove('has-img'));
+      if (img.complete && img.naturalWidth > 0) apply();
+    }
+    initBucketImg();
 
     els.cowImg.addEventListener('load', () => {
       if (els.cowImg.naturalWidth > 0) {
@@ -3625,10 +4631,13 @@
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         pauseMenuVideo();
+        pauseGameVideo();
         clearMenuMusicRetries();
       } else if (game.state === 'menu') {
         playMenuVideo();
         tryAutoplayMenuMusic();
+      } else if (game.state === 'playing' || game.state === 'countdown') {
+        playGameVideo();
         scheduleMenuMusicRetries();
       }
     });
