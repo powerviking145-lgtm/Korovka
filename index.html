@@ -587,30 +587,30 @@
 
     .cow-scene-sign-cover {
       position: absolute;
-      right: 0;
-      bottom: 18%;
-      width: 42%;
-      height: 28%;
+      right: 2%;
+      bottom: 20%;
+      width: 34%;
+      height: 22%;
       z-index: 5;
       pointer-events: none;
       opacity: 0;
-      transition: opacity 0.8s ease;
+      transition: opacity 0.5s ease;
       background: radial-gradient(
-        ellipse 90% 80% at 70% 60%,
-        rgba(58, 92, 48, 0.55) 0%,
-        rgba(45, 70, 38, 0.35) 45%,
+        ellipse 88% 92% at 68% 52%,
+        rgba(52, 78, 44, 0.48) 0%,
+        rgba(48, 72, 40, 0.22) 42%,
         transparent 72%
       );
     }
 
     .cow-scene.playing .cow-scene-sign-cover {
-      opacity: 1;
+      opacity: 0.72;
     }
 
     .tap-hint {
       position: absolute;
       left: 50%;
-      top: 72%;
+      top: 68%;
       transform: translate(-50%, -50%);
       z-index: 6;
       display: flex;
@@ -777,10 +777,10 @@
     .teats-row {
       position: absolute;
       left: 50%;
-      top: var(--cluster-top, 42%);
-      width: var(--cluster-w, clamp(162px, 46vw, 238px));
-      height: var(--cluster-h, clamp(52px, 14vw, 72px));
-      margin-top: calc(var(--overlap-udder, 4%) * -1);
+      top: var(--cluster-top, 40%);
+      width: var(--cluster-w, clamp(172px, 48vw, 252px));
+      height: var(--cluster-h, clamp(56px, 15vw, 78px));
+      margin-top: calc(var(--overlap-udder, 6%) * -1);
       transform: translateX(-50%);
       z-index: 1;
       transform-origin: top center;
@@ -799,14 +799,15 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
+      opacity: 1;
       filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.22));
     }
 
     .teat-shape {
       fill: url(#teat-grad);
-      stroke: rgba(72, 38, 32, 0.42);
-      stroke-width: 0.9;
-      opacity: 0.96;
+      stroke: rgba(55, 28, 22, 0.5);
+      stroke-width: 0.5;
+      opacity: 1;
       transition: fill 0.15s ease, stroke 0.12s ease, filter 0.12s ease;
     }
 
@@ -984,8 +985,9 @@
     }
 
     .combo-badge.active.punchline-active {
-      transform: translateX(-50%) scale(0.82);
-      top: calc(var(--safe-top) + 6.5rem);
+      transform: translateX(-50%) scale(0.76);
+      top: calc(var(--safe-top) + 6.25rem);
+      opacity: 0.88;
     }
 
     .combo-badge.active.combo-burst {
@@ -1085,8 +1087,8 @@
       position: absolute;
       left: 0;
       right: 0;
-      top: calc(var(--safe-top) + 7rem);
-      bottom: 58%;
+      top: calc(var(--safe-top) + 6.5rem);
+      bottom: 70%;
       z-index: 18;
       display: flex;
       align-items: center;
@@ -1124,6 +1126,12 @@
         0 0 18px rgba(255, 80, 60, 0.65),
         0 8px 24px rgba(0, 0, 0, 0.5);
       animation: punchline-angry var(--ph-dur, 3s) ease forwards;
+    }
+
+    .punchline-angry.punchline-combo-active {
+      font-size: clamp(1.2rem, 6.8vw, 2.15rem);
+      transform: rotate(1deg) scale(0.96);
+      -webkit-text-stroke: 2.5px #c1121f;
     }
 
     @keyframes punchline-show {
@@ -1982,14 +1990,24 @@
                     <stop offset="55%" stop-color="#ff9068"/>
                     <stop offset="100%" stop-color="#e85040"/>
                   </linearGradient>
-                  <filter id="teat-shadow" x="-20%" y="-10%" width="140%" height="130%">
-                    <feDropShadow dx="0" dy="2" stdDeviation="1.8" flood-color="rgba(40,20,15,0.35)"/>
+                  <filter id="teat-shadow" x="-25%" y="-15%" width="150%" height="140%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="1.8" flood-color="rgba(40,20,15,0.38)"/>
+                  </filter>
+                  <filter id="teat-soft" x="-15%" y="-10%" width="130%" height="130%">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="0.55" result="blur"/>
+                    <feOffset in="blur" dx="0" dy="1.2" result="offsetBlur"/>
+                    <feFlood flood-color="rgba(30,15,10,0.28)" result="shadowColor"/>
+                    <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="innerShadow"/>
+                    <feMerge>
+                      <feMergeNode in="innerShadow"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
                   </filter>
                 </defs>
-                <path class="teat-shape ts1" data-shape="0" filter="url(#teat-shadow)" d="M 18 3 C 11 3 8 9 9 17 C 10 28 12 42 14 54 C 15 62 21 69 30 69 C 39 69 43 61 43 53 C 42 40 41 26 42 16 C 43 8 39 3 32 3 C 26 3 18 3 18 3 Z"/>
-                <path class="teat-shape ts2" data-shape="1" filter="url(#teat-shadow)" d="M 50 5 C 43 5 40 11 41 19 C 42 30 44 44 46 56 C 47 64 53 70 62 70 C 71 70 75 62 75 54 C 74 42 73 28 74 18 C 75 10 71 5 64 5 C 57 5 50 5 50 5 Z"/>
-                <path class="teat-shape ts3" data-shape="2" filter="url(#teat-shadow)" d="M 126 5 C 119 5 116 11 117 19 C 118 30 120 44 122 56 C 123 64 129 70 138 70 C 147 70 151 62 151 54 C 150 42 149 28 150 18 C 151 10 147 5 140 5 C 133 5 126 5 126 5 Z"/>
-                <path class="teat-shape ts4" data-shape="3" filter="url(#teat-shadow)" d="M 162 3 C 155 3 152 9 153 17 C 154 28 156 42 158 54 C 159 62 165 69 174 69 C 183 69 187 61 187 53 C 186 40 185 26 186 16 C 187 8 183 3 176 3 C 170 3 162 3 162 3 Z"/>
+                <path class="teat-shape ts1" data-shape="0" filter="url(#teat-shadow) url(#teat-soft)" d="M 12 1 C 6 1 3 7 4 15 C 5 26 7 40 9 52 C 10 60 16 69 30 69 C 44 69 50 60 50 52 C 49 38 48 24 49 14 C 50 6 46 1 38 1 C 30 1 12 1 12 1 Z"/>
+                <path class="teat-shape ts2" data-shape="1" filter="url(#teat-shadow) url(#teat-soft)" d="M 44 3 C 38 3 35 9 36 17 C 37 28 39 42 41 54 C 42 62 48 70 62 70 C 76 70 82 62 82 54 C 81 40 80 26 81 16 C 82 8 78 3 70 3 C 62 3 44 3 44 3 Z"/>
+                <path class="teat-shape ts3" data-shape="2" filter="url(#teat-shadow) url(#teat-soft)" d="M 118 3 C 112 3 109 9 110 17 C 111 28 113 42 115 54 C 116 62 122 70 138 70 C 154 70 160 62 160 54 C 159 40 158 26 159 16 C 160 8 156 3 148 3 C 140 3 118 3 118 3 Z"/>
+                <path class="teat-shape ts4" data-shape="3" filter="url(#teat-shadow) url(#teat-soft)" d="M 150 1 C 144 1 141 7 142 15 C 143 26 145 40 147 52 C 148 60 154 69 170 69 C 186 69 192 60 192 52 C 191 38 190 24 191 14 C 192 6 188 1 180 1 C 172 1 150 1 150 1 Z"/>
                 <ellipse class="teat-nipple tn1" cx="30" cy="67" rx="5" ry="4.5" fill="#d8a090"/>
                 <ellipse class="teat-nipple tn2" cx="62" cy="68" rx="5" ry="4.5" fill="#d8a090"/>
                 <ellipse class="teat-nipple tn3" cx="138" cy="68" rx="5" ry="4.5" fill="#d8a090"/>
@@ -2133,7 +2151,9 @@
       IDLE_DRIP_MAX_SEC: 6,
       STORAGE_KEY: 'korova_highscore',
       GAME_SHARE_URL: 'https://powerviking145-lgtm.github.io/Korovka/',
-      TIMER_CRITICAL_SEC: 5,
+      TIMER_CRITICAL_SEC: 10,
+      STEAM_POOL_SIZE: 20,
+      UDDER_STEAM_INTERVAL: 0.32,
       GAME_MUSIC_DELAY_MS: 500,
       COUNTDOWN_MS: 850,
       TEAT_HEAT_PER_TAP: 26,
@@ -2152,17 +2172,17 @@
       UDDER: { left: 50, top: 46, width: 36, height: 20 },
       /* SVG-кластер сосков + hitbox */
       TEATS: {
-        clusterTop: 42,
-        clusterWidth: 'clamp(162px, 46vw, 238px)',
-        clusterHeight: 'clamp(52px, 14vw, 72px)',
-        overlapUdder: 4,
-        hitboxWidth: 'clamp(36px, 10vw, 48px)',
-        hitboxHeight: 'clamp(44px, 12vw, 60px)',
+        clusterTop: 40,
+        clusterWidth: 'clamp(172px, 48vw, 252px)',
+        clusterHeight: 'clamp(56px, 15vw, 78px)',
+        overlapUdder: 6,
+        hitboxWidth: 'clamp(38px, 10.5vw, 50px)',
+        hitboxHeight: 'clamp(46px, 12.5vw, 62px)',
         hitboxOffsets: [
-          { x: 18, y: 66 },
-          { x: 38, y: 72 },
-          { x: 62, y: 72 },
-          { x: 82, y: 66 },
+          { x: 18, y: 68 },
+          { x: 38, y: 74 },
+          { x: 62, y: 74 },
+          { x: 82, y: 68 },
         ],
       },
       COW_ASPECT_FALLBACK: 768 / 1376,
@@ -2295,6 +2315,7 @@
       teats: [...document.querySelectorAll('.teat')],
       teatShapes: [...document.querySelectorAll('.teat-shape')],
       teatNipples: [...document.querySelectorAll('.teat-nipple')],
+      teatsRow: document.getElementById('teats-row'),
       liters: document.getElementById('liters'),
       bucketMilk: document.getElementById('bucket-milk'),
       endLiters: document.getElementById('end-liters'),
@@ -2366,6 +2387,7 @@
       splashes: [],
       rings: [],
       sparkles: [],
+      steam: [],
       ctx: null,
     };
 
@@ -2382,6 +2404,7 @@
     let tapHintTimer = null;
     let idleDripTimer = 0;
     let idleDripNext = 5;
+    let udderSteamTimer = 0;
 
     // ====== СТЕЙТ-МАШИНА ======
     function setState(next) {
@@ -3245,10 +3268,22 @@
       layer.innerHTML = '';
 
       const el = document.createElement('div');
+      let displayText = item.text;
+      if (item.angry && game.comboMultiplier > 1) {
+        const shortAngry = {
+          'ВЫМЯ В ОГНЕ!!!': 'В ОГНЕ!',
+          'ОТСТАНЬ ОТ ВЫМЕНИ!!!': 'ОТСТАНЬ!',
+          'ПОМОГИТЕ, Я КОРОВА!!!': 'ПОМОГИТЕ!',
+          'ГОРЯЧИЙ СОСОК!!!': 'ГОРЯЧО!',
+          'НЕ ТРОГАЙ СОСКИ!!!': 'НЕ ТРОГАЙ!',
+        };
+        displayText = shortAngry[item.text] || item.text;
+      }
       el.className = item.angry ? 'punchline punchline-angry' : 'punchline';
+      if (item.angry && game.comboMultiplier > 1) el.classList.add('punchline-combo-active');
       const holdMs = item.angry ? CONFIG.PUNCHLINE_HOLD_ANGRY_MS : CONFIG.PUNCHLINE_HOLD_MS;
       el.style.setProperty('--ph-dur', holdMs + 'ms');
-      el.textContent = item.text;
+      el.textContent = displayText;
       layer.appendChild(el);
 
       punchlineQueue.hideTimer = setTimeout(() => {
@@ -3643,6 +3678,9 @@
       for (let i = 0; i < CONFIG.SPARKLE_POOL_SIZE; i++) {
         milkParticles.sparkles.push({ active: false, x: 0, y: 0, vx: 0, vy: 0, start: 0, maxLife: 420, size: 1 });
       }
+      for (let i = 0; i < CONFIG.STEAM_POOL_SIZE; i++) {
+        milkParticles.steam.push({ active: false, x: 0, y: 0, vx: 0, vy: 0, start: 0, maxLife: 1200, size: 5 });
+      }
     }
 
     function resizeParticlesCanvas() {
@@ -3663,6 +3701,7 @@
       milkParticles.splashes.forEach((s) => { s.active = false; });
       milkParticles.rings.forEach((r) => { r.active = false; });
       milkParticles.sparkles.forEach((s) => { s.active = false; });
+      milkParticles.steam.forEach((s) => { s.active = false; });
       if (milkParticles.ctx) {
         milkParticles.ctx.save();
         milkParticles.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -3693,6 +3732,48 @@
 
     function acquireSparkle() {
       return milkParticles.sparkles.find((s) => !s.active) || null;
+    }
+
+    function acquireSteam() {
+      return milkParticles.steam.find((s) => !s.active) || null;
+    }
+
+    function shouldSpawnUdderSteam() {
+      if (game.state !== 'playing') return false;
+      const anyHot = game.teatHeat.some((h) => h >= CONFIG.TEAT_HEAT_WARN);
+      const comboHigh = game.comboMultiplier >= 4;
+      return anyHot || comboHigh;
+    }
+
+    function spawnUdderSteam() {
+      const row = els.teatsRow;
+      if (!row) return;
+      const rect = row.getBoundingClientRect();
+      const cRect = els.canvas.getBoundingClientRect();
+      const count = 2 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < count; i++) {
+        const st = acquireSteam();
+        if (!st) break;
+        st.x = rect.left + rect.width * (0.18 + Math.random() * 0.64) - cRect.left;
+        st.y = rect.top + rect.height * (0.28 + Math.random() * 0.22) - cRect.top;
+        st.vx = (Math.random() - 0.5) * 0.35;
+        st.vy = -0.55 - Math.random() * 0.75;
+        st.start = performance.now();
+        st.maxLife = 850 + Math.random() * 700;
+        st.size = 3.5 + Math.random() * 5.5;
+        st.active = true;
+      }
+    }
+
+    function tickUdderSteam(dt) {
+      if (!shouldSpawnUdderSteam()) {
+        udderSteamTimer = 0;
+        return;
+      }
+      udderSteamTimer -= dt;
+      if (udderSteamTimer > 0) return;
+      udderSteamTimer = CONFIG.UDDER_STEAM_INTERVAL + Math.random() * 0.28;
+      spawnUdderSteam();
     }
 
     function drawMilkTrail(ctx, x0, y0, x1, y1, isCombo) {
@@ -3992,6 +4073,30 @@
         ctx.restore();
       }
 
+      for (const st of milkParticles.steam) {
+        if (!st.active) continue;
+        any = true;
+        const age = now - st.start;
+        if (age > st.maxLife) {
+          st.active = false;
+          continue;
+        }
+        const life = 1 - age / st.maxLife;
+        const fade = life * life;
+        st.x += st.vx;
+        st.y += st.vy;
+        st.vx *= 0.992;
+        const r = st.size * (0.65 + fade * 0.9);
+        const sg = ctx.createRadialGradient(st.x, st.y, 0, st.x, st.y, r);
+        sg.addColorStop(0, `rgba(255, 255, 255, ${fade * 0.42})`);
+        sg.addColorStop(0.45, `rgba(245, 240, 235, ${fade * 0.22})`);
+        sg.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.beginPath();
+        ctx.arc(st.x, st.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = sg;
+        ctx.fill();
+      }
+
       return any;
     }
 
@@ -4003,6 +4108,7 @@
       tickRoundTimer(dt);
       tickTeatHeat(dt);
       tickIdleDrip(dt);
+      tickUdderSteam(dt);
       refreshComboFromTaps();
 
       if (screens.game.classList.contains('active')) {
@@ -4095,6 +4201,7 @@
       game.punchlinesUsed = new Set();
       idleDripTimer = 0;
       idleDripNext = CONFIG.IDLE_DRIP_MIN_SEC;
+      udderSteamTimer = 0;
       if (bucketTierTagTimer) clearTimeout(bucketTierTagTimer);
       bucketTierTagTimer = null;
       hideTapHint();
