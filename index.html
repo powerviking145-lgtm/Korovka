@@ -94,50 +94,195 @@
       #app { display: none; }
     }
 
-    /* ====== СТАРТОВЫЙ ЭКРАН ====== */
+    /* ====== СТАРТОВЫЙ ЭКРАН — видео + кнопка ====== */
     #screen-menu {
-      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-      gap: 1.5rem;
+      background: #0a0a0a;
+      justify-content: flex-start;
+      align-items: center;
+      overflow: hidden;
+      isolation: isolate;
     }
 
-    .logo {
-      font-family: 'Bangers', cursive;
-      font-size: clamp(2.5rem, 12vw, 4rem);
-      color: #2d1810;
-      text-align: center;
-      line-height: 1.1;
-      transform: rotate(-2deg);
-      text-shadow: 3px 3px 0 #f8b4b4;
+    .menu-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .menu-bg-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      pointer-events: none !important;
+      -webkit-user-drag: none;
+      user-select: none;
+    }
+
+    .menu-record-plaque {
+      position: absolute;
+      top: calc(var(--safe-top) + 6.85rem);
+      right: calc(var(--safe-right) + 0.65rem);
+      z-index: 15;
+      pointer-events: none;
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.78rem, 3.6vw, 0.92rem);
       letter-spacing: 0.05em;
+      color: #fff;
+      text-transform: uppercase;
+      background: rgba(12, 12, 14, 0.96);
+      padding: 0.42rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 210, 90, 0.35);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      white-space: nowrap;
+      line-height: 1.2;
+      animation:
+        plaque-in 0.6s cubic-bezier(0.34, 1.45, 0.64, 1) both,
+        plaque-glow 2.4s ease-in-out 0.6s infinite;
     }
 
-    .logo-emoji {
-      font-size: clamp(4rem, 20vw, 6rem);
-      display: block;
-      margin-bottom: 0.25rem;
+    .menu-record-plaque #menu-record {
+      font-variant-numeric: tabular-nums;
+      display: inline-block;
+      color: #ffd166;
+      animation: record-num-shine 2.4s ease-in-out infinite;
     }
 
-    .menu-record {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #5a4a3a;
+    @keyframes plaque-in {
+      from {
+        opacity: 0;
+        transform: translateX(1.5rem) scale(0.92);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
     }
 
-    .menu-record span {
-      color: #c45c26;
-      font-size: 1.4rem;
+    @keyframes plaque-glow {
+      0%, 100% {
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+        border-color: rgba(255, 210, 90, 0.3);
+      }
+      50% {
+        box-shadow:
+          0 2px 14px rgba(0, 0, 0, 0.5),
+          0 0 18px rgba(255, 200, 70, 0.45);
+        border-color: rgba(255, 220, 100, 0.75);
+      }
     }
 
-    .menu-hint {
-      font-size: 0.9rem;
-      color: #8a7a6a;
-      max-width: 16rem;
-      text-align: center;
-      line-height: 1.3;
+    @keyframes record-num-shine {
+      0%, 100% {
+        color: #ffd166;
+        transform: scale(1);
+      }
+      50% {
+        color: #fff3b0;
+        transform: scale(1.08);
+      }
     }
 
-    .menu-hint.hidden {
-      display: none;
+    .btn-start-gloss {
+      position: absolute;
+      left: 50%;
+      top: 76%;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      pointer-events: auto;
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.45rem, 5.8vw, 1.75rem);
+      letter-spacing: 0.14em;
+      color: #fff;
+      padding: 0.95rem 3.4rem 1.05rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      touch-action: manipulation;
+      overflow: hidden;
+      background: linear-gradient(180deg, #ff9a8a 0%, #ff6b4a 38%, #ff3d2e 100%);
+      box-shadow:
+        0 5px 0 #c44536,
+        0 9px 22px rgba(210, 70, 55, 0.38),
+        0 0 24px rgba(255, 90, 60, 0.35),
+        inset 0 2px 0 rgba(255, 255, 255, 0.45);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+      animation: start-btn-pulse 1.5s ease-in-out infinite;
+    }
+
+    .btn-start-gloss::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 10%;
+      right: 10%;
+      height: 44%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0.08) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .btn-start-gloss::after {
+      content: '';
+      position: absolute;
+      inset: -20% -40%;
+      background: linear-gradient(
+        105deg,
+        transparent 38%,
+        rgba(255, 255, 255, 0.55) 48%,
+        transparent 58%
+      );
+      animation: start-btn-shine 2.2s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    @keyframes start-btn-pulse {
+      0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow:
+          0 5px 0 #c44536,
+          0 9px 22px rgba(210, 70, 55, 0.38),
+          0 0 20px rgba(255, 90, 60, 0.3),
+          inset 0 2px 0 rgba(255, 255, 255, 0.45);
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.07);
+        box-shadow:
+          0 5px 0 #c44536,
+          0 12px 28px rgba(255, 80, 50, 0.55),
+          0 0 36px rgba(255, 120, 70, 0.65),
+          inset 0 2px 0 rgba(255, 255, 255, 0.55);
+      }
+    }
+
+    @keyframes start-btn-shine {
+      0%, 100% {
+        transform: translateX(-120%) rotate(8deg);
+        opacity: 0;
+      }
+      15% { opacity: 1; }
+      45% {
+        transform: translateX(120%) rotate(8deg);
+        opacity: 1;
+      }
+      60% { opacity: 0; }
+    }
+
+    .btn-start-gloss:active {
+      animation: none;
+      transform: translate(-50%, calc(-50% + 4px)) scale(0.98);
+      box-shadow:
+        0 1px 0 #c44536,
+        0 4px 12px rgba(210, 70, 55, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.35);
     }
 
     .btn {
@@ -1278,11 +1423,23 @@
   <div id="app">
     <!-- ====== МЕНЮ ====== -->
     <section id="screen-menu" class="screen active" aria-hidden="false">
-      <span class="logo-emoji">🐄</span>
-      <h1 class="logo">УВЕЛИЧЬ<br>НАДОЙ</h1>
-      <p class="menu-record">🏆 Рекорд: <span id="menu-record">0.0</span> л</p>
-      <p class="menu-hint" id="menu-hint">🔊 Тапни экран — включится музыка</p>
-      <button type="button" class="btn btn-primary" id="btn-start">СТАРТ</button>
+      <div class="menu-bg" aria-hidden="true">
+        <video
+          class="menu-bg-video"
+          id="menu-bg-video"
+          src="assets/menu.mp4"
+          muted
+          loop
+          playsinline
+          autoplay
+          preload="auto"
+          tabindex="-1"
+        ></video>
+      </div>
+      <p class="menu-record-plaque" id="menu-record-plaque" aria-label="Рекорд удоя">
+        РЕКОРД: <span id="menu-record">0.0</span> литров
+      </p>
+      <button type="button" class="btn-start-gloss" id="btn-start">СТАРТ</button>
     </section>
 
     <!-- ====== ИГРА ====== -->
@@ -1386,7 +1543,7 @@
     </div>
   </div>
 
-  <audio id="audio-menu" src="assets/menu.ogg" preload="auto" loop playsinline></audio>
+  <audio id="audio-menu" src="assets/menu.ogg" preload="auto" loop playsinline autoplay></audio>
   <audio id="audio-game" src="assets/game.ogg" preload="auto" loop playsinline></audio>
   <!-- Мычание: положи в assets/ файлы moo-soft, moo-angry, moo-hot (.ogg или .mp3) -->
   <audio id="audio-moo-soft" preload="auto" playsinline>
@@ -1440,6 +1597,7 @@
       COW_IMAGE: 'assets/cow.jpg',
       AUDIO_MENU: 'assets/menu.ogg',
       AUDIO_GAME: 'assets/game.ogg',
+      MENU_VIDEO: 'assets/menu.mp4',
       /* Позиция вымени — % от кадра cow.jpg (768×1376) */
       UDDER: { left: 50, top: 45, width: 36, height: 20 },
       COW_ASPECT_FALLBACK: 768 / 1376,
@@ -1549,6 +1707,7 @@
     // ====== DOM ======
     const screens = {
       menu: document.getElementById('screen-menu'),
+      menuBgVideo: document.getElementById('menu-bg-video'),
       game: document.getElementById('screen-game'),
       end: document.getElementById('screen-end'),
     };
@@ -1578,7 +1737,6 @@
       audioMooAngry: document.getElementById('audio-moo-angry'),
       audioMooHot: document.getElementById('audio-moo-hot'),
       audioTick: document.getElementById('audio-tick'),
-      menuHint: document.getElementById('menu-hint'),
       litersWrap: document.getElementById('liters-wrap'),
       comboBadge: document.getElementById('combo-badge'),
       comboFlash: document.getElementById('combo-flash'),
@@ -1648,12 +1806,59 @@
 
       if (next === 'menu') {
         stopGameMusic();
-        if (audioUnlocked) startMenuMusic();
         els.countdownOverlay.classList.add('hidden');
-      } else if (next === 'gameover') {
-        stopGameMusic();
-        els.countdownOverlay.classList.add('hidden');
+        playMenuVideo();
+        tryAutoplayMenuMusic();
+      } else {
+        pauseMenuVideo();
+        if (next === 'countdown' || next === 'playing') stopMenuMusic();
+        if (next === 'gameover') {
+          stopGameMusic();
+          els.countdownOverlay.classList.add('hidden');
+        }
       }
+    }
+
+    async function playMenuVideo() {
+      const v = els.menuBgVideo;
+      if (!v || game.state !== 'menu' || v.dataset.broken === '1') return;
+      try {
+        if (v.readyState < 2) v.load();
+        await v.play();
+      } catch (_) {}
+    }
+
+    async function tryAutoplayMenuMusic() {
+      if (game.state !== 'menu') return false;
+      if (menuMusicOn && !els.audioMenu.paused) return true;
+
+      stopGameMusic();
+      menuMusicOn = true;
+      els.audioMenu.volume = 0.65;
+      try {
+        await els.audioMenu.play();
+        audioUnlocked = true;
+        if (!milkAudioCtx) {
+          try {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (Ctx) milkAudioCtx = new Ctx();
+          } catch (_) {}
+        }
+        return true;
+      } catch (_) {
+        menuMusicOn = false;
+        return false;
+      }
+    }
+
+    function onMenuInteract() {
+      tryAutoplayMenuMusic().then((ok) => {
+        if (!ok) unlockAudio().then(() => startMenuMusic());
+      });
+    }
+
+    function pauseMenuVideo() {
+      els.menuBgVideo?.pause();
     }
 
     function applyUdderHotspot() {
@@ -1705,7 +1910,6 @@
       els.audioMenu.currentTime = 0;
       try {
         await els.audioMenu.play();
-        els.menuHint?.classList.add('hidden');
       } catch (_) {
         menuMusicOn = false;
       }
@@ -2848,11 +3052,14 @@
       stopCowLife();
       stopMoo();
       clearGameMusicTimer();
+      countdownRunning = false;
       if (els.punchlineLayer) els.punchlineLayer.innerHTML = '';
       clearMilkParticles();
       updateComboDisplay(false);
       updateHUD();
     }
+
+    let startLock = false;
 
     function refreshComboFromTaps() {
       if (game.state !== 'playing') return;
@@ -2866,13 +3073,19 @@
     }
 
     async function startGame() {
-      if (countdownRunning || game.state === 'countdown') return;
-      await unlockAudio();
-      resetRound();
-      setState('countdown');
-      updateHUD();
-      fitCowFrame();
-      await runCountdown();
+      if (startLock || countdownRunning || game.state === 'countdown') return;
+      startLock = true;
+      try {
+        stopMenuMusic();
+        await unlockAudio();
+        resetRound();
+        setState('countdown');
+        updateHUD();
+        fitCowFrame();
+        await runCountdown();
+      } finally {
+        startLock = false;
+      }
     }
 
     function formatEndCompare(score, prevRecord) {
@@ -3201,18 +3414,22 @@
     }
 
     // ====== СОБЫТИЯ ======
-    document.getElementById('btn-start').addEventListener('click', () => startGame());
+    function onStartPress(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      startGame();
+    }
 
-    document.getElementById('btn-retry').addEventListener('click', () => startGame());
+    const btnStart = document.getElementById('btn-start');
+    btnStart?.addEventListener('click', onStartPress);
+    btnStart?.addEventListener('touchend', onStartPress, { passive: false });
 
-    screens.menu.addEventListener('pointerdown', () => {
-      startMenuMusic();
+    screens.menu.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('#btn-start')) return;
+      onMenuInteract();
     }, { passive: true });
 
-    screens.menu.addEventListener('click', (e) => {
-      if (e.target.closest('#btn-start')) return;
-      startMenuMusic();
-    });
+    document.getElementById('btn-retry').addEventListener('click', () => startGame());
 
     els.btnShare?.addEventListener('click', () => shareResults());
     els.btnShareDownload?.addEventListener('click', () => {
@@ -3233,6 +3450,13 @@
     els.cowImg.src = CONFIG.COW_IMAGE;
     els.audioMenu.src = CONFIG.AUDIO_MENU;
     els.audioGame.src = CONFIG.AUDIO_GAME;
+    if (els.menuBgVideo) {
+      els.menuBgVideo.src = CONFIG.MENU_VIDEO;
+      els.menuBgVideo.addEventListener('error', () => {
+        els.menuBgVideo.dataset.broken = '1';
+        els.menuBgVideo.style.display = 'none';
+      });
+    }
     els.audioMenu.volume = 0.65;
     els.audioGame.volume = 0.75;
 
@@ -3259,7 +3483,25 @@
     loadHighScore();
     applyBucketVisuals(false);
     setState('menu');
+    playMenuVideo();
+    tryAutoplayMenuMusic();
     updateHUD();
+
+    window.addEventListener('pageshow', () => {
+      if (game.state === 'menu') {
+        playMenuVideo();
+        tryAutoplayMenuMusic();
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        pauseMenuVideo();
+      } else if (game.state === 'menu') {
+        playMenuVideo();
+        tryAutoplayMenuMusic();
+      }
+    });
 
     initMilkParticles();
     function onResize() {
