@@ -121,125 +121,237 @@
       user-select: none;
     }
 
-    .menu-record-plaque {
+    .menu-stats-plaque {
       position: absolute;
-      top: calc(var(--safe-top) + 12dvh);
+      top: calc(var(--safe-top) + 11.5dvh);
+      left: max(0.75rem, var(--safe-left));
       right: max(0.75rem, var(--safe-right));
+      width: fit-content;
+      max-width: 100%;
+      margin-inline: auto;
       z-index: 15;
       pointer-events: none;
-      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      font-weight: 800;
-      font-size: clamp(0.78rem, 3.6vw, 0.92rem);
-      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-weight: 700;
       color: #fff;
-      text-transform: uppercase;
-      background: rgba(12, 12, 14, 0.96);
-      padding: 0.42rem 0.9rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 210, 90, 0.35);
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      background: linear-gradient(165deg, #5c3d1e 0%, #2a1a0c 55%, #1a1008 100%);
+      padding: 0.44rem 0.95rem 0.46rem;
+      border-radius: 14px;
+      border: 2px solid rgba(255, 200, 90, 0.42);
+      box-shadow:
+        0 4px 0 rgba(0, 0, 0, 0.45),
+        0 6px 18px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 220, 140, 0.25);
       white-space: nowrap;
-      line-height: 1.2;
       animation:
         plaque-in 0.6s cubic-bezier(0.34, 1.45, 0.64, 1) both,
         plaque-glow 2.4s ease-in-out 0.6s infinite;
     }
 
-    .menu-record-plaque #menu-record {
-      font-variant-numeric: tabular-nums;
-      display: inline-block;
+    .menu-stats-cell {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .menu-stats-cell--career {
+      align-items: flex-start;
+    }
+
+    .menu-stats-cell--record {
+      align-items: flex-end;
+    }
+
+    .menu-stats-divider {
+      flex-shrink: 0;
+      width: 1px;
+      align-self: stretch;
+      margin: 0.08rem 0;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 200, 90, 0) 0%,
+        rgba(255, 200, 90, 0.55) 35%,
+        rgba(255, 220, 140, 0.75) 50%,
+        rgba(255, 200, 90, 0.55) 65%,
+        rgba(255, 200, 90, 0) 100%
+      );
+    }
+
+    .menu-stats-label {
+      display: block;
+      font-size: clamp(0.72rem, 3.1vw, 0.84rem);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(255, 235, 200, 0.88);
+    }
+
+    .menu-stats-value {
+      display: block;
+      font-size: clamp(1.02rem, 4.4vw, 1.2rem);
+      font-weight: 800;
       color: #ffd166;
+      margin-top: 0.05rem;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+      font-variant-numeric: tabular-nums;
       animation: record-num-shine 2.4s ease-in-out infinite;
     }
 
-    .menu-streak-plaque {
+    .menu-start-stack {
       position: absolute;
-      top: calc(var(--safe-top) + 12dvh);
-      left: max(0.75rem, var(--safe-left));
-      z-index: 15;
-      pointer-events: none;
-      font-family: 'Fredoka', system-ui, sans-serif;
-      font-weight: 700;
-      font-size: clamp(0.72rem, 3.2vw, 0.86rem);
-      color: #fff;
-      background: rgba(194, 65, 12, 0.92);
-      padding: 0.38rem 0.75rem;
-      border-radius: 999px;
-      border: 2px solid rgba(255, 209, 102, 0.55);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
-      white-space: nowrap;
-    }
-
-    .menu-streak-plaque.hidden {
-      display: none;
-    }
-
-    .menu-daily-bonus-plaque {
-      position: absolute;
-      bottom: calc(22dvh + 4.2rem);
+      bottom: 17dvh;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 15;
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.42rem;
+      width: min(92vw, 20rem);
       pointer-events: none;
+    }
+
+    .menu-start-stack .btn-start-gloss {
+      pointer-events: auto;
+      width: 100%;
+      max-width: 16.5rem;
+    }
+
+    .menu-start-task {
+      pointer-events: none;
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.28rem 0.38rem;
+      width: auto;
       max-width: min(92vw, 20rem);
       font-family: 'Fredoka', system-ui, sans-serif;
-      font-weight: 700;
-      font-size: clamp(0.72rem, 3.2vw, 0.88rem);
-      line-height: 1.25;
       text-align: center;
-      color: #1d3557;
-      background: rgba(255, 248, 225, 0.94);
-      padding: 0.48rem 0.85rem;
-      border-radius: 14px;
-      border: 2px solid rgba(244, 162, 97, 0.75);
-      box-shadow: 0 0 14px rgba(255, 209, 102, 0.45);
-      animation: challenge-glow 2.2s ease-in-out infinite;
+      padding: 0.4rem 1rem 0.42rem;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #fff9eb 0%, #ffe9b8 42%, #f0c96a 100%);
+      border: 2px solid rgba(255, 255, 255, 0.72);
+      box-shadow:
+        0 3px 0 #b8860b,
+        0 5px 14px rgba(0, 0, 0, 0.22),
+        inset 0 2px 0 rgba(255, 255, 255, 0.75);
     }
 
-    .hud-daily-bonus {
-      width: min(100%, 10.5rem);
-      margin: 0.15rem auto 0;
-      padding: 0.16rem 0.4rem;
-      border-radius: 8px;
-      background: rgba(255, 237, 213, 0.88);
-      border: 1.5px solid rgba(244, 162, 97, 0.65);
-      font-family: var(--hud-font, 'Fredoka', sans-serif);
-      font-weight: 700;
-      font-size: clamp(0.54rem, 2.4vw, 0.64rem);
-      line-height: 1.15;
-      color: #c2410c;
-      text-align: center;
-      white-space: nowrap;
+    .menu-start-task::before {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 10%;
+      right: 10%;
+      height: 42%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.05) 100%);
+      pointer-events: none;
+    }
+
+    .menu-start-task.done {
+      background: linear-gradient(180deg, #f0fdf4 0%, #bbf7d0 45%, #6ee7a0 100%);
+      border-color: rgba(255, 255, 255, 0.8);
+      box-shadow:
+        0 3px 0 #15803d,
+        0 5px 14px rgba(22, 101, 52, 0.28),
+        inset 0 2px 0 rgba(255, 255, 255, 0.75);
+    }
+
+    .menu-start-task-label,
+    .menu-start-task-line,
+    .menu-start-task-dot {
+      position: relative;
+      z-index: 1;
+    }
+
+    .menu-start-task-label {
+      font-weight: 800;
+      font-size: clamp(0.82rem, 3.6vw, 0.96rem);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #5c4a1e;
+    }
+
+    .menu-start-task.done .menu-start-task-dot {
+      display: none;
+    }
+
+    .menu-start-task.done .menu-start-task-label {
+      color: #14532d;
+    }
+
+    .menu-start-task-dot {
+      font-weight: 800;
+      font-size: clamp(0.82rem, 3.6vw, 0.96rem);
+      text-transform: uppercase;
+      color: rgba(92, 74, 30, 0.45);
+    }
+
+    .menu-start-task-line {
+      font-weight: 800;
+      font-size: clamp(0.92rem, 4vw, 1.08rem);
+      text-transform: uppercase;
+      color: #9a3412;
+      letter-spacing: 0.05em;
+    }
+
+    .menu-start-task.done .menu-start-task-line {
+      color: #047857;
+    }
+
+    .menu-start-task-progress {
+      position: relative;
+      z-index: 1;
+      flex: 0 0 100%;
+      width: 100%;
+      margin-top: 0.08rem;
+      padding: 0;
+    }
+
+    .menu-start-task-progress.hidden {
+      display: none;
+    }
+
+    .menu-start-task-track {
+      height: 3px;
+      border-radius: 99px;
+      background: rgba(92, 74, 30, 0.18);
       overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .hud-daily-bonus.hidden {
-      display: none;
+    .menu-start-task.done .menu-start-task-track {
+      background: rgba(20, 83, 45, 0.2);
     }
 
-    .end-daily-bonus {
-      font-family: 'Fredoka', system-ui, sans-serif;
-      font-weight: 600;
-      font-size: clamp(0.75rem, 3.2vw, 0.86rem);
-      color: #c2410c;
-      margin: 0;
-      text-align: center;
+    .menu-start-task-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #ea580c, #c2410c);
+      transition: width 0.35s ease;
     }
 
-    .end-daily-bonus:empty {
-      display: none;
+    .menu-start-task.done .menu-start-task-fill {
+      background: linear-gradient(90deg, #22c55e, #16a34a);
     }
 
     @keyframes plaque-in {
       from {
         opacity: 0;
-        transform: translateX(1.5rem) scale(0.92);
+        transform: scale(0.94);
       }
       to {
         opacity: 1;
-        transform: translateX(0) scale(1);
+        transform: scale(1);
       }
     }
 
@@ -268,11 +380,11 @@
     }
 
     .btn-start-gloss {
-      position: absolute;
-      left: 50%;
-      top: 76%;
-      transform: translate(-50%, -50%);
-      z-index: 30;
+      position: relative;
+      left: auto;
+      top: auto;
+      transform: none;
+      z-index: 1;
       pointer-events: auto;
       outline: none;
       -webkit-tap-highlight-color: transparent;
@@ -332,7 +444,7 @@
 
     @keyframes start-btn-pulse {
       0%, 100% {
-        transform: translate(-50%, -50%) scale(1);
+        transform: scale(1);
         box-shadow:
           0 5px 0 #c44536,
           0 9px 22px rgba(210, 70, 55, 0.38),
@@ -340,7 +452,7 @@
           inset 0 2px 0 rgba(255, 255, 255, 0.45);
       }
       50% {
-        transform: translate(-50%, -50%) scale(1.07);
+        transform: scale(1.07);
         box-shadow:
           0 5px 0 #c44536,
           0 12px 28px rgba(255, 80, 50, 0.55),
@@ -364,7 +476,7 @@
 
     .btn-start-gloss:active {
       animation: none;
-      transform: translate(-50%, calc(-50% + 4px)) scale(0.98);
+      transform: translateY(4px) scale(0.98);
       box-shadow:
         0 1px 0 #c44536,
         0 4px 12px rgba(210, 70, 55, 0.3),
@@ -742,159 +854,62 @@
       50% { filter: drop-shadow(0 0 20px rgba(34, 211, 238, 0.65)); }
     }
 
-    .hud-challenge {
-      width: min(100%, 10.5rem);
-      margin: 0.2rem auto 0;
-      padding: 0.22rem 0.42rem 0.28rem;
-      border-radius: 10px;
-      background: rgba(255, 248, 225, 0.82);
-      border: 2px solid rgba(29, 53, 87, 0.35);
-      box-shadow: 0 2px 6px rgba(29, 53, 87, 0.1);
+    .hud-daily-task {
+      width: min(100%, 12rem);
+      margin: 0.22rem auto 0;
+      padding: 0.2rem 0.45rem 0.24rem;
+      border-radius: 8px;
+      background: rgba(255, 248, 225, 0.92);
+      border: 1.5px solid rgba(29, 53, 87, 0.22);
       pointer-events: none;
     }
 
-    .hud-challenge.hidden {
+    .hud-daily-task.hidden {
       display: none;
     }
 
-    .hud-challenge.glowing {
-      border-color: rgba(244, 162, 97, 0.75);
-      box-shadow:
-        0 0 10px rgba(255, 209, 102, 0.45),
-        0 2px 6px rgba(29, 53, 87, 0.12);
-      animation: challenge-glow 2s ease-in-out infinite;
-    }
-
-    .hud-challenge.near-done {
-      border-color: #34d399;
-      box-shadow:
-        0 0 14px rgba(52, 211, 153, 0.55),
-        0 0 24px rgba(255, 209, 102, 0.35);
-      animation: challenge-glow-hot 1.2s ease-in-out infinite;
-    }
-
-    @keyframes challenge-glow {
-      0%, 100% { box-shadow: 0 0 8px rgba(255, 209, 102, 0.35), 0 2px 6px rgba(29, 53, 87, 0.1); }
-      50% { box-shadow: 0 0 16px rgba(255, 209, 102, 0.6), 0 2px 8px rgba(29, 53, 87, 0.14); }
-    }
-
-    @keyframes challenge-glow-hot {
-      0%, 100% { box-shadow: 0 0 12px rgba(52, 211, 153, 0.45), 0 0 18px rgba(255, 209, 102, 0.3); }
-      50% { box-shadow: 0 0 20px rgba(52, 211, 153, 0.7), 0 0 28px rgba(255, 209, 102, 0.45); }
-    }
-
-    .hud-challenge-head {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      margin-bottom: 0.18rem;
-      line-height: 1.1;
-    }
-
-    .hud-challenge-star {
-      flex-shrink: 0;
-      font-size: 0.62rem;
-      color: #f4a261;
-      filter: drop-shadow(0 0 4px rgba(255, 209, 102, 0.8));
-      animation: challenge-star-twinkle 1.6s ease-in-out infinite;
-    }
-
-    @keyframes challenge-star-twinkle {
-      0%, 100% { opacity: 0.75; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.15); }
-    }
-
-    .hud-challenge-task {
-      flex: 1;
-      min-width: 0;
+    .hud-daily-task-text {
+      display: block;
       font-family: var(--hud-font, 'Fredoka', sans-serif);
       font-weight: 700;
-      font-size: clamp(0.58rem, 2.6vw, 0.68rem);
-      color: var(--hud-blue, #1d3557);
+      font-size: clamp(0.62rem, 2.8vw, 0.74rem);
+      line-height: 1.2;
+      color: #1d3557;
+      text-align: center;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-align: left;
     }
 
-    .hud-challenge-progress {
-      flex-shrink: 0;
-      font-family: var(--hud-font, 'Fredoka', sans-serif);
-      font-weight: 700;
-      font-size: clamp(0.58rem, 2.6vw, 0.68rem);
-      font-variant-numeric: tabular-nums;
+    .hud-daily-task.near-done .hud-daily-task-text {
       color: #047857;
     }
 
-    .hud-challenge-track {
-      height: 5px;
-      border-radius: 99px;
-      background: rgba(29, 53, 87, 0.12);
-      overflow: hidden;
-      border: 1px solid rgba(29, 53, 87, 0.18);
+    .hud-daily-task.done-in-round .hud-daily-task-text {
+      color: #047857;
     }
 
-    .hud-challenge-fill {
-      height: 100%;
-      width: 0%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #f4a261, #ffd166, #34d399);
-      box-shadow: 0 0 8px rgba(255, 209, 102, 0.65);
-      transition: width 0.2s ease;
-    }
-
-    .hud-challenge.near-done .hud-challenge-fill {
-      box-shadow: 0 0 12px rgba(52, 211, 153, 0.85);
-    }
-
-    .hud-flow-tag {
-      position: absolute;
-      top: -0.15rem;
-      right: -0.55rem;
-      z-index: 2;
-      font-family: var(--hud-font, 'Fredoka', sans-serif);
-      font-weight: 700;
-      font-size: clamp(0.58rem, 2.5vw, 0.68rem);
-      line-height: 1;
-      padding: 0.14rem 0.38rem;
-      border-radius: 99px;
-      border: 2px solid var(--hud-blue, #1d3557);
-      background: #fff8e1;
-      color: var(--hud-blue, #1d3557);
-      box-shadow: 0 2px 0 rgba(29, 53, 87, 0.15);
-      pointer-events: none;
-      white-space: nowrap;
-    }
-
-    .hud-flow-tag.hidden {
+    .hud-daily-task.done-in-round .hud-daily-task-track {
       display: none;
     }
 
-    .hud-flow-tag.flow-rhythm {
-      border-color: #22d3ee;
-      color: #0e7490;
-      background: rgba(224, 242, 254, 0.95);
-      box-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+    .hud-daily-task-track {
+      height: 4px;
+      margin-top: 0.16rem;
+      border-radius: 99px;
+      background: rgba(29, 53, 87, 0.12);
+      overflow: hidden;
     }
 
-    .hud-flow-tag.flow-ideal {
-      border-color: #a78bfa;
-      color: #6d28d9;
-      background: rgba(237, 233, 254, 0.95);
-      box-shadow: 0 0 10px rgba(167, 139, 250, 0.45);
+    .hud-daily-task-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #f4a261, #e76f51);
+      transition: width 0.25s ease;
     }
 
-    .hud-flow-tag.flow-rush {
-      border-color: #f4a261;
-      color: #c2410c;
-      background: rgba(255, 237, 213, 0.95);
-      box-shadow: 0 0 10px rgba(244, 162, 97, 0.55);
-      animation: flow-tag-pulse 0.7s ease-in-out infinite;
-    }
-
-    @keyframes flow-tag-pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
+    .hud-daily-task.near-done .hud-daily-task-fill {
+      background: linear-gradient(90deg, #34d399, #10b981);
+      box-shadow: 0 0 6px rgba(52, 211, 153, 0.45);
     }
 
     .hud-center-value.liters-flow-boost {
@@ -1200,74 +1215,106 @@
       background: rgba(60, 200, 80, 0.12);
     }
 
-    .combo-badge {
+    .status-badge {
       position: absolute;
-      top: calc(var(--safe-top) + 7.25rem);
+      top: calc(var(--safe-top) + 10.5rem);
       left: 50%;
       transform: translateX(-50%) scale(0.2);
       transform-origin: center center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.08rem;
       font-family: var(--hud-font, 'Fredoka', sans-serif);
       font-weight: 700;
-      font-size: clamp(1.65rem, 7.5vw, 2.2rem);
+      font-size: clamp(1.35rem, 6.2vw, 1.85rem);
       color: var(--hud-blue, #1d3557);
       background: var(--hud-cream, #fff8e1);
-      padding: 0.35rem 1.1rem 0.4rem;
+      padding: 0.32rem 1rem 0.36rem;
       border-radius: 999px;
       border: 3px solid var(--hud-blue, #1d3557);
       box-shadow: 0 4px 0 rgba(29, 53, 87, 0.18), 0 0 16px rgba(244, 162, 97, 0.35);
       text-shadow: none;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       z-index: 14;
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
       white-space: nowrap;
       max-width: 92vw;
+      line-height: 1.1;
     }
 
-    .combo-badge.active {
+    .status-badge-sub {
+      font-size: 0.48em;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      opacity: 0.92;
+    }
+
+    .status-badge-sub.hidden {
+      display: none;
+    }
+
+    .status-badge.active {
       opacity: 1;
       visibility: visible;
       transform: translateX(-50%) scale(1);
       transition: opacity 0.2s ease, visibility 0s, transform 0.25s ease, top 0.25s ease;
     }
 
-    .combo-badge.active.punchline-active {
+    .status-badge.active.punchline-active {
       transform: translateX(-50%) scale(0.76);
-      top: calc(var(--safe-top) + 6.25rem);
+      top: calc(var(--safe-top) + 9.75rem);
       opacity: 0.88;
     }
 
-    .combo-badge.active.combo-burst {
+    .status-badge.active.status-burst {
       animation: combo-burst 0.42s cubic-bezier(0.34, 1.55, 0.64, 1);
     }
 
-    .combo-badge.level-mid {
-      font-size: clamp(1.9rem, 8.5vw, 2.55rem);
-      color: var(--hud-orange, #f4a261);
-      background: var(--hud-cream, #fff8e1);
-      box-shadow: 0 4px 0 rgba(29, 53, 87, 0.18), 0 0 22px rgba(244, 162, 97, 0.5);
+    .status-badge.status-rush {
+      color: #c2410c;
+      background: linear-gradient(180deg, #fff8e1 0%, #ffe8b8 100%);
+      border-color: #f4a261;
+      box-shadow: 0 4px 0 rgba(29, 53, 87, 0.18), 0 0 22px rgba(244, 162, 97, 0.55);
     }
 
-    .combo-badge.level-high {
-      font-size: clamp(2.1rem, 9.5vw, 2.85rem);
+    .status-badge.status-flow {
+      color: #0e7490;
+      background: rgba(224, 242, 254, 0.96);
+      border-color: #22d3ee;
+      box-shadow: 0 4px 0 rgba(29, 53, 87, 0.15), 0 0 18px rgba(34, 211, 238, 0.45);
+    }
+
+    .status-badge.status-cool {
+      color: #6d28d9;
+      background: rgba(237, 233, 254, 0.96);
+      border-color: #a78bfa;
+      box-shadow: 0 4px 0 rgba(29, 53, 87, 0.15), 0 0 18px rgba(167, 139, 250, 0.4);
+    }
+
+    .status-badge.status-combo.level-mid {
+      font-size: clamp(1.55rem, 7vw, 2.05rem);
+      color: var(--hud-orange, #f4a261);
+    }
+
+    .status-badge.status-combo.level-high {
+      font-size: clamp(1.7rem, 7.8vw, 2.25rem);
       color: #e9a319;
       background: linear-gradient(180deg, #fff8e1 0%, #ffe8b8 100%);
-      box-shadow: 0 5px 0 rgba(29, 53, 87, 0.2), 0 0 30px rgba(255, 200, 80, 0.55);
-      animation: combo-high-glow 0.35s ease infinite alternate;
+      box-shadow: 0 5px 0 rgba(29, 53, 87, 0.2), 0 0 24px rgba(255, 200, 80, 0.5);
     }
 
-    .combo-badge.level-mega {
-      font-size: clamp(2.35rem, 10.5vw, 3.15rem);
+    .status-badge.status-combo.level-mega {
+      font-size: clamp(1.85rem, 8.5vw, 2.5rem);
       color: #fff;
       background: linear-gradient(180deg, #f4a261 0%, #e76f51 100%);
       border-color: #fff8e1;
       text-shadow: 0 2px 0 rgba(29, 53, 87, 0.35);
       box-shadow:
         0 5px 0 rgba(29, 53, 87, 0.25),
-        0 0 36px rgba(255, 200, 80, 0.75),
-        0 0 60px rgba(231, 111, 81, 0.35);
-      animation: combo-mega-pulse 0.28s ease infinite alternate;
+        0 0 32px rgba(255, 200, 80, 0.65);
     }
 
     .combo-flash {
@@ -1289,16 +1336,6 @@
       0% { transform: translateX(-50%) scale(0.35); opacity: 0.5; }
       45% { transform: translateX(-50%) scale(1.2); }
       100% { transform: translateX(-50%) scale(1); opacity: 1; }
-    }
-
-    @keyframes combo-high-glow {
-      from { filter: brightness(1); }
-      to { filter: brightness(1.2); }
-    }
-
-    @keyframes combo-mega-pulse {
-      from { filter: brightness(1) saturate(1.05); }
-      to { filter: brightness(1.22) saturate(1.35); }
     }
 
     @keyframes combo-flash {
@@ -1335,8 +1372,8 @@
       position: absolute;
       left: 0;
       right: 0;
-      top: calc(var(--safe-top) + 6.5rem);
-      bottom: 70%;
+      top: calc(var(--safe-top) + 12rem);
+      bottom: 55%;
       z-index: 18;
       display: flex;
       align-items: center;
@@ -1808,9 +1845,13 @@
       max-height: 100dvh;
       background: linear-gradient(165deg, #fff8e1 0%, #f5ecd8 45%, #e8dcc8 100%);
       gap: 0;
-      padding: calc(var(--safe-top) + 0.25rem) 0.75rem calc(var(--safe-bottom) + 0.25rem);
-      justify-content: center;
+      padding: 0 0.75rem calc(var(--safe-bottom) + 0.35rem);
+      justify-content: flex-end;
       overflow: hidden;
+    }
+
+    #screen-end.has-end-art {
+      background: #7eb8e8;
     }
 
     .end-stack {
@@ -1818,12 +1859,17 @@
       z-index: 3;
       flex: 0 1 auto;
       width: min(100%, 22rem);
-      max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 0.5rem);
+      max-height: min(62dvh, calc(100dvh - var(--safe-top) - var(--safe-bottom) - 38dvh));
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-end;
       gap: clamp(0.12rem, 0.7dvh, 0.3rem);
       min-height: 0;
+      margin-top: auto;
+    }
+
+    #screen-end.has-end-art .end-stack {
+      max-height: min(58dvh, calc(100dvh - var(--safe-top) - var(--safe-bottom) - 42dvh));
     }
 
     .end-bg-photo {
@@ -1860,6 +1906,15 @@
       opacity: 1;
     }
 
+    #screen-end.has-end-art .end-bg-photo {
+      inset: 0;
+      transform: none;
+      filter: none;
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+    }
+
     .end-bg-scrim {
       position: absolute;
       inset: 0;
@@ -1872,6 +1927,21 @@
 
     #screen-end.has-end-photo .end-bg-scrim {
       opacity: 1;
+    }
+
+    #screen-end.has-end-art .end-bg-scrim {
+      background: linear-gradient(
+        180deg,
+        rgba(10, 12, 20, 0) 0%,
+        rgba(10, 12, 20, 0) 36%,
+        rgba(10, 12, 20, 0.22) 52%,
+        rgba(10, 12, 20, 0.58) 78%,
+        rgba(10, 12, 20, 0.72) 100%
+      );
+    }
+
+    #screen-end.has-end-art .end-bg-sparkle {
+      display: none;
     }
 
     .end-bg-sparkle {
@@ -1901,32 +1971,7 @@
     }
 
     .end-game-logo {
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      line-height: 0.88;
-      transform: rotate(-2deg);
-      margin: 0;
-      animation: end-slide-up 0.45s ease both;
-    }
-
-    .end-game-logo-line {
-      font-family: 'Fredoka', system-ui, sans-serif;
-      font-weight: 700;
-      font-size: clamp(1.45rem, 6.5dvh, 2.15rem);
-      color: #fff;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      -webkit-text-stroke: 3px #1d3557;
-      paint-order: stroke fill;
-      text-shadow: 0 4px 0 #1d3557;
-    }
-
-    .end-game-logo-line.accent {
-      color: #fff8e1;
-      -webkit-text-stroke-color: #f4a261;
-      text-shadow: 0 4px 0 #c44536;
+      display: none;
     }
 
     .end-card {
@@ -2289,7 +2334,7 @@
       display: none;
     }
 
-    .end-challenge {
+    .end-daily-task {
       font-family: 'Fredoka', system-ui, sans-serif;
       font-weight: 700;
       font-size: clamp(0.8rem, 3.5vw, 0.92rem);
@@ -2302,31 +2347,21 @@
       color: #1d3557;
     }
 
-    .end-challenge.pending {
+    .end-daily-task.pending {
       background: #fff5f0;
       color: #c1121f;
       border-color: #c1121f;
     }
 
-    .end-challenge.done {
+    .end-daily-task.done {
       background: #ecfdf5;
       color: #047857;
       border-color: #34d399;
     }
 
-    .end-challenge:empty,
-    .end-flow-stats:empty,
+    .end-daily-task:empty,
     .end-retry-hint:empty {
       display: none;
-    }
-
-    .end-flow-stats {
-      font-family: 'Fredoka', system-ui, sans-serif;
-      font-weight: 600;
-      font-size: clamp(0.75rem, 3.2vw, 0.86rem);
-      color: #0e7490;
-      margin: 0;
-      text-align: center;
     }
 
     .end-retry-hint {
@@ -2761,12 +2796,30 @@
           tabindex="-1"
         ></video>
       </div>
-      <p class="menu-streak-plaque hidden" id="menu-streak-plaque" aria-label="Серия дней"></p>
-      <p class="menu-record-plaque" id="menu-record-plaque" aria-label="Рекорд удоя">
-        РЕКОРД: <span id="menu-record">0.0</span> литров
-      </p>
-      <p class="menu-daily-bonus-plaque" id="menu-daily-bonus-plaque" aria-label="Бонус дня"></p>
-      <button type="button" class="btn-start-gloss" id="btn-start" aria-label="Начать игру">СТАРТ</button>
+      <div class="menu-stats-plaque" id="menu-stats-plaque" aria-label="Статистика доярки">
+        <div class="menu-stats-cell menu-stats-cell--career">
+          <span class="menu-stats-label">Стаж доярки</span>
+          <span class="menu-stats-value" id="menu-career-shifts">0 смен</span>
+        </div>
+        <div class="menu-stats-divider" aria-hidden="true"></div>
+        <div class="menu-stats-cell menu-stats-cell--record">
+          <span class="menu-stats-label">Рекорд</span>
+          <span class="menu-stats-value" id="menu-record">0.0 Л</span>
+        </div>
+      </div>
+      <div class="menu-start-stack" id="menu-start-stack">
+        <button type="button" class="btn-start-gloss" id="btn-start" aria-label="Начать игру">СТАРТ</button>
+        <div class="menu-start-task" id="menu-daily-task" aria-label="Задание дня">
+          <span class="menu-start-task-label">Задание дня</span>
+          <span class="menu-start-task-dot" aria-hidden="true">·</span>
+          <span class="menu-start-task-line" id="menu-daily-task-line">45 Л</span>
+          <div class="menu-start-task-progress hidden" id="menu-daily-task-progress-wrap">
+            <div class="menu-start-task-track" aria-hidden="true">
+              <div class="menu-start-task-fill" id="menu-daily-task-fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ====== ИГРА ====== -->
@@ -2784,21 +2837,15 @@
           <span class="hud-panel-value"><span id="game-record">0.0</span> л</span>
         </div>
         <div class="hud-center" id="liters-wrap">
-          <span class="hud-flow-tag hidden" id="flow-status-tag" aria-hidden="true"></span>
           <div class="hud-center-inner">
             <span class="hud-center-label">НАДОЕНО</span>
             <span class="hud-center-value" id="liters" aria-live="polite">0.0 Л</span>
-            <div class="hud-challenge hidden" id="round-challenge-bar" aria-live="polite" aria-hidden="true">
-              <div class="hud-challenge-head">
-                <span class="hud-challenge-star" aria-hidden="true">★</span>
-                <span class="hud-challenge-task" id="round-challenge-task"></span>
-                <span class="hud-challenge-progress" id="round-challenge-progress"></span>
-              </div>
-              <div class="hud-challenge-track" aria-hidden="true">
-                <div class="hud-challenge-fill" id="round-challenge-fill"></div>
+            <div class="hud-daily-task hidden" id="round-daily-task-bar" aria-live="polite" aria-hidden="true">
+              <span class="hud-daily-task-text" id="round-daily-task-text"></span>
+              <div class="hud-daily-task-track" aria-hidden="true">
+                <div class="hud-daily-task-fill" id="round-daily-task-fill"></div>
               </div>
             </div>
-            <p class="hud-daily-bonus hidden" id="round-daily-bonus" aria-live="polite"></p>
           </div>
         </div>
         <div class="hud-panel hud-timer" id="timer-wrap">
@@ -2815,7 +2862,10 @@
         </div>
       </header>
       <div class="combo-flash" id="combo-flash" aria-hidden="true"></div>
-      <div class="combo-badge" id="combo-badge" aria-hidden="true">КОМБО</div>
+      <div class="status-badge" id="status-badge" aria-hidden="true">
+        <span id="status-badge-main">КОМБО</span>
+        <span class="status-badge-sub hidden" id="status-badge-sub"></span>
+      </div>
       <div class="punchline-layer" id="punchline-layer" aria-live="polite"></div>
 
       <div class="cow-scene" id="cow-scene">
@@ -2935,10 +2985,6 @@
       <div class="end-bg-sparkle" aria-hidden="true"></div>
       <canvas id="end-confetti" class="end-confetti" aria-hidden="true"></canvas>
       <div class="end-stack" id="end-stack">
-      <div class="end-game-logo" aria-hidden="false">
-        <span class="end-game-logo-line">УДВОЙ</span>
-        <span class="end-game-logo-line accent">НАДОЙ</span>
-      </div>
       <div class="end-card" id="end-card">
         <div class="end-reward-ticket" id="end-reward-ticket">
           <div class="end-brand-row">
@@ -2975,9 +3021,7 @@
         </div>
         <div class="end-meta-row">
           <p class="end-compare" id="end-compare"></p>
-          <p class="end-challenge" id="end-challenge"></p>
-          <p class="end-flow-stats" id="end-flow-stats"></p>
-          <p class="end-daily-bonus" id="end-daily-bonus"></p>
+          <p class="end-daily-task" id="end-daily-task"></p>
           <p class="end-record">🏆 рекорд: <span id="end-record">0.0</span> л</p>
         </div>
         <div class="end-x5-strip">
@@ -3077,27 +3121,23 @@
       AUDIO_GAME: 'assets/game.ogg',
       MENU_VIDEO: 'assets/menu.mp4',
       MENU_IMAGE: 'assets/menu.jpg',
+      END_IMAGE: 'assets/res.png',
+      END_BG_POSITION: 'center top',
       END_BG_SCRIM: 0.45,
       SHARE_LINK_BONUS_POINTS: 100,
       DAILY_CHALLENGE_KEY: 'korova_daily_challenge',
-      DAILY_CHALLENGE_BONUS: 50,
-      DAILY_CHALLENGES: [
-        { id: 'liters_120', type: 'liters', target: 120, label: 'Надой 120 л за раунд' },
-        { id: 'liters_180', type: 'liters', target: 180, label: 'Надой 180 л за раунд' },
-        { id: 'combo_7', type: 'combo', target: 7, label: 'Держи комбо x7' },
-        { id: 'buckets_4', type: 'buckets', target: 4, label: 'Переполни ведро 4 раза' },
-        { id: 'discount_20', type: 'discount', target: 20, label: 'Дотянись до скидки 20%' },
+      DAILY_TASKS: [
+        { id: 'liters_30', target: 30, label: 'Надой 30 л за день' },
+        { id: 'liters_35', target: 35, label: 'Надой 35 л за день' },
+        { id: 'liters_40', target: 40, label: 'Надой 40 л за день' },
+        { id: 'liters_45', target: 45, label: 'Надой 45 л за день' },
+        { id: 'liters_50', target: 50, label: 'Надой 50 л за день' },
       ],
-      DAILY_BONUS_KEY: 'korova_daily_bonus',
-      DAILY_BONUS_GIFT_POINTS: 75,
-      DAILY_BONUS_STREAK_GIFT_MULT: 1.5,
-      DAILY_BONUSES: [
-        { id: 'generous_cow', name: 'Щедрая корова', hint: '+8% к надою', literMult: 1.08 },
-        { id: 'warm_hands', name: 'Тёплые руки', hint: 'Соски остывают быстрее', heatDecayMult: 1.2 },
-        { id: 'sticky_combo', name: 'Липкое комбо', hint: 'Комбо держится дольше', comboStickyBonusMs: 400 },
-        { id: 'big_bucket', name: 'Жирное ведро', hint: '+0.2 л бонус за переполнение', bucketOverflowBonus: 0.2 },
-        { id: 'lucky_flow', name: 'Удачный ритм', hint: 'Ритм-зона быстрее', rhythmStableReductionSec: 1 },
-        { id: 'x5_gift', name: 'Подарок Х5', hint: '+75 баллов за 1-й раунд дня', giftPoints: 75 },
+      PUNCHLINES_TASK_DONE: [
+        'ЗАДАНИЕ ВЫПОЛНЕНО!!!',
+        'МУ-МУ-МОЛОДЕЦ!!!',
+        'СЕГОДНЯШНЯЯ ЦЕЛЬ — ТВОЯ!!!',
+        'КОРОВА ГОРДИТСЯ!!!',
       ],
       PLAY_STREAK_KEY: 'korova_play_streak',
       FLOW_BOOST: {
@@ -3448,8 +3488,8 @@
       };
     })();
 
-    // ====== ЧЕЛЛЕНДЖ ДНЯ ======
-    const DailyChallenge = (function () {
+    // ====== ЗАДАНИЕ ДНЯ ======
+    const DailyTask = (function () {
       function todayKey() {
         const d = new Date();
         return (
@@ -3480,232 +3520,130 @@
       }
 
       function pickDef() {
-        const pool = CONFIG.DAILY_CHALLENGES;
+        const pool = CONFIG.DAILY_TASKS;
         const date = todayKey();
         const idx = Math.abs(hashDate(date)) % pool.length;
         return pool[idx];
       }
 
-      function getToday() {
-        const date = todayKey();
-        let stored = load();
-        if (stored && stored.date === date) return stored;
+      function createFresh(date) {
         const def = pickDef();
-        stored = {
+        return {
           date,
           id: def.id,
-          type: def.type,
+          type: 'liters',
           target: def.target,
           label: def.label,
           progress: 0,
           completed: false,
           claimed: false,
         };
+      }
+
+      function getToday() {
+        const date = todayKey();
+        let stored = load();
+        if (stored && stored.date === date) {
+          const isLiters =
+            stored.type === 'liters' || String(stored.id || '').indexOf('liters_') === 0;
+          if (isLiters && stored.target <= 60) {
+            stored.type = 'liters';
+            stored.progress = stored.progress || 0;
+            return stored;
+          }
+        }
+        stored = createFresh(date);
         save(stored);
         return stored;
       }
 
-      function getProgressValue(ch, gameState, reward) {
-        switch (ch.type) {
-          case 'liters':
-            return gameState.liters;
-          case 'combo':
-            return gameState.maxComboRound || 1;
-          case 'buckets':
-            return gameState.bucketOverflowCount || 0;
-          case 'discount':
-            return reward ? reward.earnedPercent : getDiscountTier(gameState.liters).percent;
-          default:
-            return 0;
+      function addRoundLiters(roundLiters) {
+        const task = getToday();
+        if (task.completed) return task;
+        task.progress = (task.progress || 0) + roundLiters;
+        if (task.progress >= task.target) {
+          task.completed = true;
+          task.progress = task.target;
         }
+        save(task);
+        return task;
       }
 
-      function updateProgress(gameState, reward) {
-        const ch = getToday();
-        if (ch.completed) return ch;
-        const val = getProgressValue(ch, gameState, reward);
-        if (ch.type === 'liters' || ch.type === 'combo' || ch.type === 'discount') {
-          ch.progress = Math.max(ch.progress, val);
-        } else {
-          ch.progress = val;
-        }
-        if (ch.progress >= ch.target) {
-          ch.completed = true;
-          ch.progress = ch.target;
-        }
-        save(ch);
-        return ch;
+      function getLiveProgress(task, gameState) {
+        if (task.completed) return task.progress;
+        return Math.min(task.target, (task.progress || 0) + (gameState.liters || 0));
+      }
+
+      function formatProgress(task) {
+        return (task.progress || 0).toFixed(1) + ' / ' + task.target + ' л';
+      }
+
+      function formatLiveProgress(task, gameState) {
+        return getLiveProgress(task, gameState).toFixed(1) + ' / ' + task.target + ' л';
       }
 
       function claimIfDone() {
-        const ch = getToday();
-        if (!ch.completed) return { claimed: false, points: 0, already: false };
-        if (ch.claimed) return { claimed: false, points: 0, already: true };
-        ch.claimed = true;
-        save(ch);
-        const pts = CONFIG.DAILY_CHALLENGE_BONUS;
-        X5ClubStub.grantChallengeBonus(pts);
-        return { claimed: true, points: pts, already: false };
+        const task = getToday();
+        if (!task.completed) return { claimed: false, already: false };
+        if (task.claimed) return { claimed: false, already: true };
+        task.claimed = true;
+        save(task);
+        return { claimed: true, already: false };
       }
 
-      function formatProgress(ch) {
-        if (ch.type === 'liters') return ch.progress.toFixed(1) + '/' + ch.target;
-        if (ch.type === 'discount') return ch.progress + '%/' + ch.target + '%';
-        return Math.floor(ch.progress) + '/' + ch.target;
+      function remainingText(task) {
+        if (task.completed) return '';
+        const left = Math.max(0, task.target - (task.progress || 0));
+        return 'До задания осталось ' + left.toFixed(1) + ' л';
       }
 
-      function getLiveProgress(ch, gameState) {
-        if (ch.completed) return ch.progress;
-        const val = getProgressValue(ch, gameState, null);
-        if (ch.type === 'liters' || ch.type === 'combo' || ch.type === 'discount') {
-          return Math.max(ch.progress, val);
+      function getMenuCopy(task) {
+        if (task.completed) {
+          return { line: '✓ ВЫПОЛНЕНО', showProgress: false, done: true };
         }
-        return val;
-      }
-
-      function formatLiveProgress(ch, gameState) {
-        const p = getLiveProgress(ch, gameState);
-        if (ch.type === 'liters') return p.toFixed(1) + '/' + ch.target;
-        if (ch.type === 'discount') return p + '%/' + ch.target + '%';
-        return Math.floor(p) + '/' + ch.target;
-      }
-
-      function remainingText(ch) {
-        if (ch.completed) return '';
-        const left = ch.target - ch.progress;
-        switch (ch.type) {
-          case 'liters':
-            return 'До челленджа осталось ' + left.toFixed(1) + ' л';
-          case 'combo':
-            return 'До челленджа осталось комбо x' + Math.ceil(left);
-          case 'buckets':
-            return 'До челленджа осталось ' + Math.ceil(left) + ' переполнений';
-          case 'discount':
-            return 'До челленджа осталось скидки ' + Math.ceil(left) + '%';
-          default:
-            return '';
-        }
+        return {
+          line: task.target + ' Л',
+          showProgress: (task.progress || 0) > 0,
+          done: false,
+        };
       }
 
       return {
         getToday,
-        updateProgress,
+        addRoundLiters,
         claimIfDone,
         formatProgress,
         formatLiveProgress,
         getLiveProgress,
         remainingText,
+        getMenuCopy,
         todayKey,
       };
     })();
 
-    // ====== БОНУС ДНЯ ======
-    const DailyBonus = (function () {
-      function hashDate(dateStr) {
-        return dateStr.split('').reduce((a, c) => ((a << 5) - a + c.charCodeAt(0)) | 0, 0);
-      }
-
-      function load() {
-        try {
-          const raw = localStorage.getItem(CONFIG.DAILY_BONUS_KEY);
-          if (raw) return JSON.parse(raw);
-        } catch (_) {}
-        return null;
-      }
-
-      function save(data) {
-        try {
-          localStorage.setItem(CONFIG.DAILY_BONUS_KEY, JSON.stringify(data));
-        } catch (_) {}
-      }
-
-      function getDefById(id) {
-        return CONFIG.DAILY_BONUSES.find((b) => b.id === id) || CONFIG.DAILY_BONUSES[0];
-      }
-
-      function getToday() {
-        const date = DailyChallenge.todayKey();
-        let stored = load();
-        if (!stored || stored.date !== date) {
-          const pool = CONFIG.DAILY_BONUSES;
-          const idx = Math.abs(hashDate(date + ':bonus')) % pool.length;
-          stored = { date, bonusId: pool[idx].id, giftClaimed: false };
-          save(stored);
-        }
-        return Object.assign({}, getDefById(stored.bonusId), stored);
-      }
-
-      function getRoundMods() {
-        const b = getToday();
-        return {
-          bonusId: b.id,
-          name: b.name,
-          hint: b.hint,
-          literMult: b.literMult || 1,
-          heatDecayMult: b.heatDecayMult || 1,
-          comboStickyBonusMs: b.comboStickyBonusMs || 0,
-          bucketOverflowBonus: b.bucketOverflowBonus || 0,
-          rhythmStableReductionSec: b.rhythmStableReductionSec || 0,
-        };
-      }
-
-      function getMenuLabel() {
-        const b = getToday();
-        return 'Сегодня: ' + b.name + ' · ' + b.hint;
-      }
-
-      function getRoundLabel() {
-        const b = getToday();
-        return 'Бонус: ' + b.name;
-      }
-
-      function grantGiftIfEligible(streakCount) {
-        const b = getToday();
-        if (b.id !== 'x5_gift') return null;
-        const stored = load();
-        if (!stored || stored.giftClaimed) return null;
-        let pts = CONFIG.DAILY_BONUS_GIFT_POINTS;
-        if (streakCount >= 3) {
-          pts = Math.round(pts * CONFIG.DAILY_BONUS_STREAK_GIFT_MULT);
-        }
-        stored.giftClaimed = true;
-        save(stored);
-        X5ClubStub.grantDailyGiftBonus(pts);
-        return pts;
-      }
-
-      function isRoundBuffActive() {
-        const b = getToday();
-        return b.id !== 'x5_gift';
-      }
-
-      return {
-        getToday,
-        getRoundMods,
-        getMenuLabel,
-        getRoundLabel,
-        grantGiftIfEligible,
-        isRoundBuffActive,
-      };
-    })();
-
-    // ====== СЕРИЯ ДНЕЙ ======
-    const PlayStreak = (function () {
+    // ====== СТАЖ ДОЯРКИ ======
+    const MilkerCareer = (function () {
       function load() {
         try {
           const raw = localStorage.getItem(CONFIG.PLAY_STREAK_KEY);
-          if (raw) return JSON.parse(raw);
+          if (raw) {
+            const data = JSON.parse(raw);
+            if (typeof data.totalRounds === 'number') return data;
+            if (typeof data.count === 'number') {
+              return { totalRounds: data.count };
+            }
+          }
         } catch (_) {}
         try {
           const legacy = localStorage.getItem('korova_album');
           if (legacy) {
             const old = JSON.parse(legacy);
-            if (old && old.streak) {
-              return { count: old.streak.count || 0, lastDate: old.streak.lastDate || null };
+            if (old && old.streak && old.streak.count) {
+              return { totalRounds: old.streak.count };
             }
           }
         } catch (_) {}
-        return { count: 0, lastDate: null };
+        return { totalRounds: 0 };
       }
 
       function save(data) {
@@ -3714,30 +3652,26 @@
         } catch (_) {}
       }
 
-      function getCount() {
-        return load().count || 0;
+      function getShiftCount() {
+        return load().totalRounds || 0;
       }
 
-      function recordPlayDay() {
-        const date = DailyChallenge.todayKey();
+      function formatShiftLabel(n) {
+        const mod10 = n % 10;
+        const mod100 = n % 100;
+        if (mod10 === 1 && mod100 !== 11) return n + ' смена';
+        if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return n + ' смены';
+        return n + ' смен';
+      }
+
+      function recordRound() {
         const data = load();
-        if (data.lastDate === date) return data.count;
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yKey =
-          yesterday.getFullYear() +
-          '-' +
-          String(yesterday.getMonth() + 1).padStart(2, '0') +
-          '-' +
-          String(yesterday.getDate()).padStart(2, '0');
-        if (data.lastDate === yKey) data.count += 1;
-        else data.count = 1;
-        data.lastDate = date;
+        data.totalRounds = (data.totalRounds || 0) + 1;
         save(data);
-        return data.count;
+        return data.totalRounds;
       }
 
-      return { getCount, recordPlayDay };
+      return { getShiftCount, formatShiftLabel, recordRound };
     })();
 
     // ====== СОСТОЯНИЕ ======
@@ -3748,6 +3682,8 @@
       timer: CONFIG.ROUND_SECONDS,
       highScore: 0,
       comboMultiplier: 1,
+      displayComboMult: 1,
+      comboDisplayTimer: null,
       tapTimes: [],
       bucketOverflowing: false,
       bucketTier: 0,
@@ -3773,8 +3709,10 @@
       comboRushNextAt: 0,
       maxComboRound: 1,
       bucketOverflowCount: 0,
-      roundDailyMods: null,
+      dailyTaskCelebratedRound: false,
     };
+
+    let dailyTaskDoneHideTimer = null;
 
     // ====== DOM ======
     const screens = {
@@ -3786,8 +3724,12 @@
     const els = {
       menuBgVideo: document.getElementById('menu-bg-video'),
       menuRecord: document.getElementById('menu-record'),
-      menuStreakPlaque: document.getElementById('menu-streak-plaque'),
-      menuDailyBonusPlaque: document.getElementById('menu-daily-bonus-plaque'),
+      menuStatsPlaque: document.getElementById('menu-stats-plaque'),
+      menuCareerShifts: document.getElementById('menu-career-shifts'),
+      menuDailyTask: document.getElementById('menu-daily-task'),
+      menuDailyTaskLine: document.getElementById('menu-daily-task-line'),
+      menuDailyTaskProgressWrap: document.getElementById('menu-daily-task-progress-wrap'),
+      menuDailyTaskFill: document.getElementById('menu-daily-task-fill'),
       btnStart: document.getElementById('btn-start'),
       gameRecord: document.getElementById('game-record'),
       gameRecordBadge: document.getElementById('game-record-badge'),
@@ -3808,9 +3750,7 @@
       endRankSub: document.getElementById('end-rank-sub'),
       endRecord: document.getElementById('end-record'),
       endCompare: document.getElementById('end-compare'),
-      endChallenge: document.getElementById('end-challenge'),
-      endFlowStats: document.getElementById('end-flow-stats'),
-      endDailyBonus: document.getElementById('end-daily-bonus'),
+      endDailyTask: document.getElementById('end-daily-task'),
       endRetryHint: document.getElementById('end-retry-hint'),
       cowScene: document.getElementById('cow-scene'),
       cowFrame: document.getElementById('cow-frame'),
@@ -3827,13 +3767,12 @@
       audioMooHot: document.getElementById('audio-moo-hot'),
       audioTick: document.getElementById('audio-tick'),
       litersWrap: document.getElementById('liters-wrap'),
-      roundChallengeBar: document.getElementById('round-challenge-bar'),
-      roundChallengeTask: document.getElementById('round-challenge-task'),
-      roundChallengeProgress: document.getElementById('round-challenge-progress'),
-      roundChallengeFill: document.getElementById('round-challenge-fill'),
-      roundDailyBonus: document.getElementById('round-daily-bonus'),
-      flowStatusTag: document.getElementById('flow-status-tag'),
-      comboBadge: document.getElementById('combo-badge'),
+      roundDailyTaskBar: document.getElementById('round-daily-task-bar'),
+      roundDailyTaskText: document.getElementById('round-daily-task-text'),
+      roundDailyTaskFill: document.getElementById('round-daily-task-fill'),
+      statusBadge: document.getElementById('status-badge'),
+      statusBadgeMain: document.getElementById('status-badge-main'),
+      statusBadgeSub: document.getElementById('status-badge-sub'),
       comboFlash: document.getElementById('combo-flash'),
       canvas: document.getElementById('particles-canvas'),
       bucketZone: document.getElementById('bucket-zone'),
@@ -4214,8 +4153,8 @@
       idleDripTimer = 0;
       idleDripNext = CONFIG.IDLE_DRIP_MIN_SEC + Math.random() * (CONFIG.IDLE_DRIP_MAX_SEC - CONFIG.IDLE_DRIP_MIN_SEC);
       updateHUD();
-      updateRoundChallengeHUD();
-      updateRoundDailyBonusHUD();
+      updateRoundDailyTaskHUD();
+      updateStatusBadge(performance.now());
       scheduleGameMusic();
       startCowLife();
 
@@ -4340,6 +4279,30 @@
       updateHUD();
     }
 
+    const SAVE_KEYS = [
+      CONFIG.STORAGE_KEY,
+      CONFIG.DAILY_CHALLENGE_KEY,
+      CONFIG.PLAY_STREAK_KEY,
+      CONFIG.LOYALTY_STORAGE_KEY,
+      'korova_album',
+    ];
+
+    function resetAllSaveData() {
+      SAVE_KEYS.forEach((key) => {
+        try {
+          localStorage.removeItem(key);
+        } catch (_) {}
+      });
+    }
+
+    (function maybeResetSaveFromQuery() {
+      if (!new URLSearchParams(location.search).has('reset')) return;
+      resetAllSaveData();
+      const url = new URL(location.href);
+      url.searchParams.delete('reset');
+      location.replace(url.pathname + url.search + url.hash);
+    })();
+
     function loadHighScore() {
       const saved = parseFloat(localStorage.getItem(CONFIG.STORAGE_KEY));
       game.highScore = Number.isFinite(saved) ? saved : 0;
@@ -4355,109 +4318,151 @@
     }
 
     function updateRecordDisplays() {
-      const text = game.highScore.toFixed(1);
+      const text = game.highScore.toFixed(1) + ' Л';
       if (els.menuRecord) els.menuRecord.textContent = text;
-      if (els.gameRecord) els.gameRecord.textContent = text;
-      if (els.endRecord) els.endRecord.textContent = text;
+      if (els.gameRecord) els.gameRecord.textContent = game.highScore.toFixed(1);
+      if (els.endRecord) els.endRecord.textContent = game.highScore.toFixed(1);
     }
 
-    function shortenChallengeLabel(label) {
-      return (label || '')
-        .replace(/^Надой\s+/i, '')
-        .replace(/^Держи\s+/i, '')
-        .replace(/^Переполни\s+/i, '')
-        .replace(/^Дотянись до\s+/i, '');
-    }
-
-    function updateRoundChallengeHUD() {
-      const bar = els.roundChallengeBar;
+    function updateRoundDailyTaskHUD() {
+      const bar = els.roundDailyTaskBar;
       if (!bar) return;
-      const ch = DailyChallenge.getToday();
-      if (game.state !== 'playing' || ch.completed) {
+      const task = DailyTask.getToday();
+
+      if (game.state !== 'playing') {
         bar.classList.add('hidden');
         bar.setAttribute('aria-hidden', 'true');
-        bar.classList.remove('glowing', 'near-done');
+        bar.classList.remove('near-done', 'done-in-round');
         return;
       }
-      const live = DailyChallenge.getLiveProgress(ch, game);
-      const pct = ch.target > 0 ? Math.min(100, (live / ch.target) * 100) : 0;
 
-      bar.classList.remove('hidden');
+      if (task.completed && !game.dailyTaskCelebratedRound) {
+        bar.classList.add('hidden');
+        bar.setAttribute('aria-hidden', 'true');
+        bar.classList.remove('near-done', 'done-in-round');
+        return;
+      }
+
+      if (game.dailyTaskCelebratedRound) {
+        bar.classList.remove('hidden');
+        bar.setAttribute('aria-hidden', 'false');
+        bar.classList.add('done-in-round');
+        bar.classList.remove('near-done');
+        if (els.roundDailyTaskText) {
+          els.roundDailyTaskText.textContent = 'Задание выполнено!';
+        }
+        if (els.roundDailyTaskFill) els.roundDailyTaskFill.style.width = '100%';
+        return;
+      }
+
+      const live = DailyTask.getLiveProgress(task, game);
+      const pct = task.target > 0 ? Math.min(100, (live / task.target) * 100) : 0;
+
+      bar.classList.remove('hidden', 'done-in-round');
       bar.setAttribute('aria-hidden', 'false');
-      bar.classList.toggle('glowing', pct > 0);
-      bar.classList.toggle('near-done', pct >= 70);
+      bar.classList.toggle('near-done', pct >= 80);
 
-      if (els.roundChallengeTask) {
-        els.roundChallengeTask.textContent = shortenChallengeLabel(ch.label);
+      if (els.roundDailyTaskText) {
+        els.roundDailyTaskText.textContent =
+          'Задание · ' + DailyTask.formatLiveProgress(task, game);
       }
-      if (els.roundChallengeProgress) {
-        els.roundChallengeProgress.textContent = DailyChallenge.formatLiveProgress(ch, game);
-      }
-      if (els.roundChallengeFill) {
-        els.roundChallengeFill.style.width = pct + '%';
+      if (els.roundDailyTaskFill) {
+        els.roundDailyTaskFill.style.width = pct + '%';
       }
     }
 
-    function hideRoundChallengeHUD() {
-      if (els.roundChallengeBar) {
-        els.roundChallengeBar.classList.add('hidden');
-        els.roundChallengeBar.setAttribute('aria-hidden', 'true');
-        els.roundChallengeBar.classList.remove('glowing', 'near-done');
+    function hideRoundDailyTaskHUD() {
+      if (els.roundDailyTaskBar) {
+        els.roundDailyTaskBar.classList.add('hidden');
+        els.roundDailyTaskBar.setAttribute('aria-hidden', 'true');
+        els.roundDailyTaskBar.classList.remove('near-done', 'done-in-round');
       }
-      if (els.roundChallengeFill) els.roundChallengeFill.style.width = '0%';
+      if (els.roundDailyTaskFill) els.roundDailyTaskFill.style.width = '0%';
+      if (dailyTaskDoneHideTimer) {
+        clearTimeout(dailyTaskDoneHideTimer);
+        dailyTaskDoneHideTimer = null;
+      }
     }
 
-    function updateMenuRetentionUI() {
-      if (els.menuDailyBonusPlaque) {
-        els.menuDailyBonusPlaque.textContent = DailyBonus.getMenuLabel();
+    function pickTaskDoneLine() {
+      const arr = CONFIG.PUNCHLINES_TASK_DONE;
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function playDailyTaskCompleteSound() {
+      const ctx = getSfxCtx();
+      if (!ctx) return;
+      const t = ctx.currentTime;
+      const notes = [
+        { f0: 523, f1: 784, d: 0.12, v: 0.12, delay: 0 },
+        { f0: 659, f1: 988, d: 0.12, v: 0.11, delay: 0.1 },
+        { f0: 784, f1: 1175, d: 0.18, v: 0.14, delay: 0.2 },
+      ];
+      notes.forEach((n) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(n.f0, t + n.delay);
+        osc.frequency.exponentialRampToValueAtTime(n.f1, t + n.delay + n.d);
+        gain.gain.setValueAtTime(n.v, t + n.delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + n.delay + n.d + 0.05);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t + n.delay);
+        osc.stop(t + n.delay + n.d + 0.06);
+      });
+    }
+
+    function checkDailyTaskCompleteInRound() {
+      if (game.dailyTaskCelebratedRound) return;
+      const task = DailyTask.getToday();
+      if (task.completed) return;
+      if (DailyTask.getLiveProgress(task, game) < task.target) return;
+
+      game.dailyTaskCelebratedRound = true;
+      playDailyTaskCompleteSound();
+      showPunchline(pickTaskDoneLine(), false, 4);
+      if (navigator.vibrate) navigator.vibrate([20, 40, 60]);
+      updateRoundDailyTaskHUD();
+
+      if (dailyTaskDoneHideTimer) clearTimeout(dailyTaskDoneHideTimer);
+      dailyTaskDoneHideTimer = setTimeout(() => {
+        dailyTaskDoneHideTimer = null;
+        if (game.state === 'playing' && els.roundDailyTaskBar) {
+          els.roundDailyTaskBar.classList.add('hidden');
+          els.roundDailyTaskBar.setAttribute('aria-hidden', 'true');
+        }
+      }, 3000);
+    }
+
+    function updateMenuDailyTaskUI() {
+      const task = DailyTask.getToday();
+      const copy = DailyTask.getMenuCopy(task);
+      if (els.menuDailyTask) {
+        els.menuDailyTask.classList.toggle('done', copy.done);
       }
-      const streak = PlayStreak.getCount();
-      if (els.menuStreakPlaque) {
-        if (streak > 0) {
-          els.menuStreakPlaque.textContent = '🔥 Серия: ' + streak + ' дн.';
-          els.menuStreakPlaque.classList.remove('hidden');
+      if (els.menuDailyTaskLine) {
+        els.menuDailyTaskLine.textContent = copy.line;
+      }
+      const wrap = els.menuDailyTaskProgressWrap;
+      if (wrap) {
+        if (copy.showProgress) {
+          wrap.classList.remove('hidden');
+          const pct =
+            task.target > 0 ? Math.min(100, ((task.progress || 0) / task.target) * 100) : 0;
+          if (els.menuDailyTaskFill) els.menuDailyTaskFill.style.width = pct + '%';
         } else {
-          els.menuStreakPlaque.textContent = '';
-          els.menuStreakPlaque.classList.add('hidden');
+          wrap.classList.add('hidden');
+          if (els.menuDailyTaskFill) els.menuDailyTaskFill.style.width = '0%';
         }
       }
     }
 
-    function updateRoundDailyBonusHUD() {
-      const el = els.roundDailyBonus;
-      if (!el) return;
-      if (game.state !== 'playing') {
-        el.classList.add('hidden');
-        el.textContent = '';
-        return;
-      }
-      if (!DailyBonus.isRoundBuffActive()) {
-        el.classList.add('hidden');
-        el.textContent = '';
-        return;
-      }
-      el.textContent = DailyBonus.getRoundLabel();
-      el.classList.remove('hidden');
-    }
-
-    function hideRoundDailyBonusHUD() {
-      if (els.roundDailyBonus) {
-        els.roundDailyBonus.classList.add('hidden');
-        els.roundDailyBonus.textContent = '';
-      }
-    }
-
-    function renderEndDailyBonusUI(giftPts) {
-      if (!els.endDailyBonus) return;
-      const b = DailyBonus.getToday();
-      if (giftPts) {
-        els.endDailyBonus.textContent = 'Подарок дня: +' + formatX5Balance(giftPts) + ' баллов Х5';
-      } else if (DailyBonus.isRoundBuffActive()) {
-        els.endDailyBonus.textContent = 'Бонус дня: ' + b.name + ' — сработал';
-      } else if (b.id === 'x5_gift') {
-        els.endDailyBonus.textContent = 'Подарок Х5 уже получен сегодня';
-      } else {
-        els.endDailyBonus.textContent = '';
+    function updateMenuRetentionUI() {
+      updateMenuDailyTaskUI();
+      const shifts = MilkerCareer.getShiftCount();
+      if (els.menuCareerShifts) {
+        els.menuCareerShifts.textContent = MilkerCareer.formatShiftLabel(shifts);
       }
     }
 
@@ -4482,40 +4487,114 @@
       return Math.round((literMult - 1) * 100);
     }
 
-    function updateFlowHUD(now) {
+    function getComboTierClass(mult) {
+      if (mult >= 10) return 'level-mega';
+      if (mult >= 7) return 'level-high';
+      if (mult >= 4) return 'level-mid';
+      if (mult > 1) return 'level-low';
+      return '';
+    }
+
+    const COMBO_TIER_CLASSES = ['level-low', 'level-mid', 'level-high', 'level-mega'];
+    const COMBO_BURST_THRESHOLDS = [2, 4, 7, 10];
+    let comboFlashLastAt = 0;
+
+    function crossedComboTier(prev, next) {
+      return COMBO_BURST_THRESHOLDS.some((t) => prev < t && next >= t);
+    }
+
+    function getActiveBoost(now) {
       now = now || performance.now();
       const fb = CONFIG.FLOW_BOOST;
-      const rushOn = now < game.flowRushUntil;
+      if (now < game.flowRushUntil) {
+        return {
+          main: 'УДВОЙ НАДОЙ!',
+          sub: '+' + flowBonusPercent(fb.comboRush.literMult) + '% молока',
+          cls: 'status-rush',
+        };
+      }
+      if (now < game.flowRotationUntil) {
+        return {
+          main: 'Второе дыхание!',
+          sub: '+' + flowBonusPercent(fb.teatRotation.literMult) + '% молока',
+          cls: 'status-cool',
+        };
+      }
+      if (now < game.flowRhythmUntil) {
+        return {
+          main: 'Молочный поток!',
+          sub: '+' + flowBonusPercent(fb.rhythm.literMult) + '% молока',
+          cls: 'status-flow',
+        };
+      }
+      return null;
+    }
+
+    const STATUS_MODE_CLASSES = ['status-rush', 'status-cool', 'status-flow', 'status-combo'];
+
+    function updateStatusBadge(now, burst) {
+      now = now || performance.now();
+      const badge = els.statusBadge;
+      const mainEl = els.statusBadgeMain;
+      const subEl = els.statusBadgeSub;
+      if (!badge || !mainEl) return;
+
+      const boost = getActiveBoost(now);
+      const mult = game.displayComboMult;
       const rhythmOn = now < game.flowRhythmUntil;
-      const idealOn = now < game.flowRotationUntil;
-      const active = rushOn || rhythmOn || idealOn;
 
-      let tagText = '';
-      let tagClass = 'hud-flow-tag';
-      if (rushOn) {
-        tagText = 'Рывок +' + flowBonusPercent(fb.comboRush.literMult) + '%';
-        tagClass += ' flow-rush';
-      } else if (rhythmOn) {
-        tagText = 'Ритм +' + flowBonusPercent(fb.rhythm.literMult) + '%';
-        tagClass += ' flow-rhythm';
-      } else if (idealOn) {
-        tagText = 'Идеал +' + flowBonusPercent(fb.teatRotation.literMult) + '%';
-        tagClass += ' flow-ideal';
-      }
-
-      if (els.flowStatusTag) {
-        if (active) {
-          els.flowStatusTag.textContent = tagText;
-          els.flowStatusTag.className = tagClass;
-          els.flowStatusTag.setAttribute('aria-hidden', 'false');
-        } else {
-          els.flowStatusTag.textContent = '';
-          els.flowStatusTag.className = 'hud-flow-tag hidden';
-          els.flowStatusTag.setAttribute('aria-hidden', 'true');
-        }
-      }
-      els.liters?.classList.toggle('liters-flow-boost', active);
+      els.liters?.classList.toggle('liters-flow-boost', !!boost);
       els.udder?.classList.toggle('udder-flow-rhythm', rhythmOn);
+      els.udder?.classList.toggle('combo-aura', !boost && mult >= 4);
+
+      STATUS_MODE_CLASSES.forEach((c) => badge.classList.remove(c));
+
+      if (boost) {
+        badge.classList.add('active', boost.cls);
+        badge.setAttribute('aria-hidden', 'false');
+        mainEl.textContent = boost.main;
+        if (subEl) {
+          subEl.textContent = boost.sub;
+          subEl.classList.remove('hidden');
+        }
+        COMBO_TIER_CLASSES.forEach((c) => badge.classList.remove(c));
+      } else if (mult > 1) {
+        badge.classList.add('active', 'status-combo');
+        badge.setAttribute('aria-hidden', 'false');
+        mainEl.textContent = 'Комбо ×' + mult;
+        if (subEl) {
+          subEl.textContent = '';
+          subEl.classList.add('hidden');
+        }
+        const tier = getComboTierClass(mult);
+        COMBO_TIER_CLASSES.forEach((c) => badge.classList.remove(c));
+        if (tier) badge.classList.add(tier);
+      } else {
+        badge.classList.remove('active');
+        badge.setAttribute('aria-hidden', 'true');
+        mainEl.textContent = '';
+        if (subEl) {
+          subEl.textContent = '';
+          subEl.classList.add('hidden');
+        }
+        COMBO_TIER_CLASSES.forEach((c) => badge.classList.remove(c));
+      }
+
+      if (burst) {
+        badge.classList.remove('status-burst');
+        void badge.offsetWidth;
+        badge.classList.add('status-burst');
+      }
+    }
+
+    function scheduleComboDisplayUpdate() {
+      if (game.comboDisplayTimer) clearTimeout(game.comboDisplayTimer);
+      game.comboDisplayTimer = setTimeout(() => {
+        game.comboDisplayTimer = null;
+        const prev = game.displayComboMult;
+        game.displayComboMult = game.comboMultiplier;
+        updateStatusBadge(performance.now(), crossedComboTier(prev, game.displayComboMult));
+      }, 180);
     }
 
     function tickFlowRhythm(now) {
@@ -4523,9 +4602,7 @@
       const tps = game.tapTimes.filter((t) => now - t < 1000).length;
       if (tps >= cfg.minTps && tps <= cfg.maxTps) {
         if (!game.rhythmStableSince) game.rhythmStableSince = now;
-        const rhythmCut = game.roundDailyMods?.rhythmStableReductionSec || 0;
-        const stableSec = Math.max(1, cfg.stableSec - rhythmCut);
-        if (now - game.rhythmStableSince >= stableSec * 1000) {
+        if (now - game.rhythmStableSince >= cfg.stableSec * 1000) {
           const entering = game.flowRhythmUntil < now;
           game.flowRhythmUntil = now + cfg.durationSec * 1000;
           if (entering) {
@@ -4558,9 +4635,9 @@
       game.flowRotationUntil = now + cfg.durationSec * 1000;
       game.teatHeat[teatIdx] = Math.max(0, game.teatHeat[teatIdx] - cfg.heatReduce);
       updateTeatVisuals();
-      showPunchline('ИДЕАЛЬНЫЙ НАДОЙ', false, 2);
       playFlowEnterSound('rotation');
       game.recentTeatTaps = [];
+      updateStatusBadge(now, true);
     }
 
     function tickComboRush(now) {
@@ -4579,7 +4656,7 @@
       if (game.state !== 'playing') return;
       tickFlowRhythm(now);
       tickComboRush(now);
-      updateFlowHUD(now);
+      updateStatusBadge(now);
     }
 
     function resetFlowState() {
@@ -4595,13 +4672,7 @@
       game.bucketOverflowCount = 0;
       els.udder?.classList.remove('udder-flow-rhythm');
       els.liters?.classList.remove('liters-flow-boost');
-      if (els.flowStatusTag) {
-        els.flowStatusTag.textContent = '';
-        els.flowStatusTag.className = 'hud-flow-tag hidden';
-        els.flowStatusTag.setAttribute('aria-hidden', 'true');
-      }
-      hideRoundChallengeHUD();
-      hideRoundDailyBonusHUD();
+      hideRoundDailyTaskHUD();
     }
 
     function finalizeFlowRhythmTime() {
@@ -4612,30 +4683,20 @@
       }
     }
 
-    function renderEndChallengeUI(ch, claim) {
-      if (els.endChallenge) {
-        if (ch.completed) {
-          if (claim.claimed) {
-            els.endChallenge.textContent = 'Челлендж выполнен! +' + claim.points + ' баллов Х5';
-          } else if (claim.already) {
-            els.endChallenge.textContent = 'Челлендж дня выполнен!';
-          } else {
-            els.endChallenge.textContent =
-              'Челлендж выполнен! +' + CONFIG.DAILY_CHALLENGE_BONUS + ' баллов Х5';
-          }
-          els.endChallenge.className = 'end-challenge done';
-        } else {
-          els.endChallenge.textContent = DailyChallenge.remainingText(ch);
-          els.endChallenge.className = 'end-challenge pending';
-        }
-      }
-      if (els.endFlowStats) {
-        const sec = Math.round(game.flowRhythmTotalSec);
-        els.endFlowStats.textContent = sec > 0 ? 'Лучший flow: ' + sec + ' сек в ритме' : '';
+    function renderEndDailyTaskUI(task, claim) {
+      if (!els.endDailyTask) return;
+      if (task.completed) {
+        els.endDailyTask.textContent =
+          'Задание: ' + task.target + '/' + task.target + ' л — выполнено!';
+        els.endDailyTask.className = 'end-daily-task done';
+      } else {
+        els.endDailyTask.textContent = DailyTask.remainingText(task);
+        els.endDailyTask.className = 'end-daily-task pending';
       }
       if (els.endRetryHint) {
-        if (!ch.completed && ch.target > 0 && ch.progress / ch.target >= 0.7) {
-          els.endRetryHint.textContent = 'Челлендж почти готов';
+        const pct = task.target > 0 ? (task.progress || 0) / task.target : 0;
+        if (!task.completed && pct >= 0.7) {
+          els.endRetryHint.textContent = 'Задание почти готово — ещё раунд!';
         } else {
           els.endRetryHint.textContent = '';
         }
@@ -4718,46 +4779,12 @@
 
     }
 
-    function getComboTierClass(mult) {
-      if (mult >= 10) return 'level-mega';
-      if (mult >= 7) return 'level-high';
-      if (mult >= 4) return 'level-mid';
-      if (mult > 1) return 'level-low';
-      return '';
-    }
-
-    const COMBO_TIER_CLASSES = ['level-low', 'level-mid', 'level-high', 'level-mega'];
-
-    function updateComboDisplay(burst) {
-      const badge = els.comboBadge;
-      if (!badge) return;
-      const mult = game.comboMultiplier;
-      const on = mult > 1;
-
-      badge.classList.toggle('active', on);
-      badge.setAttribute('aria-hidden', on ? 'false' : 'true');
-      els.udder?.classList.toggle('combo-aura', mult >= 4);
-
-      const tier = getComboTierClass(mult);
-      const hadTier = COMBO_TIER_CLASSES.find((c) => badge.classList.contains(c)) || '';
-      if (tier !== hadTier) {
-        COMBO_TIER_CLASSES.forEach((c) => badge.classList.remove(c));
-        if (tier) badge.classList.add(tier);
-      }
-
-      const label = on ? 'КОМБО ×' + mult : 'КОМБО';
-      if (badge.textContent !== label) badge.textContent = label;
-
-      if (burst && on) {
-        badge.classList.remove('combo-burst');
-        void badge.offsetWidth;
-        badge.classList.add('combo-burst');
-      }
-    }
-
     function flashCombo() {
       const flash = els.comboFlash;
       if (!flash) return;
+      const now = performance.now();
+      if (now - comboFlashLastAt < 800) return;
+      comboFlashLastAt = now;
       flash.classList.remove('on');
       void flash.offsetWidth;
       flash.classList.add('on');
@@ -4816,9 +4843,9 @@
     }
 
     function handleComboLevelUp(mult, prevMult) {
-      updateComboDisplay(true);
-      flashCombo();
-      updateRoundChallengeHUD();
+      scheduleComboDisplayUpdate();
+      if (crossedComboTier(prevMult, mult)) flashCombo();
+      updateRoundDailyTaskHUD();
 
       if (prevMult < 2 && mult >= 2) {
         playApplause('start');
@@ -5113,7 +5140,7 @@
       punchlineQueue.hideTimer = null;
       punchlineQueue.processTimer = null;
       if (els.punchlineLayer) els.punchlineLayer.innerHTML = '';
-      els.comboBadge?.classList.remove('punchline-active');
+      els.statusBadge?.classList.remove('punchline-active');
     }
 
     function schedulePunchlineProcess(delay) {
@@ -5133,7 +5160,7 @@
 
       punchlineQueue.showing = true;
       punchlineQueue.currentText = item.text;
-      els.comboBadge?.classList.add('punchline-active');
+      els.statusBadge?.classList.add('punchline-active');
       layer.innerHTML = '';
 
       const el = document.createElement('div');
@@ -5160,15 +5187,19 @@
         punchlineQueue.showing = false;
         punchlineQueue.currentText = '';
         punchlineQueue.hideTimer = null;
-        if (!punchlineQueue.items.length) els.comboBadge?.classList.remove('punchline-active');
+        if (!punchlineQueue.items.length) els.statusBadge?.classList.remove('punchline-active');
         cowVoice.lastPunchlineAt = performance.now();
         schedulePunchlineProcess(CONFIG.PUNCHLINE_GAP_MS);
       }, holdMs);
     }
 
     function pickUnusedPunchline(arr) {
-      const unused = arr.filter((t) => !game.punchlinesUsed.has(t));
-      if (!unused.length) return null;
+      if (!arr || !arr.length) return null;
+      let unused = arr.filter((t) => !game.punchlinesUsed.has(t));
+      if (!unused.length) {
+        game.punchlinesUsed.clear();
+        unused = arr;
+      }
       return unused[Math.floor(Math.random() * unused.length)];
     }
 
@@ -5176,7 +5207,6 @@
       const pri = priority ?? (angry ? 2 : 1);
       if (!text) return;
 
-      if (game.punchlinesUsed.has(text)) return;
       if (punchlineQueue.currentText === text) return;
       if (punchlineQueue.items.some((i) => i.text === text)) return;
 
@@ -5240,8 +5270,7 @@
           tps - CONFIG.COMBO_THRESHOLD_TPS + 1
         );
         game.comboStickyMult = mult;
-        game.comboStickyUntil =
-          now + CONFIG.COMBO_STICKY_MS + (game.roundDailyMods?.comboStickyBonusMs || 0);
+        game.comboStickyUntil = now + CONFIG.COMBO_STICKY_MS;
       } else if (now < game.comboStickyUntil) {
         mult = game.comboStickyMult || 1;
       } else {
@@ -5289,10 +5318,9 @@
       let changed = false;
       for (let i = 0; i < game.teatHeat.length; i++) {
         if (game.teatHeat[i] > 0) {
-          const decayMult = game.roundDailyMods?.heatDecayMult || 1;
           const next = Math.max(
             0,
-            game.teatHeat[i] - CONFIG.TEAT_HEAT_DECAY_PER_SEC * dt * decayMult
+            game.teatHeat[i] - CONFIG.TEAT_HEAT_DECAY_PER_SEC * dt
           );
           if (next !== game.teatHeat[i]) {
             game.teatHeat[i] = next;
@@ -5488,9 +5516,9 @@
     function triggerBucketOverflow() {
       if (game.bucketOverflowing) return;
       game.bucketOverflowCount += 1;
-      updateRoundChallengeHUD();
+      updateRoundDailyTaskHUD();
       const tierData = getBucketTierData();
-      const bonus = tierData.bonus + (game.roundDailyMods?.bucketOverflowBonus || 0);
+      const bonus = tierData.bonus;
       const atMaxTier = game.bucketTier >= CONFIG.BUCKET_TIERS.length - 1;
       game.bucketOverflowing = true;
       game.bucketFill = tierData.cap;
@@ -6006,7 +6034,12 @@
       if (mult > prevCombo) {
         handleComboLevelUp(mult, prevCombo);
       } else if (mult < prevCombo) {
-        updateComboDisplay(false);
+        game.displayComboMult = mult;
+        if (game.comboDisplayTimer) {
+          clearTimeout(game.comboDisplayTimer);
+          game.comboDisplayTimer = null;
+        }
+        updateStatusBadge(performance.now(), false);
       }
       game.lastComboMult = mult;
       game.maxComboRound = Math.max(game.maxComboRound, mult);
@@ -6014,15 +6047,14 @@
       const now = performance.now();
       onTeatRotationFlow(teatIdx, now);
       const flowMult = getFlowLiterMult(now);
-      const dailyMult = game.roundDailyMods?.literMult || 1;
-      const added = CONFIG.LITERS_PER_TAP * mult * heatMult * flowMult * dailyMult;
+      const added = CONFIG.LITERS_PER_TAP * mult * heatMult * flowMult;
       const isCombo = mult > 1;
       const prevRecord = game.highScore;
       game.liters += added;
 
       updateHUD();
-      updateRoundChallengeHUD();
-      updateRoundDailyBonusHUD();
+      updateRoundDailyTaskHUD();
+      checkDailyTaskCompleteInRound();
       popLitersHUD();
       if (game.liters > prevRecord) {
         popRecordBadge();
@@ -6076,6 +6108,11 @@
       applyBucketVisuals(false);
       game.timer = CONFIG.ROUND_SECONDS;
       game.comboMultiplier = 1;
+      game.displayComboMult = 1;
+      if (game.comboDisplayTimer) {
+        clearTimeout(game.comboDisplayTimer);
+        game.comboDisplayTimer = null;
+      }
       game.lastComboMult = 1;
       game.comboStickyMult = 1;
       game.comboStickyUntil = 0;
@@ -6086,7 +6123,11 @@
       game.roundTimeUpHandled = false;
       game.roundReward = null;
       game.endRank = null;
-      game.roundDailyMods = DailyBonus.getRoundMods();
+      game.dailyTaskCelebratedRound = false;
+      if (dailyTaskDoneHideTimer) {
+        clearTimeout(dailyTaskDoneHideTimer);
+        dailyTaskDoneHideTimer = null;
+      }
       resetFlowState();
       hideBoosterOffer();
       idleDripTimer = 0;
@@ -6098,7 +6139,25 @@
       els.udder?.classList.remove('combo-aura');
       game.tapTimes = [];
       closeShareFallback();
-      els.comboBadge?.classList.remove('active', 'level-low', 'level-mid', 'level-high', 'level-mega', 'combo-burst');
+      els.statusBadge?.classList.remove(
+        'active',
+        'level-low',
+        'level-mid',
+        'level-high',
+        'level-mega',
+        'status-burst',
+        'status-rush',
+        'status-cool',
+        'status-flow',
+        'status-combo',
+        'punchline-active'
+      );
+      if (els.statusBadgeMain) els.statusBadgeMain.textContent = '';
+      if (els.statusBadgeSub) {
+        els.statusBadgeSub.textContent = '';
+        els.statusBadgeSub.classList.add('hidden');
+      }
+      els.statusBadge?.setAttribute('aria-hidden', 'true');
       els.comboFlash?.classList.remove('on');
       game.bucketOverflowing = false;
       game.teatHeat = [0, 0, 0, 0];
@@ -6108,11 +6167,9 @@
       els.timer?.classList.remove('tick-pop');
       screens.end.classList.remove('end-new-record', 'end-celebrate');
       if (els.endPitchFill) els.endPitchFill.style.width = '0%';
-      if (els.endChallenge) els.endChallenge.textContent = '';
-      if (els.endFlowStats) els.endFlowStats.textContent = '';
+      if (els.endDailyTask) els.endDailyTask.textContent = '';
       if (els.endRetryHint) els.endRetryHint.textContent = '';
-      if (els.endDailyBonus) els.endDailyBonus.textContent = '';
-      hideRoundDailyBonusHUD();
+      hideRoundDailyTaskHUD();
       updateTeatVisuals();
       stopCowLife();
       stopMoo();
@@ -6120,7 +6177,7 @@
       countdownRunning = false;
       clearPunchlines();
       clearMilkParticles();
-      updateComboDisplay(false);
+      updateStatusBadge(performance.now(), false);
       updateHUD();
     }
 
@@ -6134,7 +6191,14 @@
       game.comboMultiplier = mult;
       game.lastComboMult = mult;
       if (mult > prev) handleComboLevelUp(mult, prev);
-      else if (mult < prev) updateComboDisplay(false);
+      else if (mult < prev) {
+        game.displayComboMult = mult;
+        if (game.comboDisplayTimer) {
+          clearTimeout(game.comboDisplayTimer);
+          game.comboDisplayTimer = null;
+        }
+        updateStatusBadge(performance.now(), false);
+      }
     }
 
     async function startGame() {
@@ -6294,13 +6358,11 @@
       const reward = renderEndRewardUI(score);
       X5ClubStub.queueDiscount(reward.earnedPercent, score, reward.sessionId);
 
-      const ch = DailyChallenge.updateProgress(game, reward);
-      const claim = DailyChallenge.claimIfDone();
-      renderEndChallengeUI(ch, claim);
+      const task = DailyTask.addRoundLiters(score);
+      const claim = DailyTask.claimIfDone();
+      renderEndDailyTaskUI(task, claim);
 
-      const streakCount = PlayStreak.recordPlayDay();
-      const giftPts = DailyBonus.grantGiftIfEligible(streakCount);
-      renderEndDailyBonusUI(giftPts);
+      MilkerCareer.recordRound();
       updateMenuRetentionUI();
 
       saveHighScore();
@@ -6326,7 +6388,7 @@
       }
 
       prepareShareCard();
-      hideRoundChallengeHUD();
+      hideRoundDailyTaskHUD();
     }
 
     function prepareShareCard() {
@@ -6790,10 +6852,11 @@
     function enableEndBg(mode) {
       screens.end.classList.add('has-end-photo');
       screens.end.classList.toggle('has-end-video', mode === 'video');
+      screens.end.classList.toggle('has-end-art', mode === 'art');
     }
 
     function disableEndBg() {
-      screens.end.classList.remove('has-end-photo', 'has-end-video');
+      screens.end.classList.remove('has-end-photo', 'has-end-video', 'has-end-art');
     }
 
     function playEndBgVideo() {
@@ -6811,17 +6874,24 @@
       const video = els.endBgVideo;
       if (!wrap) return;
 
+      function applyEndImage(url, mode) {
+        wrap.style.backgroundImage = 'url("' + url + '")';
+        if (mode === 'art' && CONFIG.END_BG_POSITION) {
+          wrap.style.backgroundPosition = CONFIG.END_BG_POSITION;
+        } else {
+          wrap.style.backgroundPosition = 'center';
+        }
+        if (video) video.removeAttribute('src');
+        enableEndBg(mode);
+      }
+
       function tryCowImage() {
         if (!CONFIG.COW_IMAGE) {
           disableEndBg();
           return;
         }
         const cow = new Image();
-        cow.onload = () => {
-          wrap.style.backgroundImage = 'url("' + CONFIG.COW_IMAGE + '")';
-          if (video) video.removeAttribute('src');
-          enableEndBg('image');
-        };
+        cow.onload = () => applyEndImage(CONFIG.COW_IMAGE, 'image');
         cow.onerror = () => disableEndBg();
         cow.src = CONFIG.COW_IMAGE;
       }
@@ -6850,19 +6920,26 @@
         if (video.readyState >= 2) onReady();
       }
 
-      if (!CONFIG.MENU_IMAGE) {
-        tryMenuVideo();
+      function tryMenuImage() {
+        if (!CONFIG.MENU_IMAGE) {
+          tryMenuVideo();
+          return;
+        }
+        const img = new Image();
+        img.onload = () => applyEndImage(CONFIG.MENU_IMAGE, 'image');
+        img.onerror = tryMenuVideo;
+        img.src = CONFIG.MENU_IMAGE;
+      }
+
+      if (CONFIG.END_IMAGE) {
+        const art = new Image();
+        art.onload = () => applyEndImage(CONFIG.END_IMAGE, 'art');
+        art.onerror = tryMenuImage;
+        art.src = CONFIG.END_IMAGE;
         return;
       }
 
-      const img = new Image();
-      img.onload = () => {
-        wrap.style.backgroundImage = 'url("' + CONFIG.MENU_IMAGE + '")';
-        if (video) video.removeAttribute('src');
-        enableEndBg('image');
-      };
-      img.onerror = tryMenuVideo;
-      img.src = CONFIG.MENU_IMAGE;
+      tryMenuImage();
     }
     initEndBgMedia();
 
