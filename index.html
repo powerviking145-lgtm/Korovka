@@ -2224,15 +2224,16 @@
       flex-wrap: wrap;
       align-items: baseline;
       justify-content: center;
-      gap: 0.15rem 0.25rem;
-      margin: 0 0 clamp(0.12rem, 0.5dvh, 0.25rem);
+      gap: 0.2rem 0.3rem;
+      margin: 0 0 clamp(0.2rem, 0.6dvh, 0.35rem);
+      padding-bottom: clamp(0.08rem, 0.3dvh, 0.15rem);
       animation: end-slide-up 0.45s ease 0.15s both;
     }
 
     .end-score-label {
       font-family: 'Fredoka', system-ui, sans-serif;
       font-weight: 700;
-      font-size: clamp(0.68rem, 2.8dvh, 0.82rem);
+      font-size: clamp(0.78rem, 3.2dvh, 0.95rem);
       color: #1d3557;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -2241,7 +2242,7 @@
     .end-score-num {
       font-family: 'Fredoka', system-ui, sans-serif;
       font-weight: 700;
-      font-size: clamp(1.45rem, 6.5dvh, 2.1rem);
+      font-size: clamp(1.75rem, 7.5dvh, 2.45rem);
       line-height: 1;
       color: #fff;
       -webkit-text-stroke: 3px #1d3557;
@@ -2253,7 +2254,7 @@
     .end-score-unit {
       font-family: 'Fredoka', system-ui, sans-serif;
       font-weight: 700;
-      font-size: clamp(0.95rem, 4.2vw, 1.1rem);
+      font-size: clamp(1.1rem, 4.8vw, 1.35rem);
       color: #1d3557;
       letter-spacing: 0.08em;
     }
@@ -2359,19 +2360,8 @@
       border-color: #34d399;
     }
 
-    .end-daily-task:empty,
-    .end-retry-hint:empty {
+    .end-daily-task:empty {
       display: none;
-    }
-
-    .end-retry-hint {
-      font-family: 'Fredoka', system-ui, sans-serif;
-      font-weight: 600;
-      font-size: clamp(0.72rem, 3vw, 0.82rem);
-      color: #c2410c;
-      margin: 0 0 0.35rem;
-      text-align: center;
-      letter-spacing: 0.03em;
     }
 
     .end-record {
@@ -2453,7 +2443,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.15rem;
+      gap: clamp(0.55rem, 2.2dvh, 0.75rem);
       width: 100%;
       animation: end-slide-up 0.45s ease 0.4s both;
     }
@@ -2540,23 +2530,29 @@
     .btn-retry-outline {
       width: 100%;
       font-family: 'Fredoka', system-ui, sans-serif;
-      font-weight: 700;
-      font-size: clamp(0.82rem, 3.2dvh, 1rem);
+      font-weight: 800;
+      font-size: clamp(0.95rem, 3.8dvh, 1.12rem);
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #1d3557;
-      padding: clamp(0.45rem, 1.8dvh, 0.58rem) 1.1rem;
+      padding: clamp(0.55rem, 2.1dvh, 0.72rem) 1.2rem;
       border: 3px solid #1d3557;
       border-radius: 999px;
-      background: transparent;
+      background: linear-gradient(180deg, #fffef8 0%, #fff8e1 55%, #f5ecd8 100%);
       cursor: pointer;
       touch-action: manipulation;
-      box-shadow: none;
+      box-shadow:
+        0 4px 0 rgba(29, 53, 87, 0.42),
+        0 8px 22px rgba(0, 0, 0, 0.28),
+        inset 0 2px 0 rgba(255, 255, 255, 0.85);
     }
 
     .btn-retry-outline:active {
-      transform: translateY(2px);
-      background: rgba(29, 53, 87, 0.06);
+      transform: translateY(3px);
+      box-shadow:
+        0 1px 0 rgba(29, 53, 87, 0.42),
+        0 4px 12px rgba(0, 0, 0, 0.2);
+      background: linear-gradient(180deg, #fff8e1 0%, #f5ecd8 100%);
     }
 
     @media (max-height: 680px) {
@@ -3011,31 +3007,11 @@
         <div class="end-score-row">
           <span class="end-score-label">Ты надоил</span>
           <span class="end-score-num" id="end-liters">0.0</span>
-          <span class="end-score-unit">литров</span>
-        </div>
-        <div class="end-pitch-bar" id="end-pitch-wrap">
-          <div class="end-pitch-track">
-            <div class="end-pitch-fill" id="end-pitch-fill"></div>
-          </div>
-          <p class="end-pitch-text" id="end-pitch-text"></p>
-        </div>
-        <div class="end-meta-row">
-          <p class="end-compare" id="end-compare"></p>
-          <p class="end-daily-task" id="end-daily-task"></p>
-          <p class="end-record">🏆 рекорд: <span id="end-record">0.0</span> л</p>
-        </div>
-        <div class="end-x5-strip">
-          <span class="end-x5-logo" aria-hidden="true">X5</span>
-          <div class="end-x5-text">
-            <span>Начислим на карту <strong>Х5 Клуб</strong></span>
-            <span class="end-x5-chip">Скоро в приложении</span>
-          </div>
+          <span class="end-score-unit">л</span>
         </div>
       </div>
       <div class="end-buttons">
         <button type="button" class="btn btn-share-gloss" id="btn-share">Поделиться ссылкой</button>
-        <p class="end-share-bonus">+100 баллов на карту Х5 Клуб</p>
-        <p class="end-retry-hint" id="end-retry-hint"></p>
         <button type="button" class="btn btn-retry-outline" id="btn-retry">Ещё раз</button>
       </div>
       </div>
@@ -3748,10 +3724,6 @@
       endRankEmoji: document.getElementById('end-rank-emoji'),
       endRankTitle: document.getElementById('end-rank-title'),
       endRankSub: document.getElementById('end-rank-sub'),
-      endRecord: document.getElementById('end-record'),
-      endCompare: document.getElementById('end-compare'),
-      endDailyTask: document.getElementById('end-daily-task'),
-      endRetryHint: document.getElementById('end-retry-hint'),
       cowScene: document.getElementById('cow-scene'),
       cowFrame: document.getElementById('cow-frame'),
       cowBgVideo: document.getElementById('cow-bg-video'),
@@ -3785,9 +3757,6 @@
       endCard: document.getElementById('end-card'),
       endRewardPercent: document.getElementById('end-reward-percent'),
       endCouponCode: document.getElementById('end-coupon-code'),
-      endPitchWrap: document.getElementById('end-pitch-wrap'),
-      endPitchFill: document.getElementById('end-pitch-fill'),
-      endPitchText: document.getElementById('end-pitch-text'),
       endConfetti: document.getElementById('end-confetti'),
       boosterOffer: document.getElementById('booster-offer'),
       boosterEarned: document.getElementById('booster-earned'),
@@ -4321,7 +4290,6 @@
       const text = game.highScore.toFixed(1) + ' Л';
       if (els.menuRecord) els.menuRecord.textContent = text;
       if (els.gameRecord) els.gameRecord.textContent = game.highScore.toFixed(1);
-      if (els.endRecord) els.endRecord.textContent = game.highScore.toFixed(1);
     }
 
     function updateRoundDailyTaskHUD() {
@@ -4680,26 +4648,6 @@
       if (game.flowRhythmActiveSince) {
         game.flowRhythmTotalSec += (now - game.flowRhythmActiveSince) / 1000;
         game.flowRhythmActiveSince = 0;
-      }
-    }
-
-    function renderEndDailyTaskUI(task, claim) {
-      if (!els.endDailyTask) return;
-      if (task.completed) {
-        els.endDailyTask.textContent =
-          'Задание: ' + task.target + '/' + task.target + ' л — выполнено!';
-        els.endDailyTask.className = 'end-daily-task done';
-      } else {
-        els.endDailyTask.textContent = DailyTask.remainingText(task);
-        els.endDailyTask.className = 'end-daily-task pending';
-      }
-      if (els.endRetryHint) {
-        const pct = task.target > 0 ? (task.progress || 0) / task.target : 0;
-        if (!task.completed && pct >= 0.7) {
-          els.endRetryHint.textContent = 'Задание почти готово — ещё раунд!';
-        } else {
-          els.endRetryHint.textContent = '';
-        }
       }
     }
 
@@ -6166,9 +6114,6 @@
       els.timerWrap?.classList.remove('critical');
       els.timer?.classList.remove('tick-pop');
       screens.end.classList.remove('end-new-record', 'end-celebrate');
-      if (els.endPitchFill) els.endPitchFill.style.width = '0%';
-      if (els.endDailyTask) els.endDailyTask.textContent = '';
-      if (els.endRetryHint) els.endRetryHint.textContent = '';
       hideRoundDailyTaskHUD();
       updateTeatVisuals();
       stopCowLife();
@@ -6242,27 +6187,6 @@
       if (els.endRewardPercent) els.endRewardPercent.textContent = reward.earnedLabel;
       if (els.endCouponCode) {
         els.endCouponCode.textContent = X5ClubStub.couponCode(reward.sessionId);
-      }
-
-      if (els.endPitchWrap) {
-        if (reward.isMaxDiscount) {
-          els.endPitchWrap.classList.add('max-tier');
-          if (els.endPitchText) els.endPitchText.textContent = 'Максимальная скидка!';
-          if (els.endPitchFill) els.endPitchFill.style.width = '100%';
-        } else {
-          els.endPitchWrap.classList.remove('max-tier');
-          if (els.endPitchText) {
-            els.endPitchText.textContent = `Ещё ${reward.pitchLiters} л до скидки ${reward.nextLabel}`;
-          }
-          const tierIdx = CONFIG.DISCOUNT_TIERS.findIndex((t) => t.percent === reward.earnedPercent);
-          const pct = ((tierIdx + 1) / CONFIG.DISCOUNT_TIERS.length) * 100;
-          if (els.endPitchFill) {
-            els.endPitchFill.style.width = '0%';
-            requestAnimationFrame(() => {
-              if (els.endPitchFill) els.endPitchFill.style.width = pct + '%';
-            });
-          }
-        }
       }
 
       return reward;
@@ -6358,9 +6282,8 @@
       const reward = renderEndRewardUI(score);
       X5ClubStub.queueDiscount(reward.earnedPercent, score, reward.sessionId);
 
-      const task = DailyTask.addRoundLiters(score);
-      const claim = DailyTask.claimIfDone();
-      renderEndDailyTaskUI(task, claim);
+      DailyTask.addRoundLiters(score);
+      DailyTask.claimIfDone();
 
       MilkerCareer.recordRound();
       updateMenuRetentionUI();
@@ -6368,16 +6291,10 @@
       saveHighScore();
       if (score > prevRecord) playNewRecordSound();
 
-      els.endLiters.textContent = score.toFixed(1);
-      if (els.endRecord) els.endRecord.textContent = game.highScore.toFixed(1);
+      if (els.endLiters) els.endLiters.textContent = score.toFixed(1);
 
-      const compareText = formatEndCompare(score, prevRecord);
       const isNewRecord = score > prevRecord;
       renderEndRankUI(score, isNewRecord);
-      if (els.endCompare) {
-        els.endCompare.textContent = compareText;
-        els.endCompare.classList.toggle('behind', score < prevRecord && prevRecord > 0);
-      }
       screens.end.classList.toggle('end-new-record', isNewRecord);
       screens.end.classList.toggle('end-celebrate', isNewRecord || reward.isMaxDiscount);
 
@@ -6410,6 +6327,170 @@
       }
     }
 
+    function loadImageAsset(url) {
+      if (!url) return Promise.resolve(null);
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.decoding = 'async';
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = url;
+      });
+    }
+
+    async function resolveShareBgImage() {
+      const candidates = [CONFIG.END_IMAGE, CONFIG.MENU_IMAGE, CONFIG.COW_IMAGE].filter(Boolean);
+      for (let i = 0; i < candidates.length; i++) {
+        const img = await loadImageAsset(candidates[i]);
+        if (img) return img;
+      }
+      return null;
+    }
+
+    function drawCoverImageTop(ctx, img, w, h) {
+      const scale = Math.max(w / img.width, h / img.height);
+      const dw = img.width * scale;
+      const dh = img.height * scale;
+      ctx.drawImage(img, (w - dw) / 2, 0, dw, dh);
+    }
+
+    function drawEndScrim(ctx, w, h) {
+      const g = ctx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, 'rgba(10, 12, 20, 0)');
+      g.addColorStop(0.36, 'rgba(10, 12, 20, 0)');
+      g.addColorStop(0.52, 'rgba(10, 12, 20, 0.22)');
+      g.addColorStop(0.78, 'rgba(10, 12, 20, 0.58)');
+      g.addColorStop(1, 'rgba(10, 12, 20, 0.72)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    function drawShareTicket(ctx, cx, y, cardW, reward, couponCode) {
+      const ticketX = cx - cardW / 2 + 8;
+      const ticketW = cardW - 16;
+      const ticketH = 188;
+      const ticketGrad = ctx.createLinearGradient(ticketX, y, ticketX, y + ticketH);
+      ticketGrad.addColorStop(0, '#1a4a8a');
+      ticketGrad.addColorStop(0.55, '#2563b8');
+      ticketGrad.addColorStop(1, '#1d4f9e');
+      ctx.fillStyle = ticketGrad;
+      roundRect(ctx, ticketX, y, ticketW, ticketH, 14);
+      ctx.fill();
+      ctx.strokeStyle = '#ffd166';
+      ctx.lineWidth = 3;
+      roundRect(ctx, ticketX, y, ticketW, ticketH, 14);
+      ctx.stroke();
+
+      ctx.fillStyle = '#fff8e1';
+      ctx.beginPath();
+      ctx.arc(ticketX - 1, y + ticketH / 2, 7, 0, Math.PI * 2);
+      ctx.arc(ticketX + ticketW + 1, y + ticketH / 2, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#1d3557';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '700 18px Fredoka, sans-serif';
+      ctx.fillStyle = '#fff8e1';
+      ctx.fillText('ПРОСТОКВАШИНО', cx, y + 28);
+      ctx.font = '700 16px Fredoka, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.92)';
+      ctx.fillText('ТВОЯ СКИДКА', cx, y + 52);
+      drawComicText(
+        ctx,
+        reward.earnedLabel,
+        cx,
+        y + 108,
+        '700 72px Fredoka, sans-serif',
+        '#fff',
+        '#ffd166',
+        3
+      );
+      ctx.font = '700 18px Fredoka, sans-serif';
+      ctx.fillStyle = '#fff';
+      ctx.fillText('на продукцию бренда', cx, y + 148);
+      const codeW = ctx.measureText(couponCode).width + 28;
+      const codeX = cx - codeW / 2;
+      roundRect(ctx, codeX, y + 158, codeW, 24, 6);
+      ctx.fillStyle = 'rgba(255,255,255,0.15)';
+      ctx.fill();
+      ctx.font = '800 15px system-ui, sans-serif';
+      ctx.fillStyle = '#ffd166';
+      ctx.fillText(couponCode, cx, y + 170);
+      return y + ticketH + 10;
+    }
+
+    function drawShareRankHero(ctx, cx, y, cardW, rank, isRecordTier) {
+      const boxX = cx - cardW / 2 + 8;
+      const boxW = cardW - 16;
+      const boxH = 72;
+      const grad = ctx.createLinearGradient(boxX, y, boxX + boxW, y + boxH);
+      if (isRecordTier) {
+        grad.addColorStop(0, '#fffbe8');
+        grad.addColorStop(1, '#fff3c4');
+      } else {
+        grad.addColorStop(0, 'rgba(255,255,255,0.95)');
+        grad.addColorStop(1, 'rgba(255,248,225,0.9)');
+      }
+      ctx.fillStyle = grad;
+      roundRect(ctx, boxX, y, boxW, boxH, 10);
+      ctx.fill();
+      ctx.strokeStyle = isRecordTier ? '#f4a261' : '#1d3557';
+      ctx.lineWidth = 2.5;
+      roundRect(ctx, boxX, y, boxW, boxH, 10);
+      ctx.stroke();
+
+      const titleLine = (rank.emoji ? rank.emoji + ' ' : '') + rank.title;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '700 24px Fredoka, sans-serif';
+      ctx.fillStyle = isRecordTier ? '#e9a319' : '#1d3557';
+      ctx.fillText(titleLine, cx, y + 28);
+      ctx.font = '600 16px Fredoka, sans-serif';
+      ctx.fillStyle = 'rgba(29, 53, 87, 0.82)';
+      ctx.fillText(rank.subtitle, cx, y + 54);
+      return y + boxH + 10;
+    }
+
+    function drawShareScoreRow(ctx, cx, y, score) {
+      const scoreStr = score.toFixed(1);
+      ctx.textBaseline = 'middle';
+      ctx.font = '700 20px Fredoka, sans-serif';
+      const label = 'ТЫ НАДОИЛ ';
+      const unit = ' Л';
+      const labelW = ctx.measureText(label).width;
+      ctx.font = '700 58px Fredoka, sans-serif';
+      const numW = ctx.measureText(scoreStr).width;
+      ctx.font = '700 24px Fredoka, sans-serif';
+      const unitW = ctx.measureText(unit).width;
+      const totalW = labelW + numW + unitW;
+      let x = cx - totalW / 2;
+      const rowY = y + 32;
+
+      ctx.textAlign = 'left';
+      ctx.font = '700 20px Fredoka, sans-serif';
+      ctx.fillStyle = '#1d3557';
+      ctx.fillText(label, x, rowY);
+      x += labelW;
+      drawComicText(
+        ctx,
+        scoreStr,
+        x + numW / 2,
+        rowY,
+        '700 58px Fredoka, sans-serif',
+        '#fff',
+        '#1d3557',
+        3
+      );
+      x += numW;
+      ctx.font = '700 24px Fredoka, sans-serif';
+      ctx.fillStyle = '#1d3557';
+      ctx.fillText(unit, x, rowY);
+      return y + 64;
+    }
+
     async function renderShareCardBlob() {
       const w = 540;
       const h = 960;
@@ -6420,113 +6501,56 @@
       if (!ctx) return null;
 
       try {
-        await document.fonts.load('700 48px Fredoka');
         await document.fonts.load('700 72px Fredoka');
-        await document.fonts.load('700 140px Fredoka');
+        await document.fonts.load('700 24px Fredoka');
+        await document.fonts.load('700 22px Fredoka');
+        await document.fonts.load('700 18px Fredoka');
       } catch (_) {}
 
-      const score = game.liters.toFixed(1);
       const reward = game.roundReward || computeRoundReward(game.liters);
       const rank = game.endRank || getEndRank(game.liters, false);
-      const record = game.highScore.toFixed(1);
       const couponCode = X5ClubStub.couponCode(reward.sessionId);
+      const isNewRecord = screens.end.classList.contains('end-new-record');
+      const isRecordTier = rank.tier === 'legend' || rank.tier === 'god' || rank.tier === 'record' || isNewRecord;
+      const score = game.liters;
 
-      const bg = ctx.createLinearGradient(0, 0, 0, h);
-      bg.addColorStop(0, '#fff8e1');
-      bg.addColorStop(0.5, '#f5ecd8');
-      bg.addColorStop(1, '#e8dcc8');
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, w, h);
+      const bgImg = await resolveShareBgImage();
+      if (bgImg) {
+        drawCoverImageTop(ctx, bgImg, w, h);
+      } else {
+        const bg = ctx.createLinearGradient(0, 0, 0, h);
+        bg.addColorStop(0, '#fff8e1');
+        bg.addColorStop(0.5, '#f5ecd8');
+        bg.addColorStop(1, '#e8dcc8');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, w, h);
+      }
+      drawEndScrim(ctx, w, h);
 
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      const cardX = 20;
+      const cardW = w - 40;
+      const cx = w / 2;
 
-      drawComicText(ctx, 'УДВОЙ НАДОЙ', w / 2, 52, '700 36px Fredoka, sans-serif', '#fff', '#1d3557', 3);
+      let contentH = 14;
+      contentH += 188 + 10;
+      contentH += 72 + 10;
+      contentH += 64 + 14;
 
-      ctx.font = '700 22px Fredoka, sans-serif';
-      ctx.fillStyle = '#2563b8';
-      ctx.fillText('ПРОСТОКВАШИНО × Х5 КЛУБ', w / 2, 88);
+      const cardY = h - contentH - 24;
+      const cardH = contentH;
 
-      const ticketX = 40;
-      const ticketY = 118;
-      const ticketW = w - 80;
-      const ticketH = 340;
-      const ticketGrad = ctx.createLinearGradient(ticketX, ticketY, ticketX, ticketY + ticketH);
-      ticketGrad.addColorStop(0, '#1a4a8a');
-      ticketGrad.addColorStop(1, '#2563b8');
-      ctx.fillStyle = ticketGrad;
-      roundRect(ctx, ticketX, ticketY, ticketW, ticketH, 22);
+      ctx.fillStyle = 'rgba(255, 253, 246, 0.94)';
+      roundRect(ctx, cardX, cardY, cardW, cardH, 16);
       ctx.fill();
-      ctx.strokeStyle = '#ffd166';
-      ctx.lineWidth = 5;
-      roundRect(ctx, ticketX, ticketY, ticketW, ticketH, 22);
+      ctx.strokeStyle = isNewRecord ? '#f4a261' : '#1d3557';
+      ctx.lineWidth = 3;
+      roundRect(ctx, cardX, cardY, cardW, cardH, 16);
       ctx.stroke();
 
-      ctx.font = '700 24px Fredoka, sans-serif';
-      ctx.fillStyle = '#fff8e1';
-      ctx.fillText('ТВОЯ СКИДКА', w / 2, ticketY + 52);
-
-      drawComicText(
-        ctx,
-        reward.earnedLabel,
-        w / 2,
-        ticketY + 155,
-        '700 140px Fredoka, sans-serif',
-        '#fff',
-        '#ffd166',
-        4
-      );
-
-      ctx.font = '700 26px Fredoka, sans-serif';
-      ctx.fillStyle = '#fff';
-      ctx.fillText('на Простоквашино', w / 2, ticketY + 248);
-
-      ctx.font = '700 20px Fredoka, sans-serif';
-      ctx.fillStyle = '#ffd166';
-      ctx.fillText(couponCode, w / 2, ticketY + 300);
-
-      ctx.font = '700 30px Fredoka, sans-serif';
-      ctx.fillStyle = '#1d3557';
-      ctx.fillText('Я надоил ' + score + ' л', w / 2, 510);
-
-      let pitchText;
-      if (reward.isMaxDiscount) {
-        pitchText = 'МАКСИМАЛЬНАЯ СКИДКА';
-      } else {
-        pitchText = `Ещё ${reward.pitchLiters} л до скидки ${reward.nextLabel}`;
-      }
-      drawBadgeText(ctx, pitchText, w / 2, 560, ticketW - 20, {
-        bg: reward.isMaxDiscount ? '#fff3d0' : '#dff0ff',
-        color: '#1d3557',
-        font: '700 28px Fredoka, sans-serif',
-      });
-
-      const rankLine = (rank.emoji ? rank.emoji + ' ' : '') + rank.title;
-      drawBadgeText(ctx, rankLine, w / 2, 640, ticketW - 20, {
-        bg: '#1d3557',
-        color: '#fff8e1',
-        font: '700 26px Fredoka, sans-serif',
-      });
-
-      ctx.font = '700 22px Fredoka, sans-serif';
-      ctx.fillStyle = 'rgba(29, 53, 87, 0.75)';
-      ctx.fillText(rank.subtitle, w / 2, 720);
-
-      ctx.font = '700 26px Fredoka, sans-serif';
-      ctx.fillStyle = '#1d3557';
-      ctx.fillText('🏆 рекорд: ' + record + ' л', w / 2, 780);
-
-      const gameUrl = getGameShareUrl();
-      if (gameUrl && !gameUrl.startsWith('file:')) {
-        ctx.font = '700 20px Fredoka, sans-serif';
-        ctx.fillStyle = '#f4a261';
-        const shortUrl = gameUrl.length > 44 ? gameUrl.slice(0, 41) + '…' : gameUrl;
-        ctx.fillText(shortUrl, w / 2, 840);
-      }
-
-      ctx.font = '700 18px Fredoka, sans-serif';
-      ctx.fillStyle = 'rgba(29, 53, 87, 0.5)';
-      ctx.fillText('Скидка начислится в приложении Х5 Клуб', w / 2, 910);
+      let iy = cardY + 14;
+      iy = drawShareTicket(ctx, cx, iy, cardW, reward, couponCode);
+      iy = drawShareRankHero(ctx, cx, iy, cardW, rank, isRecordTier);
+      drawShareScoreRow(ctx, cx, iy, score);
 
       return new Promise((resolve) => {
         canvas.toBlob((blob) => resolve(blob), 'image/png', 0.92);
@@ -6632,13 +6656,19 @@
       return true;
     }
 
-    async function tryNativeShareLink(title, text) {
+    async function tryNativeShareLink(title, text, blob) {
       if (!navigator.share) return 'unsupported';
 
       const gameUrl = getGameShareUrl();
       const hasUrl = gameUrl && !gameUrl.startsWith('file:');
-
       const variants = [];
+
+      if (blob) {
+        const file = new File([blob], 'udvoj-nadoi.png', { type: 'image/png' });
+        if (hasUrl) variants.push({ files: [file], title, text, url: gameUrl });
+        variants.push({ files: [file], title, text });
+        if (hasUrl) variants.push({ files: [file], title, url: gameUrl });
+      }
       if (hasUrl) {
         variants.push({ title, text, url: gameUrl });
       }
@@ -6693,7 +6723,10 @@
       try {
         const title = 'УДВОЙ НАДОЙ';
         const text = buildShareText();
-        const result = await tryNativeShareLink(title, text);
+        let blob = game.shareBlob;
+        if (!blob) blob = await renderShareCardBlob();
+        if (blob) game.shareBlob = blob;
+        const result = await tryNativeShareLink(title, text, blob);
 
         if (result === 'shared') {
           grantShareLinkBonus();
@@ -6701,9 +6734,6 @@
         }
         if (result === 'aborted') return;
 
-        let blob = game.shareBlob;
-        if (!blob) blob = await renderShareCardBlob();
-        if (blob) game.shareBlob = blob;
         openShareFallback(blob, text);
       } finally {
         if (btn) {
