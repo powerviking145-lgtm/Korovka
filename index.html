@@ -6454,41 +6454,52 @@
       return y + boxH + 10;
     }
 
-    function drawShareScoreRow(ctx, cx, y, score) {
+    function drawShareScoreHero(ctx, cx, y, cardW, score, isNewRecord) {
+      const boxX = cx - cardW / 2 + 8;
+      const boxW = cardW - 16;
+      const boxH = 92;
       const scoreStr = score.toFixed(1);
-      ctx.textBaseline = 'middle';
-      ctx.font = '700 20px Fredoka, sans-serif';
-      const label = 'ТЫ НАДОИЛ ';
-      const unit = ' Л';
-      const labelW = ctx.measureText(label).width;
-      ctx.font = '700 58px Fredoka, sans-serif';
-      const numW = ctx.measureText(scoreStr).width;
-      ctx.font = '700 24px Fredoka, sans-serif';
-      const unitW = ctx.measureText(unit).width;
-      const totalW = labelW + numW + unitW;
-      let x = cx - totalW / 2;
-      const rowY = y + 32;
 
-      ctx.textAlign = 'left';
-      ctx.font = '700 20px Fredoka, sans-serif';
+      const grad = ctx.createLinearGradient(boxX, y, boxX + boxW, y + boxH);
+      grad.addColorStop(0, '#fffef8');
+      grad.addColorStop(1, '#fff8e1');
+      ctx.fillStyle = grad;
+      roundRect(ctx, boxX, y, boxW, boxH, 10);
+      ctx.fill();
+      ctx.strokeStyle = isNewRecord ? '#f4a261' : '#1d3557';
+      ctx.lineWidth = 2.5;
+      roundRect(ctx, boxX, y, boxW, boxH, 10);
+      ctx.stroke();
+
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '700 16px Fredoka, sans-serif';
       ctx.fillStyle = '#1d3557';
-      ctx.fillText(label, x, rowY);
-      x += labelW;
+      ctx.fillText('ТЫ НАДОИЛ', cx, y + 22);
+
+      ctx.font = '700 68px Fredoka, sans-serif';
+      const numW = ctx.measureText(scoreStr).width;
+      ctx.font = '700 26px Fredoka, sans-serif';
+      const unitW = ctx.measureText(' Л').width;
+      const valueY = y + 58;
+      const valueStartX = cx - (numW + unitW) / 2;
+
       drawComicText(
         ctx,
         scoreStr,
-        x + numW / 2,
-        rowY,
-        '700 58px Fredoka, sans-serif',
+        valueStartX + numW / 2,
+        valueY,
+        '700 68px Fredoka, sans-serif',
         '#fff',
         '#1d3557',
         3
       );
-      x += numW;
-      ctx.font = '700 24px Fredoka, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.font = '700 26px Fredoka, sans-serif';
       ctx.fillStyle = '#1d3557';
-      ctx.fillText(unit, x, rowY);
-      return y + 64;
+      ctx.fillText(' Л', valueStartX + numW, valueY);
+
+      return y + boxH + 10;
     }
 
     async function renderShareCardBlob() {
@@ -6501,6 +6512,7 @@
       if (!ctx) return null;
 
       try {
+        await document.fonts.load('700 68px Fredoka');
         await document.fonts.load('700 72px Fredoka');
         await document.fonts.load('700 24px Fredoka');
         await document.fonts.load('700 22px Fredoka');
@@ -6532,9 +6544,9 @@
       const cx = w / 2;
 
       let contentH = 14;
+      contentH += 92 + 10;
       contentH += 188 + 10;
-      contentH += 72 + 10;
-      contentH += 64 + 14;
+      contentH += 72 + 14;
 
       const cardY = h - contentH - 24;
       const cardH = contentH;
@@ -6548,9 +6560,9 @@
       ctx.stroke();
 
       let iy = cardY + 14;
+      iy = drawShareScoreHero(ctx, cx, iy, cardW, score, isNewRecord);
       iy = drawShareTicket(ctx, cx, iy, cardW, reward, couponCode);
-      iy = drawShareRankHero(ctx, cx, iy, cardW, rank, isRecordTier);
-      drawShareScoreRow(ctx, cx, iy, score);
+      drawShareRankHero(ctx, cx, iy, cardW, rank, isRecordTier);
 
       return new Promise((resolve) => {
         canvas.toBlob((blob) => resolve(blob), 'image/png', 0.92);
