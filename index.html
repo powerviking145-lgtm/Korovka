@@ -1004,16 +1004,25 @@
       50% { transform: translateX(-50%) scale(1.06) translateY(2px); opacity: 1; }
     }
 
+    .udder-visual {
+      position: relative;
+      width: 100%;
+      line-height: 0;
+    }
+
     /* PNG-спрайт вымени (игрушечный стиль) */
     .udder-sprite {
       display: block;
       width: 100%;
       height: auto;
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      object-position: center bottom;
       pointer-events: none;
       user-select: none;
       -webkit-user-drag: none;
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-      transition: filter 0.15s ease;
+      transition: filter 0.15s ease, opacity 0.16s ease-out;
       z-index: 0;
       position: relative;
     }
@@ -1049,14 +1058,15 @@
 
     .teats-row {
       position: absolute;
-      left: 50%;
-      top: var(--cluster-top, 0%);
-      width: var(--cluster-w, 100%);
-      height: var(--cluster-h, 100%);
-      margin-top: calc(var(--overlap-udder, 0%) * -1);
-      transform: translateX(-50%);
+      inset: 0;
+      width: 100%;
+      height: 100%;
       z-index: 1;
-      transform-origin: top center;
+      pointer-events: none;
+    }
+
+    .teats-row .teat {
+      pointer-events: auto;
     }
 
     .udder.tap-hint-active .teats-row::before {
@@ -1093,7 +1103,6 @@
       left: var(--hit-x, 50%);
       top: var(--hit-y, 55%);
       transform: translate(-50%, -50%);
-      --heat: 0;
       background: transparent;
       border: none;
       border-radius: 40% 40% 50% 50%;
@@ -1101,51 +1110,238 @@
       z-index: 3;
     }
 
-    .teat-heat-bar {
-      position: absolute;
-      top: auto;
-      bottom: 4px;
-      left: 16%;
-      right: 16%;
-      height: 3px;
-      padding: 0;
-      background: var(--hud-cream, #fff8e1);
-      border: 1px solid var(--hud-blue, #1d3557);
-      border-radius: 99px;
-      overflow: hidden;
-      z-index: 2;
-      pointer-events: none;
-      opacity: 0;
-      box-shadow: none;
-      transition: opacity 0.15s ease;
-    }
-
-    .teat.heat-visible .teat-heat-bar {
-      opacity: calc(0.45 + var(--heat) * 0.55);
-    }
-
-    .teat-heat-bar::after {
-      content: '';
-      display: block;
-      height: 100%;
-      width: calc(var(--heat) * 100%);
-      background: linear-gradient(90deg, #f4a261, #e76f51);
-      border-radius: inherit;
-      transition: width 0.1s linear;
-    }
-
     .udder.debug-udder {
       outline: 2px dashed rgba(255, 60, 60, 0.55);
       outline-offset: 2px;
     }
 
-    .udder.debug-udder .udder-sprite {
+    .udder.debug-udder .udder-visual {
       outline: 1px dashed rgba(100, 160, 255, 0.7);
+    }
+
+    .udder.debug-udder .udder-sprite {
+      outline: 1px dashed rgba(255, 160, 60, 0.5);
     }
 
     .udder.debug-udder .teat {
       outline: 1px solid rgba(60, 200, 80, 0.75);
       background: rgba(60, 200, 80, 0.12);
+    }
+
+    /* Градусник перегрева — слева от вымени, PNG + заливка молоком */
+    .udder-thermo {
+      position: absolute;
+      left: -58%;
+      top: 44%;
+      z-index: 5;
+      opacity: 0;
+      transform: translateY(-50%) scale(1.58);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+    }
+
+    .udder-thermo.visible {
+      opacity: 1;
+      transform: translateY(-50%) scale(1.92);
+    }
+
+    .udder-thermo.shaking .thermo-body {
+      animation: thermo-shake var(--thermo-shake-ms, 420ms) ease-in-out infinite;
+    }
+
+    .udder-thermo.overheat .thermo-frame {
+      filter: drop-shadow(0 0 10px rgba(255, 120, 40, 0.65)) brightness(1.08);
+    }
+
+    @keyframes thermo-shake {
+      0%, 100% {
+        transform: rotate(0deg) translate(0, 0);
+      }
+      15% {
+        transform: rotate(calc(var(--thermo-shake-a, 2) * -1deg)) translate(calc(var(--thermo-shake-x, 1px) * -1), 0);
+      }
+      35% {
+        transform: rotate(calc(var(--thermo-shake-a, 2) * 1deg)) translate(var(--thermo-shake-x, 1px), calc(var(--thermo-shake-x, 1px) * -0.3));
+      }
+      55% {
+        transform: rotate(calc(var(--thermo-shake-a, 2) * -0.75deg)) translate(calc(var(--thermo-shake-x, 1px) * -0.6), calc(var(--thermo-shake-x, 1px) * 0.25));
+      }
+      75% {
+        transform: rotate(calc(var(--thermo-shake-a, 2) * 0.9deg)) translate(calc(var(--thermo-shake-x, 1px) * 0.85), calc(var(--thermo-shake-x, 1px) * -0.15));
+      }
+    }
+
+    .thermo-body {
+      position: relative;
+      width: clamp(94px, 27vw, 130px);
+      line-height: 0;
+    }
+
+    .thermo-frame {
+      display: block;
+      width: 100%;
+      height: auto;
+      position: relative;
+      z-index: 2;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .thermo-fill-slot {
+      position: absolute;
+      top: var(--thermo-fill-top, 32%);
+      left: var(--thermo-fill-left, 35%);
+      right: var(--thermo-fill-right, 35%);
+      bottom: var(--thermo-fill-bottom, 11%);
+      z-index: 1;
+      overflow: hidden;
+      clip-path: polygon(
+        41% 0%,
+        69% 0%,
+        69% 71%,
+        85% 84%,
+        83% 91%,
+        72% 98%,
+        65% 100%,
+        48% 100%,
+        29% 91%,
+        27% 84%,
+        31% 71%
+      );
+    }
+
+    .thermo-fill {
+      position: absolute;
+      bottom: -2%;
+      left: 0;
+      right: 0;
+      height: 0%;
+      max-height: 102%;
+      background: var(--thermo-liquid, #66bb6a);
+      transition: height 0.12s linear, background 0.2s ease;
+      box-shadow: inset 0 2px 10px rgba(255, 255, 255, 0.18);
+    }
+
+    .udder-thermo.warn .thermo-fill {
+      filter: brightness(1.06) saturate(1.1);
+      box-shadow: inset 0 0 10px rgba(255, 180, 60, 0.2);
+    }
+
+    .udder-thermo.overheat .thermo-fill {
+      filter: brightness(1.1) saturate(1.15);
+      box-shadow: inset 0 0 14px rgba(255, 90, 50, 0.28);
+    }
+
+    .thermo-bubbles {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .udder-thermo.warn .thermo-bubbles,
+    .udder-thermo.overheat .thermo-bubbles {
+      opacity: 1;
+    }
+
+    .thermo-bubbles::before,
+    .thermo-bubbles::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.65);
+      animation: thermo-bubble-rise 1.8s ease-in-out infinite;
+    }
+
+    .thermo-bubbles::before {
+      width: 5px;
+      height: 5px;
+      left: 28%;
+      bottom: 18%;
+      animation-delay: 0s;
+    }
+
+    .thermo-bubbles::after {
+      width: 4px;
+      height: 4px;
+      right: 30%;
+      bottom: 32%;
+      animation-delay: 0.7s;
+    }
+
+    @keyframes thermo-bubble-rise {
+      0% { transform: translateY(0); opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-28px); opacity: 0; }
+    }
+
+    /* CSS-fallback, если PNG не загрузился */
+    .udder-thermo:not(.has-img) .thermo-frame {
+      display: none;
+    }
+
+    .udder-thermo:not(.has-img) .thermo-body {
+      width: 44px;
+    }
+
+    .udder-thermo:not(.has-img) .thermo-fill-slot {
+      position: relative;
+      top: auto;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      width: 36px;
+      height: clamp(136px, 36vw, 184px);
+      margin: 0 auto;
+      clip-path: none;
+      border-radius: 9px 9px 5px 5px;
+      border: 3px solid var(--hud-blue, #1d3557);
+      background: var(--hud-cream, #fff8e1);
+    }
+
+    .udder-thermo:not(.has-img) .thermo-fill {
+      background: var(--thermo-liquid, #66bb6a);
+    }
+
+    .heat-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 9;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.45s ease;
+      background: radial-gradient(
+        ellipse 95% 88% at 50% 62%,
+        transparent 42%,
+        rgba(255, 120, 50, 0.08) 70%,
+        rgba(230, 57, 70, 0.22) 100%
+      );
+    }
+
+    .heat-vignette.warn {
+      opacity: 0.45;
+    }
+
+    .heat-vignette.overheat {
+      opacity: 0.72;
+      animation: heat-vignette-pulse 0.8s ease-in-out infinite;
+    }
+
+    @keyframes heat-vignette-pulse {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 0.8; }
+    }
+
+    .cow-frame.heat-warn .cow-img,
+    .cow-frame.heat-warn .cow-bg-video {
+      filter: saturate(1.08) sepia(0.06);
+    }
+
+    .cow-frame.heat-over .cow-img,
+    .cow-frame.heat-over .cow-bg-video {
+      filter: saturate(1.12) sepia(0.12) brightness(1.03);
     }
 
     .status-badge {
@@ -1381,10 +1577,21 @@
       justify-content: center;
       background: rgba(0, 0, 0, 0.35);
       pointer-events: all;
+      transition: opacity 0.5s ease, background 0.5s ease;
     }
 
     .countdown-overlay.hidden {
       display: none;
+    }
+
+    .countdown-overlay.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .countdown-overlay.stop {
+      background: rgba(8, 6, 10, 0.58);
+      z-index: 180;
     }
 
     .countdown-text {
@@ -1396,6 +1603,20 @@
       paint-order: stroke fill;
       text-shadow: 0 4px 0 var(--hud-blue, #1d3557), 0 8px 24px rgba(0, 0, 0, 0.35);
       animation: countdown-pop 0.35s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .countdown-overlay.stop .countdown-text {
+      font-size: clamp(4.4rem, 24vw, 7.2rem);
+      -webkit-text-stroke: 5px #c1121f;
+      text-shadow: 0 5px 0 #9b2226, 0 10px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    #screen-game.round-fade-out {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.55s ease;
     }
 
     @keyframes countdown-pop {
@@ -1491,8 +1712,8 @@
 
     .bucket {
       position: relative;
-      width: 132px;
-      height: 118px;
+      width: clamp(142px, 42vw, 186px);
+      height: clamp(132px, 38vw, 174px);
     }
 
     .bucket-img {
@@ -1502,7 +1723,7 @@
       height: 100%;
       object-fit: contain;
       object-position: center bottom;
-      z-index: 1;
+      z-index: 3;
       pointer-events: none;
       display: none;
     }
@@ -1511,15 +1732,58 @@
       display: block;
     }
 
-    .bucket.has-img .bucket-css {
-      opacity: 0;
+    .bucket.has-img .bucket-css .bucket-handle,
+    .bucket.has-img .bucket-css .bucket-rim,
+    .bucket.has-img .bucket-css .bucket-body {
+      visibility: hidden;
+    }
+
+    .bucket-milk-slot {
+      position: absolute;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 118px;
+      height: 84px;
+      overflow: hidden;
+      clip-path: polygon(6% 0%, 94% 0%, 78% 100%, 22% 100%);
+      z-index: 1;
       pointer-events: none;
+    }
+
+    .bucket.has-img .bucket-milk-slot {
+      top: var(--milk-inset-top, 42.5%);
+      left: var(--milk-inset-left, 35.5%);
+      right: var(--milk-inset-right, 35.5%);
+      bottom: var(--milk-inset-bottom, 16%);
+      width: auto;
+      height: auto;
+      transform: none;
+      overflow: visible;
+      border-radius: 0;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    .bucket-interior {
+      display: none;
+    }
+
+    .bucket.has-img .bucket-interior {
+      display: block;
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      border-radius: 12% / 8%;
+      background: var(--bucket-interior, #6e3f25);
+      box-shadow: inset 0 0 0 3px var(--bucket-interior, #6e3f25);
     }
 
     .bucket-css {
       position: absolute;
       inset: 0;
-      z-index: 2;
+      z-index: 0;
+      pointer-events: none;
     }
 
     .bucket-handle {
@@ -1599,50 +1863,148 @@
     .bucket-milk {
       position: absolute;
       bottom: 0;
-      left: 8%;
-      right: 8%;
+      left: 0;
+      right: 0;
+      z-index: 1;
       height: 0%;
       background:
-        linear-gradient(90deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.95) 18%, rgba(255, 255, 255, 0.95) 82%, rgba(255, 255, 255, 0.5) 100%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, #fffef6 35%, #f5ecd8 75%, #e8dcc4 100%);
+        linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.92) 20%, rgba(255, 255, 255, 0.92) 80%, rgba(255, 255, 255, 0.48) 100%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, #fffef6 30%, #f5ecd8 72%, #e8dcc4 100%);
       transition: height 0.38s cubic-bezier(0.34, 1.25, 0.64, 1);
-      clip-path: polygon(2% 0, 98% 0, 88% 100%, 12% 100%);
-      border-radius: 4px 4px 0 0;
+      clip-path: polygon(3% 0, 97% 0, 92% 100%, 8% 100%);
+      border-radius: 6px 6px 0 0;
       transform-origin: center bottom;
-      overflow: hidden;
+      transform: skewX(var(--milk-tilt, 0deg));
+      overflow: visible;
       z-index: 1;
+      --wave-speed: 1.4s;
+      --surface-width: 78%;
     }
 
-    .bucket-milk.ripple::before {
-      animation: milk-surface-wave 1.4s ease-in-out infinite, milk-ripple 0.45s ease;
+    .bucket.has-img .bucket-milk {
+      left: 0;
+      right: 0;
+      overflow: visible;
+      border-radius: 0;
+      transform: none;
+      background:
+        linear-gradient(90deg, rgba(230, 245, 255, 0.35) 0%, rgba(255, 255, 255, 0.9) 22%, rgba(255, 255, 255, 0.9) 78%, rgba(220, 238, 248, 0.35) 100%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, #fffef8 28%, #f5ecd8 70%, #e6dcc8 100%);
     }
 
-    @keyframes milk-ripple {
-      0% { transform: translateY(0) scaleX(1); filter: brightness(1); }
-      35% { transform: translateY(-5px) scaleX(1.08); filter: brightness(1.15); }
-      100% { transform: translateY(0) scaleX(1); filter: brightness(1); }
-    }
-
-    .bucket-milk::before {
-      content: '';
+    /* ====== ПОВЕРХНОСТЬ МОЛОКА — морская гладь ====== */
+    .bucket-milk-surface {
       position: absolute;
-      top: -6px;
+      top: 0;
       left: -18%;
       width: 136%;
-      height: 16px;
-      background: rgba(255, 255, 255, 0.82);
-      border-radius: 48% 48% 42% 42%;
-      animation: milk-surface-wave 1.4s ease-in-out infinite;
-      box-shadow: 0 -1px 3px rgba(255, 255, 255, 0.5);
+      height: clamp(10px, 3.2vw, 16px);
+      transform: translateY(-46%);
+      pointer-events: none;
+      z-index: 4;
+      overflow: hidden;
+      color: rgba(255, 252, 248, 0.94);
+      filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.45));
+    }
+
+    .milk-surf-layer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      display: block;
+      fill: currentColor;
+    }
+
+    .milk-surf-a {
+      opacity: 0.5;
+      animation: milk-surf-drift-a calc(var(--wave-speed, 1.4s) * 4.2) linear infinite;
+    }
+
+    .milk-surf-b {
+      opacity: 0.82;
+      height: 88%;
+      animation: milk-surf-drift-b calc(var(--wave-speed, 1.4s) * 2.6) linear infinite reverse;
+    }
+
+    @keyframes milk-surf-drift-a {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes milk-surf-drift-b {
+      from { transform: translateX(-12%); }
+      to { transform: translateX(-62%); }
+    }
+
+    .milk-surf-shimmer {
+      position: absolute;
+      top: 15%;
+      left: -30%;
+      width: 28%;
+      height: 35%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
+      border-radius: 50%;
+      filter: blur(1px);
+      animation: milk-shimmer-sweep calc(var(--wave-speed, 1.4s) * 2.8) ease-in-out infinite;
+      opacity: 0;
+    }
+
+    @keyframes milk-shimmer-sweep {
+      0%, 100% { transform: translateX(0); opacity: 0; }
+      12% { opacity: 0.75; }
+      48% { transform: translateX(320%); opacity: 0.55; }
+      72% { opacity: 0; }
+    }
+
+    .bucket-milk.ripple .bucket-milk-surface {
+      animation: milk-surface-splash 0.55s ease;
+    }
+
+    @keyframes milk-surface-splash {
+      0% { transform: translateY(-46%) scaleY(1); }
+      25% { transform: translateY(-58%) scaleY(1.18); }
+      55% { transform: translateY(-42%) scaleY(0.94); }
+      100% { transform: translateY(-46%) scaleY(1); }
+    }
+
+    .bucket-milk.ripple {
+      animation: milk-ripple-body 0.5s ease;
+    }
+
+    @keyframes milk-ripple-body {
+      0% { filter: brightness(1); }
+      30% { filter: brightness(1.12); }
+      100% { filter: brightness(1); }
+    }
+
+    .bucket-milk.foamy .bucket-milk-surface::after {
+      content: '';
+      position: absolute;
+      inset: 0 8% auto 8%;
+      height: 70%;
+      background:
+        radial-gradient(circle at 18% 55%, rgba(255, 255, 255, 0.95) 0 2px, transparent 2.5px),
+        radial-gradient(circle at 48% 35%, rgba(255, 255, 255, 0.8) 0 1.5px, transparent 2px),
+        radial-gradient(circle at 72% 60%, rgba(255, 255, 255, 0.9) 0 2px, transparent 2.5px),
+        radial-gradient(circle at 88% 40%, rgba(255, 255, 255, 0.75) 0 1px, transparent 1.5px);
+      animation: milk-foam-bob calc(var(--wave-speed, 1.4s) * 1.8) ease-in-out infinite;
+    }
+
+    @keyframes milk-foam-bob {
+      0%, 100% { transform: translateY(0); opacity: 0.85; }
+      50% { transform: translateY(-2px); opacity: 1; }
     }
 
     .bucket-milk::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(105deg, transparent 28%, rgba(255, 255, 255, 0.42) 48%, transparent 64%);
+      background: linear-gradient(105deg, transparent 28%, rgba(255, 255, 255, 0.38) 48%, transparent 64%);
       animation: milk-shine 2.2s ease-in-out infinite;
       pointer-events: none;
+      border-radius: inherit;
     }
 
     .bucket-milk.foamy::after {
@@ -1651,11 +2013,6 @@
         radial-gradient(circle at 48% 8%, rgba(255,255,255,0.75) 0 2px, transparent 3px),
         radial-gradient(circle at 72% 14%, rgba(255,255,255,0.85) 0 2.5px, transparent 3.5px),
         linear-gradient(105deg, transparent 28%, rgba(255, 255, 255, 0.35) 48%, transparent 64%);
-    }
-
-    @keyframes milk-surface-wave {
-      0%, 100% { transform: translateY(0) scaleX(1); }
-      50% { transform: translateY(-3px) scaleX(1.04); }
     }
 
     @keyframes milk-shine {
@@ -1766,9 +2123,9 @@
 
     @keyframes bucket-wobble {
       0%, 100% { transform: rotate(0deg) translateY(0); }
-      20% { transform: rotate(-5deg) translateY(2px); }
-      50% { transform: rotate(4deg) translateY(0); }
-      80% { transform: rotate(-2deg) translateY(1px); }
+      20% { transform: rotate(calc(var(--wobble-deg, 5deg) * -1)) translateY(3px); }
+      50% { transform: rotate(var(--wobble-deg, 5deg)) translateY(0); }
+      80% { transform: rotate(calc(var(--wobble-deg, 5deg) * -0.4)) translateY(2px); }
     }
 
     /* ====== ФИНАЛЬНЫЙ ЭКРАН ====== */
@@ -2512,9 +2869,13 @@
       inset: 0;
       z-index: 200;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 1rem;
+      padding:
+        calc(var(--safe-top) + clamp(2rem, 12vh, 5.5rem))
+        1rem
+        clamp(38vh, 42vh, 48vh)
+        1rem;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.25s ease;
@@ -2753,6 +3114,7 @@
 
     <!-- ====== ИГРА ====== -->
     <section id="screen-game" class="screen" aria-hidden="true">
+      <div class="heat-vignette" id="heat-vignette" aria-hidden="true"></div>
       <header class="top-bar hud-bar">
         <div class="hud-panel hud-record" id="game-record-badge">
           <span class="hud-panel-icon hud-icon-trophy" aria-hidden="true">
@@ -2816,12 +3178,23 @@
               <span class="tap-hint-finger">👆</span>
               <span class="tap-hint-text">Тапай!</span>
             </div>
-            <img class="udder-sprite" id="udder-sprite" src="assets/udder-0.png" alt="" draggable="false">
-            <div class="teats-row" id="teats-row">
-              <div class="teat t1" data-teat="0"><span class="teat-heat-bar" aria-hidden="true"></span></div>
-              <div class="teat t2" data-teat="1"><span class="teat-heat-bar" aria-hidden="true"></span></div>
-              <div class="teat t3" data-teat="2"><span class="teat-heat-bar" aria-hidden="true"></span></div>
-              <div class="teat t4" data-teat="3"><span class="teat-heat-bar" aria-hidden="true"></span></div>
+            <div class="udder-visual" id="udder-visual">
+              <img class="udder-sprite" id="udder-sprite" src="assets/udder-0.png" alt="" draggable="false">
+              <div class="teats-row" id="teats-row">
+                <div class="teat t1" data-teat="0"></div>
+                <div class="teat t2" data-teat="1"></div>
+                <div class="teat t3" data-teat="2"></div>
+                <div class="teat t4" data-teat="3"></div>
+              </div>
+            </div>
+            <div class="udder-thermo" id="udder-thermo" aria-hidden="true">
+              <div class="thermo-body">
+                <div class="thermo-fill-slot" id="thermo-fill-slot">
+                  <div class="thermo-fill" id="thermo-fill"></div>
+                  <div class="thermo-bubbles" aria-hidden="true"></div>
+                </div>
+                <img class="thermo-frame" id="thermo-frame" src="assets/thermo.png" alt="" draggable="false">
+              </div>
             </div>
           </div>
         </div>
@@ -2838,13 +3211,25 @@
           <div class="bucket-scaler" id="bucket-scaler">
             <div class="bucket-zone-grass" aria-hidden="true"></div>
             <div class="bucket" id="bucket">
+              <div class="bucket-milk-slot">
+                <div class="bucket-interior" aria-hidden="true"></div>
+                <div class="bucket-milk" id="bucket-milk">
+                  <div class="bucket-milk-surface" aria-hidden="true">
+                    <svg class="milk-surf-layer milk-surf-a" viewBox="0 0 200 22" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0,11 C25,5 50,17 75,11 S125,5 150,11 S175,17 200,11 L200,22 L0,22 Z"/>
+                    </svg>
+                    <svg class="milk-surf-layer milk-surf-b" viewBox="0 0 200 18" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0,9 C33,13 67,5 100,9 S133,13 167,9 S200,5 200,9 L200,18 L0,18 Z"/>
+                    </svg>
+                    <div class="milk-surf-shimmer"></div>
+                  </div>
+                </div>
+              </div>
               <img class="bucket-img" id="bucket-img" src="./assets/bucket.png" alt="" draggable="false">
               <div class="bucket-css">
                 <div class="bucket-handle"></div>
                 <div class="bucket-rim"></div>
-                <div class="bucket-body">
-                  <div class="bucket-milk" id="bucket-milk"></div>
-                </div>
+                <div class="bucket-body" aria-hidden="true"></div>
               </div>
               <div class="bucket-meter-overlay">
                 <span class="bucket-tier-tag" id="bucket-tier-tag" aria-hidden="true"></span>
@@ -2860,9 +3245,9 @@
           <p class="booster-offer-title">Ещё чуть-чуть!</p>
           <p class="booster-offer-discount">Скидка сейчас: <strong id="booster-earned">5%</strong></p>
           <p class="booster-offer-pitch" id="booster-pitch"></p>
-          <p class="booster-offer-timer">+5 секунд надоя</p>
+          <p class="booster-offer-timer" id="booster-offer-timer">+30 секунд надоя</p>
           <button type="button" class="btn btn-primary" id="btn-booster-buy">
-            <span class="booster-buy-main" id="booster-buy-main">+5 сек за 100 баллов</span>
+            <span class="booster-buy-main" id="booster-buy-main">+30 сек за 100 баллов</span>
             <span class="booster-buy-balance" id="booster-buy-balance">У тебя 45 000 баллов</span>
           </button>
           <button type="button" class="btn btn-booster-skip" id="btn-booster-skip">Нет, хватит</button>
@@ -2886,9 +3271,9 @@
               <rect x="9" y="6" width="14" height="22" rx="3" fill="#fff8e1" stroke="#ffd166" stroke-width="1.5"/>
               <path d="M11 6 L16 2 L21 6" fill="none" stroke="#ffd166" stroke-width="1.5" stroke-linejoin="round"/>
               <rect x="11" y="14" width="10" height="8" rx="1" fill="#2563b8"/>
-              <text x="16" y="20" text-anchor="middle" fill="#fff" font-size="5" font-family="sans-serif" font-weight="bold">П</text>
+              <text x="16" y="20" text-anchor="middle" fill="#fff" font-size="5" font-family="sans-serif" font-weight="bold">Д</text>
             </svg>
-            <span class="end-brand-name">Простоквашино</span>
+            <span class="end-brand-name">Даниссимо</span>
           </div>
           <p class="end-reward-label">Твоя скидка</p>
           <p class="end-reward-percent" id="end-reward-percent">5%</p>
@@ -2932,6 +3317,14 @@
 
   <audio id="audio-menu" src="assets/menu.ogg" preload="auto" loop playsinline autoplay></audio>
   <audio id="audio-game" src="assets/game.ogg" preload="auto" loop playsinline></audio>
+  <audio id="audio-game-bonus" preload="auto" loop playsinline>
+    <source src="assets/game-bonus.ogg" type="audio/ogg">
+    <source src="assets/game-bonus.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="audio-end" preload="auto" loop playsinline>
+    <source src="assets/end.ogg" type="audio/ogg">
+    <source src="assets/end.mp3" type="audio/mpeg">
+  </audio>
   <!-- Мычание: положи в assets/ файлы moo-soft, moo-angry, moo-hot (.ogg или .mp3) -->
   <audio id="audio-moo-soft" preload="auto" playsinline>
     <source src="assets/moo-soft.ogg" type="audio/ogg">
@@ -2982,17 +3375,40 @@
       UDDER_STEAM_INTERVAL: 0.32,
       GAME_MUSIC_DELAY_MS: 500,
       COUNTDOWN_MS: 850,
-      TEAT_HEAT_PER_TAP: 26,
-      TEAT_HEAT_DECAY_PER_SEC: 32,
+      STOP_HOLD_MS: 1100,
+      STOP_FADE_MS: 600,
+      TEAT_HEAT_MIN_TPS: 1.2,
+      TEAT_OVERHEAT_TPS: 7,
+      THERMO_HIDE_IDLE_MS: 2000,
+      TEAT_HEAT_RISE_SPEED: 11,
+      TEAT_HEAT_FALL_SPEED: 6,
       TEAT_HEAT_WARN: 65,
       TEAT_HEAT_MAX: 100,
       TEAT_OVERHEAT_MULT: 0.35,
       TEAT_HOT_MULT: 0.72,
+      /* % от картинки ведра (не контейнера) — позицию считает syncBucketMilkSlot */
+      BUCKET_MILK_INSET: { top: '42.8%', left: '36.2%', right: '36.4%', bottom: '16.2%' },
+      BUCKET_MILK_BLEED_X: 5.5,
+      BUCKET_MILK_BLEED_Y: 2.5,
+      BUCKET_INTERIOR_COLOR: '#6E3F25',
+      /* прямоугольное окошко — объём ≈ высота линейно */
+      BUCKET_MILK_HEIGHT_LUT: [
+        [0, 0],
+        [1, 1],
+      ],
+      THERMO_IMAGE: 'assets/thermo.png',
+      THERMO_FILL_INSET: { top: '32%', left: '35%', right: '35%', bottom: '11%' },
+      THERMO_OVERFILL_PCT: 100,
+      THERMO_SCALE_MAX: 60,
+      THERMO_GREEN_UNTIL: 25,
+      THERMO_YELLOW_UNTIL: 45,
       COW_IMAGE: 'assets/cow.jpg',
       /* Видео-фон раунда (если файл есть — вместо cow.jpg) */
       COW_VIDEO: 'assets/game.mp4',
       AUDIO_MENU: 'assets/menu.ogg',
       AUDIO_GAME: 'assets/game.ogg',
+      AUDIO_GAME_BONUS: 'assets/game-bonus.ogg',
+      AUDIO_END: 'assets/end.ogg',
       MENU_VIDEO: 'assets/menu.mp4',
       MENU_IMAGE: 'assets/menu.jpg',
       END_IMAGE: 'assets/res.png',
@@ -3004,8 +3420,14 @@
         'assets/udder-4.png',
       ],
       UDDER_FRAME_IDLE: 0,
-      UDDER_TAP_SEQUENCE: [2, 4, 3, 0],
-      UDDER_TAP_FRAME_MS: 55,
+      UDDER_TAP_SEQUENCE: [0, 1, 2, 3, 4, 3, 2, 1, 0],
+      UDDER_TAP_FRAME_MS: 130,
+      UDDER_TAP_FRAME_MS_MIN: 52,
+      UDDER_TAP_FRAME_MS_MAX: 170,
+      UDDER_TAP_INTERVAL_DEFAULT_MS: 280,
+      UDDER_TAP_IDLE_MS: 200,
+      UDDER_TAP_QUEUE_INTERVAL_MS: 260,
+      UDDER_TAP_QUEUE_MAX: 4,
       UDDER_IMAGE_FALLBACK: 'assets/udder.svg',
       END_BG_POSITION: 'center top',
       END_BG_SCRIM: 0.45,
@@ -3064,13 +3486,13 @@
         clusterWidth: '100%',
         clusterHeight: '100%',
         overlapUdder: 0,
-        hitboxWidth: 'clamp(36px, 10vw, 48px)',
-        hitboxHeight: 'clamp(42px, 11.5vw, 58px)',
+        hitboxWidth: 'clamp(40px, 11vw, 54px)',
+        hitboxHeight: 'clamp(48px, 13vw, 64px)',
         hitboxOffsets: [
-          { x: 22, y: 78 },
-          { x: 38, y: 84 },
-          { x: 62, y: 84 },
-          { x: 78, y: 78 },
+          { x: 27, y: 74 },
+          { x: 48, y: 82 },
+          { x: 52, y: 83 },
+          { x: 72, y: 74 },
         ],
       },
       COW_ASPECT_FALLBACK: 768 / 1376,
@@ -3172,7 +3594,7 @@
         { minLiters: 250, percent: 30, label: '30%' },
       ],
       BOOSTER_COST_POINTS: 100,
-      BOOSTER_EXTRA_SECONDS: 5,
+      BOOSTER_EXTRA_SECONDS: 30,
       BOOSTER_PITCH_LITERS: 30,
       LOYALTY_STORAGE_KEY: 'korova_x5_stub',
       LOYALTY_DEFAULT_BALANCE: 45000,
@@ -3581,6 +4003,7 @@
       punchlinesUsed: new Set(),
       boosterUsedThisRound: false,
       boosterOfferActive: false,
+      bonusRoundActive: false,
       roundTimeUpHandled: false,
       roundReward: null,
       endRank: null,
@@ -3621,6 +4044,7 @@
       timer: document.getElementById('timer'),
       timerWrap: document.getElementById('timer-wrap'),
       teats: [...document.querySelectorAll('.teat')],
+      udderVisual: document.getElementById('udder-visual'),
       udderSprite: document.getElementById('udder-sprite'),
       teatsRow: document.getElementById('teats-row'),
       liters: document.getElementById('liters'),
@@ -3638,10 +4062,17 @@
       cowImg: document.getElementById('cow-img'),
       tapHint: document.getElementById('tap-hint'),
       udder: document.getElementById('udder'),
+      udderThermo: document.getElementById('udder-thermo'),
+      thermoFrame: document.getElementById('thermo-frame'),
+      thermoFill: document.getElementById('thermo-fill'),
+      thermoFillSlot: document.getElementById('thermo-fill-slot'),
+      heatVignette: document.getElementById('heat-vignette'),
       countdownOverlay: document.getElementById('countdown-overlay'),
       countdownText: document.getElementById('countdown-text'),
       audioMenu: document.getElementById('audio-menu'),
       audioGame: document.getElementById('audio-game'),
+      audioGameBonus: document.getElementById('audio-game-bonus'),
+      audioEnd: document.getElementById('audio-end'),
       audioMooSoft: document.getElementById('audio-moo-soft'),
       audioMooAngry: document.getElementById('audio-moo-angry'),
       audioMooHot: document.getElementById('audio-moo-hot'),
@@ -3669,6 +4100,7 @@
       boosterOffer: document.getElementById('booster-offer'),
       boosterEarned: document.getElementById('booster-earned'),
       boosterPitch: document.getElementById('booster-pitch'),
+      boosterOfferTimer: document.getElementById('booster-offer-timer'),
       btnBoosterBuy: document.getElementById('btn-booster-buy'),
       boosterBuyMain: document.getElementById('booster-buy-main'),
       boosterBuyBalance: document.getElementById('booster-buy-balance'),
@@ -3718,6 +4150,7 @@
     let audioUnlocked = false;
     let menuMusicOn = false;
     let countdownRunning = false;
+    let finishRoundLock = false;
     let milkAudioCtx = null;
     let lastFrameTime = 0;
     let cowChewTimer = null;
@@ -3729,8 +4162,18 @@
     let idleDripNext = 5;
     let udderSteamTimer = 0;
     let udderFrameSrcs = [];
-    let udderAnimTimers = [];
     let udderCurrentFrame = 0;
+    let udderLastTapAt = 0;
+    let milkTiltSign = 1;
+    let milkSurfacePhase = 0;
+    let milkRippleBoost = 0;
+    const udderAnim = {
+      active: false,
+      step: 0,
+      queue: 0,
+      frameMs: 130,
+      nextAt: 0,
+    };
 
     // ====== СТЕЙТ-МАШИНА ======
     function setState(next) {
@@ -3741,7 +4184,7 @@
         el.setAttribute('aria-hidden', 'true');
       });
 
-      const screenKey = next === 'gameover' ? 'end' : (next === 'playing' || next === 'countdown') ? 'game' : 'menu';
+      const screenKey = next === 'gameover' ? 'end' : (next === 'playing' || next === 'countdown' || next === 'stopping') ? 'game' : 'menu';
       const screen = screens[screenKey];
       if (screen) {
         screen.classList.add('active');
@@ -3749,7 +4192,8 @@
       }
 
       if (next === 'menu') {
-        stopGameMusic();
+        stopRoundMusic();
+        stopEndMusic();
         els.countdownOverlay.classList.add('hidden');
         pauseEndBgVideo();
         pauseGameVideo();
@@ -3762,16 +4206,20 @@
         pauseMenuVideo();
         if (next === 'countdown' || next === 'playing') {
           stopMenuMusic();
+          stopEndMusic();
           playGameVideo();
         } else {
           pauseGameVideo();
         }
         if (next === 'gameover') {
-          stopGameMusic();
+          stopRoundMusic();
+          stopMenuMusic();
           els.countdownOverlay.classList.add('hidden');
           playEndBgVideo();
+          startEndMusic();
         } else {
           pauseEndBgVideo();
+          stopEndMusic();
         }
       }
 
@@ -3781,6 +4229,23 @@
 
     function syncCowSceneClass() {
       els.cowScene?.classList.toggle('playing', game.state === 'playing' || game.state === 'countdown');
+    }
+
+    function popCountdownText(text) {
+      if (!els.countdownText) return;
+      els.countdownText.textContent = text;
+      els.countdownText.style.animation = 'none';
+      void els.countdownText.offsetWidth;
+      els.countdownText.style.animation = '';
+    }
+
+    async function playCountdownSteps(steps) {
+      els.countdownOverlay?.classList.remove('hidden', 'fade-out', 'stop');
+      for (let i = 0; i < steps.length; i++) {
+        popCountdownText(steps[i]);
+        await sleep(CONFIG.COUNTDOWN_MS);
+      }
+      els.countdownOverlay?.classList.add('hidden');
     }
 
     function showTapHint() {
@@ -3843,7 +4308,8 @@
       if (game.state !== 'menu') return false;
       if (menuMusicOn && !els.audioMenu.paused) return true;
 
-      stopGameMusic();
+      stopRoundMusic();
+      stopEndMusic();
       els.audioMenu.volume = 0.65;
       try {
         if (milkAudioCtx?.state === 'suspended') await milkAudioCtx.resume();
@@ -3920,9 +4386,21 @@
       });
     }
 
-    function clearUdderAnimTimers() {
-      udderAnimTimers.forEach(clearTimeout);
-      udderAnimTimers = [];
+    function clampUdderFrameMs(ms) {
+      const min = CONFIG.UDDER_TAP_FRAME_MS_MIN ?? 52;
+      const max = CONFIG.UDDER_TAP_FRAME_MS_MAX ?? 170;
+      return Math.max(min, Math.min(max, ms));
+    }
+
+    function frameMsFromTapInterval(intervalMs) {
+      const base = CONFIG.UDDER_TAP_FRAME_MS || 130;
+      if (!intervalMs || intervalMs > 600) return base;
+      return clampUdderFrameMs(intervalMs * 0.55);
+    }
+
+    function isUdderTapIdle(now) {
+      if (!udderLastTapAt) return true;
+      return now - udderLastTapAt > (CONFIG.UDDER_TAP_IDLE_MS ?? 200);
     }
 
     function setUdderFrame(i) {
@@ -3930,22 +4408,84 @@
       const src = udderFrameSrcs[i];
       if (!sprite || !src) return;
       udderCurrentFrame = i;
+      sprite.style.opacity = '0.92';
       sprite.src = src;
+      requestAnimationFrame(() => {
+        sprite.style.opacity = '1';
+      });
     }
 
-    function playUdderTapAnim() {
-      const sprite = els.udderSprite;
-      if (!sprite || udderFrameSrcs.length < 2) return;
-      clearUdderAnimTimers();
-      const seq = CONFIG.UDDER_TAP_SEQUENCE || [2, 4, 3, 0];
-      const ms = CONFIG.UDDER_TAP_FRAME_MS || 55;
-      seq.forEach((frameIdx, step) => {
-        const t = setTimeout(() => {
-          setUdderFrame(frameIdx);
-          if (step === seq.length - 1) udderAnimTimers = [];
-        }, step * ms);
-        udderAnimTimers.push(t);
-      });
+    function resetUdderAnim() {
+      udderAnim.active = false;
+      udderAnim.step = 0;
+      udderAnim.queue = 0;
+      udderAnim.nextAt = 0;
+      udderLastTapAt = 0;
+      setUdderFrame(CONFIG.UDDER_FRAME_IDLE || 0);
+    }
+
+    function beginUdderAnimCycle(now) {
+      const seq = CONFIG.UDDER_TAP_SEQUENCE;
+      if (!seq?.length || !els.udderSprite || udderFrameSrcs.length < 2) return;
+      udderAnim.active = true;
+      udderAnim.step = 0;
+      udderAnim.nextAt = now;
+      setUdderFrame(seq[0]);
+      udderAnim.step = 1;
+      udderAnim.nextAt = now + udderAnim.frameMs;
+    }
+
+    function requestUdderTapAnim(now) {
+      if (!els.udderSprite || udderFrameSrcs.length < 2) return;
+      const t = now ?? performance.now();
+      const interval = udderLastTapAt > 0 ? t - udderLastTapAt : CONFIG.UDDER_TAP_INTERVAL_DEFAULT_MS;
+      udderLastTapAt = t;
+      udderAnim.frameMs = frameMsFromTapInterval(interval);
+
+      if (udderAnim.active) {
+        const queueFast = interval < (CONFIG.UDDER_TAP_QUEUE_INTERVAL_MS ?? 260);
+        if (queueFast && udderAnim.queue < (CONFIG.UDDER_TAP_QUEUE_MAX ?? 4)) {
+          udderAnim.queue++;
+        }
+        return;
+      }
+      beginUdderAnimCycle(t);
+    }
+
+    function tickUdderAnim(now) {
+      if (isUdderTapIdle(now)) {
+        udderAnim.queue = 0;
+        if (udderAnim.active) {
+          udderAnim.active = false;
+          udderAnim.step = 0;
+          setUdderFrame(CONFIG.UDDER_FRAME_IDLE || 0);
+        }
+        return;
+      }
+      if (!udderAnim.active) return;
+      const seq = CONFIG.UDDER_TAP_SEQUENCE;
+      if (!seq?.length) {
+        resetUdderAnim();
+        return;
+      }
+      if (now < udderAnim.nextAt) return;
+
+      if (udderAnim.step >= seq.length) {
+        if (udderAnim.queue > 0) {
+          udderAnim.queue--;
+          setUdderFrame(seq[0]);
+          udderAnim.step = 1;
+          udderAnim.nextAt = now + udderAnim.frameMs;
+          return;
+        }
+        udderAnim.active = false;
+        setUdderFrame(CONFIG.UDDER_FRAME_IDLE || 0);
+        return;
+      }
+
+      setUdderFrame(seq[udderAnim.step]);
+      udderAnim.step++;
+      udderAnim.nextAt = now + udderAnim.frameMs;
     }
 
     async function initUdderSprite() {
@@ -3984,8 +4524,12 @@
       if (audioUnlocked) return;
       await unlockOneTrack(els.audioMenu);
       await unlockOneTrack(els.audioGame);
+      await unlockOneTrack(els.audioGameBonus);
+      await unlockOneTrack(els.audioEnd);
       els.audioMenu.volume = 0.65;
       els.audioGame.volume = 0.75;
+      if (els.audioGameBonus) els.audioGameBonus.volume = 0.75;
+      if (els.audioEnd) els.audioEnd.volume = 0.7;
       audioUnlocked = true;
       if (!milkAudioCtx) {
         try {
@@ -4007,7 +4551,8 @@
       if (!audioUnlocked) await unlockAudio();
       if (menuMusicOn && !els.audioMenu.paused) return;
 
-      stopGameMusic();
+      stopRoundMusic();
+      stopEndMusic();
       menuMusicOn = true;
       els.audioMenu.currentTime = 0;
       try {
@@ -4022,12 +4567,32 @@
       els.audioMenu.pause();
     }
 
-    async function startGameMusic() {
+    async function startRoundMusic() {
       if (game.state !== 'playing') return;
+      if (game.boosterOfferActive) return;
       if (!audioUnlocked) await unlockAudio();
-      els.audioGame.currentTime = 0;
+      stopEndMusic();
+      stopMenuMusic();
+      const useBonus = game.bonusRoundActive;
+      const track = useBonus ? els.audioGameBonus : els.audioGame;
+      const other = useBonus ? els.audioGame : els.audioGameBonus;
+      other?.pause();
+      if (other) other.currentTime = 0;
+      if (!track) return;
+      track.currentTime = 0;
       try {
-        await els.audioGame.play();
+        await track.play();
+      } catch (_) {}
+    }
+
+    async function startEndMusic() {
+      if (!audioUnlocked) await unlockAudio();
+      stopRoundMusic();
+      stopMenuMusic();
+      if (!els.audioEnd) return;
+      els.audioEnd.currentTime = 0;
+      try {
+        await els.audioEnd.play();
       } catch (_) {}
     }
 
@@ -4035,6 +4600,29 @@
       clearGameMusicTimer();
       els.audioGame.pause();
       els.audioGame.currentTime = 0;
+    }
+
+    function stopBonusGameMusic() {
+      if (!els.audioGameBonus) return;
+      els.audioGameBonus.pause();
+      els.audioGameBonus.currentTime = 0;
+    }
+
+    function stopEndMusic() {
+      if (!els.audioEnd) return;
+      els.audioEnd.pause();
+      els.audioEnd.currentTime = 0;
+    }
+
+    function stopRoundMusic() {
+      stopGameMusic();
+      stopBonusGameMusic();
+    }
+
+    function stopAllMusic() {
+      stopRoundMusic();
+      stopMenuMusic();
+      stopEndMusic();
     }
 
     function clearGameMusicTimer() {
@@ -4048,7 +4636,7 @@
       clearGameMusicTimer();
       gameMusicTimer = setTimeout(() => {
         gameMusicTimer = null;
-        if (game.state === 'playing') startGameMusic();
+        if (game.state === 'playing') startRoundMusic();
       }, CONFIG.GAME_MUSIC_DELAY_MS);
     }
 
@@ -4060,22 +4648,13 @@
       if (countdownRunning) return;
       countdownRunning = true;
       game.state = 'countdown';
+      syncCowSceneClass();
 
       stopMenuMusic();
-
-      const steps = ['3', '2', '1', 'Поехали!'];
-      els.countdownOverlay.classList.remove('hidden');
       game.comboRushNextAt = performance.now() + CONFIG.FLOW_BOOST.comboRush.intervalSec * 1000;
 
-      for (let i = 0; i < steps.length; i++) {
-        els.countdownText.textContent = steps[i];
-        els.countdownText.style.animation = 'none';
-        void els.countdownText.offsetWidth;
-        els.countdownText.style.animation = '';
-        await sleep(CONFIG.COUNTDOWN_MS);
-      }
+      await playCountdownSteps(['3', '2', '1', 'Поехали!']);
 
-      els.countdownOverlay.classList.add('hidden');
       game.state = 'playing';
       game.lastTimerSec = CONFIG.ROUND_SECONDS;
       countdownRunning = false;
@@ -4096,6 +4675,56 @@
         showPunchline('Подои меня!', false, 3);
         tryPlayMoo('soft');
       }, 450);
+    }
+
+    async function runBonusCountdown() {
+      if (countdownRunning) return;
+      countdownRunning = true;
+      game.state = 'countdown';
+      syncCowSceneClass();
+
+      await playCountdownSteps(['3', '2', '1', 'Поехали!']);
+
+      game.state = 'playing';
+      countdownRunning = false;
+      lastFrameTime = performance.now();
+      syncCowSceneClass();
+      updateHUD();
+      startRoundMusic();
+      if (navigator.vibrate) navigator.vibrate([12, 24, 12]);
+    }
+
+    async function finishRoundWithStop() {
+      if (finishRoundLock || game.state === 'gameover' || game.state === 'stopping') return;
+      finishRoundLock = true;
+      hideBoosterOffer();
+
+      game.roundTimeUpHandled = true;
+      game.timer = 0;
+      game.state = 'stopping';
+      syncCowSceneClass();
+      stopCowLife();
+      stopMoo();
+      stopRoundMusic();
+      clearPunchlines();
+      clearMilkParticles();
+      updateHUD();
+
+      els.countdownOverlay?.classList.remove('hidden', 'fade-out');
+      els.countdownOverlay?.classList.add('stop');
+      popCountdownText('СТОП');
+
+      await sleep(CONFIG.STOP_HOLD_MS);
+
+      screens.game?.classList.add('round-fade-out');
+      els.countdownOverlay?.classList.add('fade-out');
+      await sleep(CONFIG.STOP_FADE_MS);
+
+      els.countdownOverlay?.classList.add('hidden');
+      els.countdownOverlay?.classList.remove('stop', 'fade-out');
+      finishRoundLock = false;
+      endGame();
+      screens.game?.classList.remove('round-fade-out');
     }
 
     function startCowLife() {
@@ -4131,10 +4760,18 @@
       return !computeRoundReward(game.liters).isMaxDiscount;
     }
 
+    function syncBoosterOfferLabels() {
+      const sec = CONFIG.BOOSTER_EXTRA_SECONDS;
+      if (els.boosterOfferTimer) {
+        els.boosterOfferTimer.textContent = '+' + sec + ' секунд надоя';
+      }
+    }
+
     function updateBoosterBuyButton(balance, canAfford) {
+      const sec = CONFIG.BOOSTER_EXTRA_SECONDS;
       if (els.boosterBuyMain) {
         els.boosterBuyMain.textContent = canAfford
-          ? '+5 сек за ' + CONFIG.BOOSTER_COST_POINTS + ' баллов'
+          ? '+' + sec + ' сек за ' + CONFIG.BOOSTER_COST_POINTS + ' баллов'
           : 'Нужно ' + CONFIG.BOOSTER_COST_POINTS + ' баллов';
       }
       if (els.boosterBuyBalance) {
@@ -4158,8 +4795,10 @@
           ? `До скидки ${pitch.targetLabel} осталось надоить ${pitch.litersLeft} л`
           : '';
       }
+      syncBoosterOfferLabels();
       updateBoosterBuyButton(balance, canAfford);
 
+      stopAllMusic();
       els.boosterOffer?.classList.add('open');
       els.boosterOffer?.setAttribute('aria-hidden', 'false');
     }
@@ -4170,20 +4809,21 @@
       els.boosterOffer?.setAttribute('aria-hidden', 'true');
     }
 
-    function onBoosterBuy() {
+    async function onBoosterBuy() {
       if (!game.boosterOfferActive) return;
       if (!X5ClubStub.spendPoints(CONFIG.BOOSTER_COST_POINTS)) return;
       game.roundTimeUpHandled = false;
+      game.bonusRoundActive = true;
       game.timer = CONFIG.BOOSTER_EXTRA_SECONDS;
       hideBoosterOffer();
       updateHUD();
-      if (navigator.vibrate) navigator.vibrate([20, 40, 20]);
+      await runBonusCountdown();
     }
 
     function onBoosterSkip() {
       if (!game.boosterOfferActive) return;
       hideBoosterOffer();
-      endGame();
+      finishRoundWithStop();
     }
 
     function onRoundTimeUp() {
@@ -4197,7 +4837,7 @@
         showBoosterOffer();
         return;
       }
-      endGame();
+      finishRoundWithStop();
     }
 
     function tickRoundTimer(dt) {
@@ -4678,13 +5318,32 @@
       }
     }
 
+    function bucketMilkVisualPct(fillRatio) {
+      const t = Math.min(1, Math.max(0, fillRatio));
+      const bucket = els.bucket;
+      if (!bucket?.classList.contains('has-img')) {
+        return t * 100;
+      }
+      const lut = CONFIG.BUCKET_MILK_HEIGHT_LUT;
+      for (let i = 1; i < lut.length; i++) {
+        if (t <= lut[i][0]) {
+          const [t0, h0] = lut[i - 1];
+          const [t1, h1] = lut[i];
+          const k = (t1 - t0) > 0 ? (t - t0) / (t1 - t0) : 0;
+          return (h0 + (h1 - h0) * k) * 100;
+        }
+      }
+      return 100;
+    }
+
     function updateHUD() {
       els.liters.textContent = game.liters.toFixed(1) + ' Л';
       updateTimerHUD();
 
       const cap = getBucketCap();
-      const pct = Math.min(100, (game.bucketFill / cap) * 100);
-      els.bucketMilk.style.height = pct + '%';
+      const fillRatio = Math.min(1, game.bucketFill / cap);
+      const pct = bucketMilkVisualPct(fillRatio);
+      els.bucketMilk.style.height = pct.toFixed(1) + '%';
       els.bucket.classList.toggle('full', game.bucketFill >= cap * 0.98 && !game.bucketOverflowing);
       els.bucketMilk.classList.toggle('foamy', pct >= 70 && !game.bucketOverflowing);
 
@@ -5207,39 +5866,185 @@
       return Number.isFinite(idx) ? idx : -1;
     }
 
-    function getTeatHeatMult(idx) {
-      if (idx < 0) return 1;
-      const h = game.teatHeat[idx];
-      if (h >= CONFIG.TEAT_HEAT_MAX) return CONFIG.TEAT_OVERHEAT_MULT;
-      if (h >= CONFIG.TEAT_HEAT_WARN) return CONFIG.TEAT_HOT_MULT;
-      return 1;
+    function resolveTeatFromEvent(e) {
+      const direct = e.target.closest('.teat');
+      if (direct) return direct;
+      const visual = els.udderVisual || els.udderSprite;
+      if (!visual) return null;
+      const vr = visual.getBoundingClientRect();
+      const x = e.clientX;
+      const y = e.clientY;
+      if (x < vr.left || x > vr.right || y < vr.top || y > vr.bottom) return null;
+      let best = null;
+      let bestDist = Infinity;
+      els.teats.forEach((teat) => {
+        const r = teat.getBoundingClientRect();
+        const cx = r.left + r.width * 0.5;
+        const cy = r.top + r.height * 0.5;
+        const d = (x - cx) ** 2 + (y - cy) ** 2;
+        if (d < bestDist) {
+          bestDist = d;
+          best = teat;
+        }
+      });
+      return best;
     }
 
-    function addTeatHeat(idx) {
-      if (idx < 0) return;
-      game.teatHeat[idx] = Math.min(
-        CONFIG.TEAT_HEAT_MAX,
-        game.teatHeat[idx] + CONFIG.TEAT_HEAT_PER_TAP
-      );
+    function getTapRate(now) {
+      return game.tapTimes.filter((t) => now - t < 1000).length;
+    }
+
+    function heatTargetFromTps(tps) {
+      const minTps = CONFIG.TEAT_HEAT_MIN_TPS;
+      const overTps = CONFIG.TEAT_OVERHEAT_TPS;
+      const max = CONFIG.TEAT_HEAT_MAX;
+      if (tps <= 0) return 0;
+      if (tps < minTps) return (tps / minTps) * max * 0.12;
+      if (tps >= overTps) return max;
+      const t = (tps - minTps) / (overTps - minTps);
+      const eased = t * t * (3 - 2 * t);
+      return eased * (max - 0.5);
+    }
+
+    function isTeatOverheated(h) {
+      return h >= CONFIG.TEAT_HEAT_MAX - 0.5;
+    }
+
+    function getTeatHeatMult(idx) {
+      if (idx < 0) return 1;
+      const norm = Math.min(1, game.teatHeat[idx] / CONFIG.TEAT_HEAT_MAX);
+      const hotAt = CONFIG.TEAT_HEAT_WARN / CONFIG.TEAT_HEAT_MAX;
+      if (norm <= 0.15) return 1;
+      if (norm >= 1) return CONFIG.TEAT_OVERHEAT_MULT;
+      if (norm <= hotAt) {
+        const t = (norm - 0.15) / (hotAt - 0.15);
+        return 1 - t * (1 - CONFIG.TEAT_HOT_MULT);
+      }
+      const t = (norm - hotAt) / (1 - hotAt);
+      return CONFIG.TEAT_HOT_MULT - t * (CONFIG.TEAT_HOT_MULT - CONFIG.TEAT_OVERHEAT_MULT);
+    }
+
+    function syncTeatHeatFromTps(now, blend) {
+      const target = heatTargetFromTps(getTapRate(now));
+      for (let i = 0; i < game.teatHeat.length; i++) {
+        const h = game.teatHeat[i];
+        const k = blend != null ? blend : 0;
+        let next = h + (target - h) * k;
+        if (next < 0.04) next = 0;
+        game.teatHeat[i] = next;
+      }
       updateTeatVisuals();
     }
 
     function tickTeatHeat(dt) {
       if (game.state !== 'playing') return;
-      let changed = false;
+      const now = performance.now();
+      const target = heatTargetFromTps(getTapRate(now));
+      const rise = CONFIG.TEAT_HEAT_RISE_SPEED;
+      const fall = CONFIG.TEAT_HEAT_FALL_SPEED;
       for (let i = 0; i < game.teatHeat.length; i++) {
-        if (game.teatHeat[i] > 0) {
-          const next = Math.max(
-            0,
-            game.teatHeat[i] - CONFIG.TEAT_HEAT_DECAY_PER_SEC * dt
-          );
-          if (next !== game.teatHeat[i]) {
-            game.teatHeat[i] = next;
-            changed = true;
-          }
-        }
+        const h = game.teatHeat[i];
+        const k = Math.min(1, (target >= h ? rise : fall) * dt);
+        let next = h + (target - h) * k;
+        if (next < 0.04) next = 0;
+        game.teatHeat[i] = next;
       }
-      if (changed) updateTeatVisuals();
+      updateTeatVisuals();
+    }
+
+    function thermoLiquidColor(fillNorm) {
+      const scaleMax = CONFIG.THERMO_SCALE_MAX;
+      const greenUntil = CONFIG.THERMO_GREEN_UNTIL;
+      const yellowUntil = CONFIG.THERMO_YELLOW_UNTIL;
+      const scale = Math.min(scaleMax, Math.max(0, fillNorm * scaleMax));
+      const g = [56, 142, 60];
+      const y = [255, 193, 7];
+      const r = [229, 57, 53];
+      let rgb;
+
+      if (scale <= greenUntil) {
+        rgb = g.slice();
+      } else if (scale <= yellowUntil) {
+        const t = (scale - greenUntil) / (yellowUntil - greenUntil);
+        rgb = g.map((v, i) => Math.round(v + (y[i] - v) * t));
+      } else {
+        const t = (scale - yellowUntil) / (scaleMax - yellowUntil);
+        rgb = y.map((v, i) => Math.round(v + (r[i] - v) * t));
+      }
+
+      return {
+        main: `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`,
+        highlight: `rgba(${Math.min(255, rgb[0] + 50)}, ${Math.min(255, rgb[1] + 50)}, ${Math.min(255, rgb[2] + 50)}, 0.65)`,
+      };
+    }
+
+    function thermoShakeStrength(maxH) {
+      const redStart =
+        (CONFIG.THERMO_YELLOW_UNTIL / CONFIG.THERMO_SCALE_MAX) * CONFIG.TEAT_HEAT_MAX;
+      if (maxH < CONFIG.TEAT_HEAT_WARN) {
+        return { deg: 0, x: 0, ms: 420 };
+      }
+      if (maxH < redStart) {
+        const t = (maxH - CONFIG.TEAT_HEAT_WARN) / (redStart - CONFIG.TEAT_HEAT_WARN);
+        return {
+          deg: 0.6 + t * 1.4,
+          x: 0.4 + t * 0.8,
+          ms: 400 - t * 60,
+        };
+      }
+      const t = Math.min(1, (maxH - redStart) / (CONFIG.TEAT_HEAT_MAX - redStart));
+      return {
+        deg: 2.2 + t * 7.8,
+        x: 1.2 + t * 4.2,
+        ms: 360 - t * 175,
+      };
+    }
+
+    function isThermoVisible(now) {
+      const idleMs = CONFIG.THERMO_HIDE_IDLE_MS ?? 2000;
+      if (!game.tapTimes.length) return false;
+      const lastTap = game.tapTimes[game.tapTimes.length - 1];
+      return (now - lastTap) < idleMs;
+    }
+
+    function updateThermoVisual(maxH, now) {
+      const thermo = els.udderThermo;
+      const slot = els.thermoFillSlot;
+      const fill = els.thermoFill;
+      const t = now ?? performance.now();
+      const norm = Math.min(1, maxH / CONFIG.TEAT_HEAT_MAX);
+      const visible = isThermoVisible(t);
+      const warn = maxH >= CONFIG.TEAT_HEAT_WARN && !isTeatOverheated(maxH);
+      const over = isTeatOverheated(maxH);
+      const fillPct = Math.min(CONFIG.THERMO_OVERFILL_PCT, norm * 100);
+      const colors = thermoLiquidColor(fillPct / 100);
+      const shake = thermoShakeStrength(maxH);
+
+      if (fill) fill.style.height = fillPct.toFixed(1) + '%';
+      if (slot) {
+        slot.style.setProperty('--thermo-liquid', colors.main);
+        slot.style.setProperty('--thermo-liquid-highlight', colors.highlight);
+      }
+      if (thermo) {
+        thermo.style.setProperty('--thermo-liquid', colors.main);
+        thermo.style.setProperty('--thermo-shake-a', shake.deg.toFixed(2));
+        thermo.style.setProperty('--thermo-shake-x', shake.x.toFixed(2) + 'px');
+        thermo.style.setProperty('--thermo-shake-ms', Math.round(shake.ms) + 'ms');
+        thermo.classList.toggle('visible', visible);
+        thermo.classList.toggle('warn', warn);
+        thermo.classList.toggle('overheat', over);
+        thermo.classList.toggle('shaking', shake.deg > 0);
+      }
+
+      if (els.heatVignette) {
+        els.heatVignette.classList.toggle('warn', warn);
+        els.heatVignette.classList.toggle('overheat', over);
+      }
+
+      if (els.cowFrame) {
+        els.cowFrame.classList.toggle('heat-warn', warn);
+        els.cowFrame.classList.toggle('heat-over', over);
+      }
     }
 
     function syncUdderSpriteHeat() {
@@ -5250,28 +6055,21 @@
         if (h > maxH) maxH = h;
       });
       const norm = Math.min(1, maxH / CONFIG.TEAT_HEAT_MAX);
-      const hot = maxH >= CONFIG.TEAT_HEAT_WARN && maxH < CONFIG.TEAT_HEAT_MAX;
-      const over = maxH >= CONFIG.TEAT_HEAT_MAX;
+      const hot = maxH >= CONFIG.TEAT_HEAT_WARN && !isTeatOverheated(maxH);
+      const over = isTeatOverheated(maxH);
       sprite.style.setProperty('--sprite-heat', norm.toFixed(3));
-      sprite.classList.toggle('heat-visible', norm > 0.35);
+      sprite.classList.toggle('heat-visible', isThermoVisible(performance.now()) || norm > 0.08);
       sprite.classList.toggle('hot', hot);
       sprite.classList.toggle('overheated', over);
+      updateThermoVisual(maxH);
     }
 
     function updateTeatVisuals() {
-      els.teats.forEach((el, i) => {
-        const h = game.teatHeat[i] || 0;
-        const norm = Math.min(1, h / CONFIG.TEAT_HEAT_MAX);
-        el.style.setProperty('--heat', norm.toFixed(3));
-        el.classList.toggle('heat-visible', norm > 0.35);
-        el.classList.toggle('hot', h >= CONFIG.TEAT_HEAT_WARN && h < CONFIG.TEAT_HEAT_MAX);
-        el.classList.toggle('overheated', h >= CONFIG.TEAT_HEAT_MAX);
-      });
       syncUdderSpriteHeat();
     }
 
-    function squishTarget(teatEl) {
-      if (teatEl?.classList?.contains('teat')) playUdderTapAnim();
+    function squishTarget(now) {
+      requestUdderTapAnim(now);
     }
 
     function spawnFloatLiter(x, y, amount, label, extraClass) {
@@ -5356,14 +6154,69 @@
         els.bucketTierTag.classList.remove('visible', 'tier-flash');
         els.bucketTierTag.setAttribute('aria-hidden', 'true');
       }
+
+      requestAnimationFrame(syncBucketMilkSlot);
+    }
+
+    function updateMilkWaveSpeed() {
+      const milk = els.bucketMilk;
+      if (!milk || game.state !== 'playing') return;
+      const now = performance.now();
+      const tps = game.tapTimes.filter((t) => now - t < 1000).length;
+      const speed = tps > 4 ? Math.max(0.55, 1.4 - tps * 0.1) : 1.4;
+      milk.style.setProperty('--wave-speed', speed.toFixed(2) + 's');
+    }
+
+    function tickMilkSurface(now, dt) {
+      const milk = els.bucketMilk;
+      if (!milk) return;
+
+      const pct = parseFloat(milk.style.height) || 0;
+      if (pct < 1.5) {
+        milk.style.clipPath = '';
+        return;
+      }
+
+      if (milkRippleBoost > 0) milkRippleBoost = Math.max(0, milkRippleBoost - dt * 2.8);
+
+      const speedSec = parseFloat(getComputedStyle(milk).getPropertyValue('--wave-speed')) || 1.4;
+      const tps = game.state === 'playing'
+        ? game.tapTimes.filter((t) => now - t < 1000).length
+        : 0;
+      const choppy = Math.min(1, tps / 7);
+      milkSurfacePhase += (dt / speedSec) * (0.85 + choppy * 0.55);
+
+      const useImg = els.bucket?.classList.contains('has-img');
+      const baseAmp = useImg ? 2.2 : 3.2;
+      const amp = baseAmp + choppy * 1.4 + milkRippleBoost * 2.5;
+      const amp2 = amp * 0.52;
+      const segments = 14;
+      const pts = [];
+
+      for (let i = 0; i <= segments; i++) {
+        const x = (i / segments) * 100;
+        const nx = i / segments;
+        const y =
+          amp * 0.55 +
+          Math.sin(nx * Math.PI * 2 + milkSurfacePhase) * amp +
+          Math.sin(nx * Math.PI * 3.6 + milkSurfacePhase * 1.35 + 0.7) * amp2;
+        pts.push(`${x.toFixed(1)}% ${Math.max(0, y).toFixed(2)}%`);
+      }
+
+      milk.style.clipPath = `polygon(${pts.join(', ')}, 100% 100%, 0% 100%)`;
     }
 
     function rippleBucketMilk() {
       const milk = els.bucketMilk;
       if (!milk) return;
+      milkRippleBoost = 1;
+      milkTiltSign *= -1;
+      const tilt = milkTiltSign * Math.min(els.bucket?.classList.contains('has-img') ? 2.5 : 5, 1.2 + game.comboMultiplier * 0.2);
+      milk.style.setProperty('--milk-tilt', tilt.toFixed(1) + 'deg');
       milk.classList.remove('ripple');
       void milk.offsetWidth;
       milk.classList.add('ripple');
+      updateMilkWaveSpeed();
     }
 
     function addToBucket(amount) {
@@ -5385,7 +6238,8 @@
       const cx = bRect.left + bRect.width / 2 - cRect.left;
       const cy = bRect.top + 6 - cRect.top;
 
-      for (let i = 0; i < 14; i++) {
+      const splashCount = 14 + Math.min(8, game.comboMultiplier);
+      for (let i = 0; i < splashCount; i++) {
         const s = acquireSplash();
         if (!s) break;
         const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.8;
@@ -5454,7 +6308,7 @@
         milkParticles.drops.push({ active: false, x0: 0, y0: 0, x1: 0, y1: 0, cx: 0, cy: 0, start: 0, duration: CONFIG.MILK_DROP_MS, amount: 0, isCombo: false, lastX: null, lastY: null });
       }
       for (let i = 0; i < 40; i++) {
-        milkParticles.splashes.push({ active: false, x: 0, y: 0, vx: 0, vy: 0, start: 0, maxLife: CONFIG.SPLASH_MS, size: 1 });
+        milkParticles.splashes.push({ active: false, x: 0, y: 0, vx: 0, vy: 0, start: 0, maxLife: CONFIG.SPLASH_MS, size: 1, tint: 'milk' });
       }
       for (let i = 0; i < CONFIG.RING_POOL_SIZE; i++) {
         milkParticles.rings.push({ active: false, x: 0, y: 0, start: 0, maxLife: 280, radius: 4 });
@@ -5534,7 +6388,11 @@
       if (!row) return;
       const rect = row.getBoundingClientRect();
       const cRect = els.canvas.getBoundingClientRect();
-      const count = 2 + Math.floor(Math.random() * 3);
+      const maxH = Math.max(...game.teatHeat, 0);
+      const over = isTeatOverheated(maxH);
+      const count = over
+        ? 5 + Math.floor(Math.random() * 4)
+        : 2 + Math.floor(Math.random() * 3);
       for (let i = 0; i < count; i++) {
         const st = acquireSteam();
         if (!st) break;
@@ -5694,7 +6552,7 @@
 
     function tickIdleDrip(dt) {
       if (game.state !== 'playing') return;
-      const overheated = game.teatHeat.some((h) => h >= CONFIG.TEAT_HEAT_MAX);
+      const overheated = game.teatHeat.some((h) => isTeatOverheated(h));
       if (overheated) return;
 
       idleDripTimer += dt;
@@ -5737,6 +6595,7 @@
         s.start = performance.now();
         s.maxLife = CONFIG.SPLASH_MS + Math.random() * 80;
         s.size = 0.7 + Math.random() * 1.3;
+        s.tint = 'milk';
         s.active = true;
       }
     }
@@ -5744,6 +6603,8 @@
     function wobbleBucket() {
       const scaler = els.bucketScaler;
       if (!scaler) return;
+      const deg = Math.min(9, 4 + game.comboMultiplier * 0.65);
+      scaler.style.setProperty('--wobble-deg', deg.toFixed(1) + 'deg');
       scaler.classList.remove('wobble');
       void scaler.offsetWidth;
       scaler.classList.add('wobble');
@@ -5893,7 +6754,10 @@
       tickTeatHeat(dt);
       tickIdleDrip(dt);
       tickUdderSteam(dt);
+      tickUdderAnim(now);
       refreshComboFromTaps();
+      updateMilkWaveSpeed();
+      tickMilkSurface(now, dt);
       tickFlow(now);
 
       if (screens.game.classList.contains('active')) {
@@ -5907,16 +6771,17 @@
       e.preventDefault();
       hideTapHint();
 
-      const teat = e.target.closest('.teat');
+      const teat = resolveTeatFromEvent(e);
       const teatIdx = getTeatIndex(teat);
-      squishTarget(teat);
-
-      if (teatIdx >= 0) addTeatHeat(teatIdx);
-      const heatMult = getTeatHeatMult(teatIdx);
-      const wasOverheat = teatIdx >= 0 && game.teatHeat[teatIdx] >= CONFIG.TEAT_HEAT_MAX;
+      squishTarget(performance.now());
 
       const prevCombo = game.comboMultiplier;
       const mult = getComboMultiplier();
+      const now = performance.now();
+      syncTeatHeatFromTps(now, 0.38);
+
+      const heatMult = getTeatHeatMult(teatIdx);
+      const wasOverheat = getTapRate(now) >= CONFIG.TEAT_OVERHEAT_TPS;
       game.comboMultiplier = mult;
       if (mult > prevCombo) {
         handleComboLevelUp(mult, prevCombo);
@@ -5931,7 +6796,6 @@
       game.lastComboMult = mult;
       game.maxComboRound = Math.max(game.maxComboRound, mult);
 
-      const now = performance.now();
       onTeatRotationFlow(teatIdx, now);
       const flowMult = getFlowLiterMult(now);
       const added = CONFIG.LITERS_PER_TAP * mult * heatMult * flowMult;
@@ -6007,7 +6871,9 @@
       game.punchlinesUsed = new Set();
       game.boosterUsedThisRound = false;
       game.boosterOfferActive = false;
+      game.bonusRoundActive = false;
       game.roundTimeUpHandled = false;
+      finishRoundLock = false;
       game.roundReward = null;
       game.endRank = null;
       game.dailyTaskCelebratedRound = false;
@@ -6023,6 +6889,7 @@
       if (bucketTierTagTimer) clearTimeout(bucketTierTagTimer);
       bucketTierTagTimer = null;
       hideTapHint();
+      resetUdderAnim();
       els.udder?.classList.remove('combo-aura');
       game.tapTimes = [];
       closeShareFallback();
@@ -6203,6 +7070,10 @@
     function endGame() {
       if (game.state === 'gameover') return;
       hideBoosterOffer();
+      els.countdownOverlay?.classList.add('hidden');
+      els.countdownOverlay?.classList.remove('stop', 'fade-out');
+      screens.game?.classList.remove('round-fade-out');
+      finishRoundLock = false;
 
       const score = game.liters;
       const prevRecord = game.highScore;
@@ -6210,7 +7081,7 @@
       game.state = 'gameover';
       stopCowLife();
       stopMoo();
-      stopGameMusic();
+      stopRoundMusic();
       clearMilkParticles();
       clearPunchlines();
       els.bucketWrap?.classList.remove('overflowing');
@@ -6333,7 +7204,7 @@
       ctx.textBaseline = 'middle';
       ctx.font = '700 18px Fredoka, sans-serif';
       ctx.fillStyle = '#fff8e1';
-      ctx.fillText('ПРОСТОКВАШИНО', cx, y + 28);
+      ctx.fillText('ДАНИССИМО', cx, y + 28);
       ctx.font = '700 16px Fredoka, sans-serif';
       ctx.fillStyle = 'rgba(255,255,255,0.92)';
       ctx.fillText('ТВОЯ СКИДКА', cx, y + 52);
@@ -6578,7 +7449,7 @@
       const urlBlock = gameUrl && !gameUrl.startsWith('file:')
         ? gameUrl
         : '';
-      return `🐄 УДВОЙ НАДОЙ — сыграй и получи скидку на Простоквашино!\n\n🥛 Я надоил ${score} л\n🏅 Мой ранг: ${rank.title}\n\n🎮 Играть:\n${urlBlock}`;
+      return `🐄 УДВОЙ НАДОЙ — сыграй и получи скидку на Даниссимо!\n\n🥛 Я надоил ${score} л\n🏅 Мой ранг: ${rank.title}\n\n🎮 Играть:\n${urlBlock}`;
     }
 
     let shareToastTimer = null;
@@ -6777,6 +7648,21 @@
 
     els.audioMenu.src = CONFIG.AUDIO_MENU;
     els.audioGame.src = CONFIG.AUDIO_GAME;
+    if (els.audioGameBonus) {
+      const bonusOgg = els.audioGameBonus.querySelector('source[type="audio/ogg"]');
+      const bonusMp3 = els.audioGameBonus.querySelector('source[type="audio/mpeg"]');
+      if (bonusOgg) bonusOgg.src = CONFIG.AUDIO_GAME_BONUS;
+      if (bonusMp3) bonusMp3.src = CONFIG.AUDIO_GAME_BONUS.replace(/\.ogg$/i, '.mp3');
+      els.audioGameBonus.load();
+    }
+    if (els.audioEnd) {
+      const endOgg = els.audioEnd.querySelector('source[type="audio/ogg"]');
+      const endMp3 = els.audioEnd.querySelector('source[type="audio/mpeg"]');
+      if (endOgg) endOgg.src = CONFIG.AUDIO_END;
+      if (endMp3) endMp3.src = CONFIG.AUDIO_END.replace(/\.ogg$/i, '.mp3');
+      els.audioEnd.load();
+    }
+    syncBoosterOfferLabels();
     if (els.menuBgVideo) {
       els.menuBgVideo.src = CONFIG.MENU_VIDEO;
       els.menuBgVideo.addEventListener('error', () => {
@@ -6792,6 +7678,8 @@
     }
     els.audioMenu.volume = 0.65;
     els.audioGame.volume = 0.75;
+    if (els.audioGameBonus) els.audioGameBonus.volume = 0.75;
+    if (els.audioEnd) els.audioEnd.volume = 0.7;
 
     bindSampleFallback(els.audioMooSoft, 'soft');
     bindSampleFallback(els.audioMooAngry, 'angry');
@@ -6800,9 +7688,99 @@
 
     applyUdderHotspot();
     initUdderSprite();
+    initThermoImg();
 
     if (new URLSearchParams(location.search).get('debug') === 'udder') {
       els.udder?.classList.add('debug-udder');
+    }
+
+    function applyThermoFillInset() {
+      const thermo = els.udderThermo;
+      const inset = CONFIG.THERMO_FILL_INSET;
+      if (!thermo || !inset) return;
+      thermo.style.setProperty('--thermo-fill-top', inset.top || '32%');
+      thermo.style.setProperty('--thermo-fill-left', inset.left || '35%');
+      thermo.style.setProperty('--thermo-fill-right', inset.right || '35%');
+      thermo.style.setProperty('--thermo-fill-bottom', inset.bottom || '11%');
+    }
+
+    function initThermoImg() {
+      const img = els.thermoFrame;
+      const thermo = els.udderThermo;
+      if (!img || !thermo) return;
+      applyThermoFillInset();
+      const apply = () => {
+        if (img.naturalWidth > 0) thermo.classList.add('has-img');
+        else thermo.classList.remove('has-img');
+      };
+      img.addEventListener('load', apply);
+      img.addEventListener('error', () => thermo.classList.remove('has-img'));
+      if (img.complete && img.naturalWidth > 0) apply();
+    }
+
+    function applyBucketMilkInset() {
+      const bucket = els.bucket;
+      const inset = CONFIG.BUCKET_MILK_INSET;
+      if (!bucket || !inset) return;
+      bucket.style.setProperty('--milk-inset-top', inset.top || '42.8%');
+      bucket.style.setProperty('--milk-inset-left', inset.left || '35.8%');
+      bucket.style.setProperty('--milk-inset-right', inset.right || '35.8%');
+      bucket.style.setProperty('--milk-inset-bottom', inset.bottom || '16.2%');
+      bucket.style.setProperty('--bucket-interior', CONFIG.BUCKET_INTERIOR_COLOR || '#6E3F25');
+    }
+
+    function getBucketImgRenderRect() {
+      const bucket = els.bucket;
+      const img = els.bucketImg;
+      if (!bucket || !img || !img.naturalWidth) return null;
+      const bw = bucket.clientWidth;
+      const bh = bucket.clientHeight;
+      const nw = img.naturalWidth;
+      const nh = img.naturalHeight;
+      const scale = Math.min(bw / nw, bh / nh);
+      const rw = nw * scale;
+      const rh = nh * scale;
+      const ox = (bw - rw) / 2;
+      const oy = bh - rh;
+      return { ox, oy, rw, rh, bw, bh };
+    }
+
+    function syncBucketMilkSlot() {
+      const bucket = els.bucket;
+      const slot = bucket?.querySelector('.bucket-milk-slot');
+      if (!bucket || !slot) return;
+      applyBucketMilkInset();
+
+      if (!bucket.classList.contains('has-img')) {
+        slot.style.left = '';
+        slot.style.top = '';
+        slot.style.width = '';
+        slot.style.height = '';
+        slot.style.right = '';
+        slot.style.bottom = '';
+        return;
+      }
+
+      const rect = getBucketImgRenderRect();
+      const inset = CONFIG.BUCKET_MILK_INSET;
+      if (!rect || !inset) return;
+
+      const pct = (v) => parseFloat(v) / 100;
+      const bleedX = (CONFIG.BUCKET_MILK_BLEED_X ?? 5.5) / 100;
+      const bleedY = (CONFIG.BUCKET_MILK_BLEED_Y ?? 2.5) / 100;
+      const { ox, oy, rw, rh, bw, bh } = rect;
+
+      const left = Math.max(0, ox + rw * (pct(inset.left) - bleedX));
+      const top = Math.max(0, oy + rh * (pct(inset.top) - bleedY));
+      const right = Math.min(bw, ox + rw * (1 - pct(inset.right) + bleedX));
+      const bottom = Math.min(bh, oy + rh * (1 - pct(inset.bottom) + bleedY));
+
+      slot.style.left = left + 'px';
+      slot.style.top = top + 'px';
+      slot.style.width = Math.max(0, right - left) + 'px';
+      slot.style.height = Math.max(0, bottom - top) + 'px';
+      slot.style.right = 'auto';
+      slot.style.bottom = 'auto';
     }
 
     function initBucketImg() {
@@ -6811,10 +7789,22 @@
       if (!img || !bucket) return;
       const apply = () => {
         if (img.naturalWidth > 0) bucket.classList.add('has-img');
+        else bucket.classList.remove('has-img');
+        syncBucketMilkSlot();
       };
       img.addEventListener('load', apply);
-      img.addEventListener('error', () => bucket.classList.remove('has-img'));
+      img.addEventListener('error', () => {
+        bucket.classList.remove('has-img');
+        syncBucketMilkSlot();
+      });
       if (img.complete && img.naturalWidth > 0) apply();
+      else syncBucketMilkSlot();
+
+      window.addEventListener('resize', syncBucketMilkSlot);
+      if (typeof ResizeObserver !== 'undefined') {
+        const ro = new ResizeObserver(() => syncBucketMilkSlot());
+        ro.observe(bucket);
+      }
     }
     initBucketImg();
 
@@ -6830,6 +7820,8 @@
 
     els.audioMenu.load();
     els.audioGame.load();
+    els.audioGameBonus?.load();
+    els.audioEnd?.load();
 
     function enableEndBg(mode) {
       screens.end.classList.add('has-end-photo');
