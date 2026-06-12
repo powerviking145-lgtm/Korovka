@@ -123,12 +123,12 @@
 
     .menu-stats-plaque {
       position: absolute;
-      top: calc(var(--safe-top) + 11.5dvh);
-      left: max(0.75rem, var(--safe-left));
-      right: max(0.75rem, var(--safe-right));
+      top: calc(var(--safe-top) + 8dvh);
+      left: 50%;
+      right: auto;
+      translate: calc(-50% + 2.75rem) 0.7rem;
       width: fit-content;
-      max-width: 100%;
-      margin-inline: auto;
+      max-width: calc(100% - 1.5rem);
       z-index: 15;
       pointer-events: none;
       display: flex;
